@@ -4,7 +4,7 @@
 
 body {
   color: #191F28;
-  background: #F9FAFB;
+  background: #F7F8FA;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -34,13 +34,13 @@ body {
 }
 
 .animate-section {
-  animation: fadeSlideUp 0.45s ease-out both;
+  animation: fadeSlideUp 0.8s ease-out both;
 }
 
-.animate-delay-1 { animation-delay: 0.08s; }
-.animate-delay-2 { animation-delay: 0.16s; }
-.animate-delay-3 { animation-delay: 0.24s; }
-.animate-delay-4 { animation-delay: 0.32s; }
+.animate-delay-1 { animation-delay: 0.4s; }
+.animate-delay-2 { animation-delay: 0.8s; }
+.animate-delay-3 { animation-delay: 1.2s; }
+.animate-delay-4 { animation-delay: 1.6s; }
 
 /* 프로그레스 바 채움 */
 @keyframes barFill {

@@ -20,7 +20,7 @@ export default function TalentDetailPage({
   if (!talent) notFound();
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="min-h-screen bg-[#F7F8FA]">
       {/* 헤더 */}
       <header className="bg-white sticky top-0 z-10">
         <div className="mx-auto max-w-[720px] px-4 h-[56px] flex items-center justify-between">
@@ -30,7 +30,7 @@ export default function TalentDetailPage({
               <path d="M6 10.5L9 13.5L14 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span className="text-[18px] font-medium text-gray-900 tracking-tight">
-              TalentMarket
+              베팀
             </span>
           </Link>
           <Link

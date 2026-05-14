@@ -14,7 +14,7 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col">
+    <main className="min-h-screen bg-[#F7F8FA] flex flex-col">
       {/* 헤더 */}
       <header className="bg-white">
         <div className="mx-auto max-w-[1080px] px-5 h-[56px] flex items-center">
@@ -24,7 +24,7 @@ export default function LoginPage() {
               <path d="M6 10.5L9 13.5L14 7" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <span className="text-[18px] font-medium text-gray-900 tracking-tight">
-              TalentMarket
+              베팀
             </span>
           </Link>
         </div>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "TalentMarket - 베트남 IT 인재 마켓플레이스",
+  title: "베팀 - 베트남 IT 인재 마켓플레이스",
   description: "한국 중소기업을 위한 베트남 IT 인재 마켓플레이스",
 };
 

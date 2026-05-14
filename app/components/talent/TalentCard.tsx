@@ -50,7 +50,7 @@ export function TalentCard({ talent, photoUrl }: { talent: Talent; photoUrl?: st
       {/* 상단: 아바타 + OVR 뱃지 */}
       <div className="flex items-start justify-between mb-3">
         {photoUrl ? (
-          <img src={photoUrl} alt="" className="w-[42px] h-[42px] rounded-full object-cover" />
+          <img src={photoUrl} alt="" className="w-[42px] h-[42px] rounded-full object-cover blur-[2px]" />
         ) : (
           <div className="w-[42px] h-[42px] rounded-full bg-blue-50 flex items-center justify-center">
             <span className="text-[13px] font-medium text-blue-500">
@@ -78,7 +78,7 @@ export function TalentCard({ talent, photoUrl }: { talent: Talent; photoUrl?: st
         {talent.top_skills.map((skill) => (
           <span
             key={skill}
-            className="text-[11px] text-gray-600 bg-gray-100 px-[7px] py-[3px] rounded-full leading-none"
+            className="text-[11px] text-gray-600 bg-gray-100 px-[7px] py-[3px] rounded-full leading-[18px] inline-flex items-center"
           >
             {skill}
           </span>
@@ -93,10 +93,15 @@ export function TalentCard({ talent, photoUrl }: { talent: Talent; photoUrl?: st
 
       {/* 하단: 합류 상태 & 연봉 */}
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
-        <div className="flex items-center gap-[5px]">
-          <span className={`w-[5px] h-[5px] rounded-full ${status.dotColor}`} />
-          <span className="text-[11px] text-gray-500">{status.label}</span>
-        </div>
+        <span className={`text-[11px] px-2 py-[2px] rounded-full font-medium ${
+          talent.availability === "immediate"
+            ? "bg-[#E8F5E9] text-[#1D9E75]"
+            : talent.availability === "negotiable"
+              ? "bg-gray-100 text-gray-500"
+              : "bg-gray-100 text-gray-400"
+        }`}>
+          {status.label}
+        </span>
         <span className="text-[13px] font-medium text-gray-900">
           {talent.desired_salary_krw}만원
         </span>
