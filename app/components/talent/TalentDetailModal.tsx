@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Talent } from "@/lib/types";
+import { Talent, toInitials } from "@/lib/types";
 import { RadarChart } from "./RadarChart";
 import { InterviewRequestModal } from "./InterviewRequestModal";
 import { Toast } from "@/app/components/ui/Toast";
@@ -89,7 +89,7 @@ export function TalentDetailModal({ talent, onClose }: { talent: Talent; onClose
               <img src={photo} alt="" className="w-[72px] h-[72px] rounded-full object-cover blur-[3px]" />
             ) : (
               <div className="w-[72px] h-[72px] rounded-full bg-blue-50 flex items-center justify-center">
-                <span className="text-[22px] font-medium text-blue-500">{talent.initials}</span>
+                <span className="text-[22px] font-medium text-blue-500">{toInitials(talent.name)}</span>
               </div>
             )}
             <div>

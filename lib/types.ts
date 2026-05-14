@@ -26,7 +26,7 @@ export interface Abilities {
 
 export interface Talent {
   id: string;
-  initials: string;
+  name: string;
   role: string;
   years_exp: number;
   location: string;
@@ -41,4 +41,15 @@ export interface Talent {
   detailed_skills: DetailedSkill[];
   career_history: CareerEntry[];
   tags: string[];
+  photo_url?: string;
+  resume_url?: string;
+}
+
+/** 실명 → 이니셜 변환 (예: "Tran Nguyen" → "T.N", "홍길동" → "홍") */
+export function toInitials(name: string): string {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) {
+    return parts.map((p) => p.charAt(0).toUpperCase()).join(".");
+  }
+  return name.charAt(0).toUpperCase();
 }

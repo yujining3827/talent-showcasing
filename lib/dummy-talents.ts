@@ -3,7 +3,7 @@ import { Talent } from "./types";
 export const dummyTalents: Talent[] = [
   {
     id: "1",
-    initials: "T.N",
+    name: "Tran Nguyen",
     role: "프론트엔드",
     years_exp: 3,
     location: "호치민",
@@ -39,7 +39,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "2",
-    initials: "H.L",
+    name: "Hoang Le",
     role: "백엔드",
     years_exp: 4,
     location: "하노이",
@@ -75,7 +75,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "3",
-    initials: "M.T",
+    name: "Minh Tran",
     role: "UI/UX 디자이너",
     years_exp: 3,
     location: "호치민",
@@ -111,7 +111,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "4",
-    initials: "D.P",
+    name: "Duc Pham",
     role: "풀스택",
     years_exp: 3,
     location: "다낭",
@@ -147,7 +147,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "5",
-    initials: "A.V",
+    name: "An Vo",
     role: "백엔드",
     years_exp: 2,
     location: "호치민",
@@ -182,7 +182,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "6",
-    initials: "K.N",
+    name: "Khanh Nguyen",
     role: "DevOps",
     years_exp: 5,
     location: "하노이",
@@ -218,7 +218,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "7",
-    initials: "L.H",
+    name: "Linh Huynh",
     role: "프론트엔드",
     years_exp: 1,
     location: "호치민",
@@ -253,7 +253,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "8",
-    initials: "P.Q",
+    name: "Phuc Quach",
     role: "데이터 분석가",
     years_exp: 3,
     location: "하노이",
@@ -289,7 +289,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "9",
-    initials: "B.T",
+    name: "Bao Truong",
     role: "프론트엔드",
     years_exp: 2,
     location: "다낭",
@@ -324,7 +324,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "10",
-    initials: "S.W",
+    name: "Son Vu",
     role: "백엔드",
     years_exp: 2,
     location: "호치민",
@@ -359,7 +359,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "11",
-    initials: "C.D",
+    name: "Chi Dang",
     role: "UI/UX 디자이너",
     years_exp: 2,
     location: "하노이",
@@ -394,7 +394,7 @@ export const dummyTalents: Talent[] = [
   },
   {
     id: "12",
-    initials: "E.G",
+    name: "Gia Bao",
     role: "QA",
     years_exp: 1,
     location: "호치민",

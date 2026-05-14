@@ -1,4 +1,4 @@
-import { Talent } from "@/lib/types";
+import { Talent, toInitials } from "@/lib/types";
 
 function getGradeStyle(grade: string) {
   switch (grade) {
@@ -37,7 +37,7 @@ function KoreanStars({ level }: { level: number }) {
   );
 }
 
-export function TalentCard({ talent, photoUrl }: { talent: Talent; photoUrl?: string }) {
+export function TalentCard({ talent }: { talent: Talent }) {
   const status = getAvailabilityInfo(talent.availability);
   const isEmployed = talent.availability === "employed";
 
@@ -49,12 +49,12 @@ export function TalentCard({ talent, photoUrl }: { talent: Talent; photoUrl?: st
     >
       {/* 상단: 아바타 + OVR 뱃지 */}
       <div className="flex items-start justify-between mb-3">
-        {photoUrl ? (
-          <img src={photoUrl} alt="" className="w-[42px] h-[42px] rounded-full object-cover blur-[2px]" />
+        {talent.photo_url ? (
+          <img src={talent.photo_url} alt="" className="w-[42px] h-[42px] rounded-full object-cover" />
         ) : (
           <div className="w-[42px] h-[42px] rounded-full bg-blue-50 flex items-center justify-center">
             <span className="text-[13px] font-medium text-blue-500">
-              {talent.initials}
+              {toInitials(talent.name)}
             </span>
           </div>
         )}

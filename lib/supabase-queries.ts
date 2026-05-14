@@ -5,6 +5,7 @@ export async function fetchTalents(): Promise<Talent[]> {
   const { data, error } = await supabase
     .from('talents')
     .select('*')
+    .eq('published', true)
     .order('ovr_score', { ascending: false })
 
   if (error) {

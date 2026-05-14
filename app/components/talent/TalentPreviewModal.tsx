@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Talent } from "@/lib/types";
+import { Talent, toInitials } from "@/lib/types";
 import { RadarChart } from "./RadarChart";
 
 const ABILITY_LABELS: Record<string, string> = {
@@ -51,9 +51,13 @@ export function TalentPreviewModal({ talent, onClose }: { talent: Talent; onClos
         {/* 헤더 + X버튼 */}
         <div className="flex items-center justify-between p-6 pb-0">
           <div className="flex items-center gap-4">
-            <div className="w-[72px] h-[72px] rounded-full bg-blue-50 flex items-center justify-center">
-              <span className="text-[22px] font-medium text-blue-500">{talent.initials}</span>
-            </div>
+            {talent.photo_url ? (
+              <img src={talent.photo_url} alt="" className="w-[72px] h-[72px] rounded-full object-cover" />
+            ) : (
+              <div className="w-[72px] h-[72px] rounded-full bg-blue-50 flex items-center justify-center">
+                <span className="text-[22px] font-medium text-blue-500">{toInitials(talent.name)}</span>
+              </div>
+            )}
             <div>
               <p className="text-[18px] font-medium text-gray-900 mb-1">{getRoleLabel(talent.role)}</p>
               <p className="text-[14px] text-gray-500">{talent.years_exp}년차 · {talent.location}</p>

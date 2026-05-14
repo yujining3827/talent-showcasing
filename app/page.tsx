@@ -243,15 +243,7 @@ function PreviewSection({ talents, onSelectTalent }: { talents: Talent[]; onSele
               onClick={() => onSelectTalent(talent)}
               className={`cursor-pointer transition-transform duration-200 hover:scale-[1.02] hover:z-10 ${showCards && i === 0 ? "animate-nudge" : ""}`}
             >
-              <TalentCard
-                talent={talent}
-                photoUrl={[
-                  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-                  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
-                  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
-                  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-                ][i]}
-              />
+              <TalentCard talent={talent} />
             </div>
           ))}
         </div>

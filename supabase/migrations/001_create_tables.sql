@@ -1,7 +1,7 @@
 -- talents 테이블
 create table if not exists talents (
   id uuid primary key default gen_random_uuid(),
-  initials text not null,
+  name text not null,
   role text not null,
   years_exp int not null,
   location text not null,

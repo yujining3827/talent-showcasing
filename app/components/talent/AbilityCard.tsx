@@ -1,6 +1,6 @@
 "use client";
 
-import { Talent } from "@/lib/types";
+import { Talent, toInitials } from "@/lib/types";
 import { RadarChart } from "./RadarChart";
 import { AnimatedOVR } from "./AnimatedOVR";
 
@@ -50,7 +50,7 @@ export function AbilityCard({ talent }: { talent: Talent }) {
       <div className="flex items-start gap-4 mb-6">
         <div className="w-[72px] h-[72px] rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
           <span className="text-[22px] font-medium text-blue-500">
-            {talent.initials}
+            {toInitials(talent.name)}
           </span>
         </div>
         <div className="flex-1 min-w-0">
