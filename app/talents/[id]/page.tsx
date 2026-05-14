@@ -35,10 +35,7 @@ export default function TalentDetailPage({
 
         {/* E. CTA (모바일 sticky) */}
         <div className="md:relative sticky bottom-0 left-0 right-0 md:mt-0 mt-3 md:p-0 p-3 md:bg-transparent bg-white md:border-none border-t-[0.5px] border-gray-200/60 z-10">
-          <InterviewCTA
-            talentId={talent.id}
-            salaryUsd={talent.desired_salary_usd}
-          />
+          <InterviewCTA talent={talent} />
         </div>
       </div>
     </main>
