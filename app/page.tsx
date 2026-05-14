@@ -6,6 +6,7 @@ import { Talent } from "@/lib/types";
 import { supabase } from "@/lib/supabase";
 import { TalentCard } from "@/app/components/talent/TalentCard";
 import { TalentDetailModal } from "@/app/components/talent/TalentDetailModal";
+import { Header } from "@/app/components/Header";
 
 function useInView(ref: React.RefObject<HTMLElement | null>, threshold = 0.3) {
   const [visible, setVisible] = useState(false);
@@ -322,21 +323,7 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      {/* 헤더 */}
-      <header className="bg-white/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="mx-auto max-w-[1080px] px-5 h-[56px] flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="VTM" width={24} height={24} className="rounded-[4px]" />
-            <span className="text-[18px] text-gray-900 tracking-tight" style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 700 }}>
-              Vtm
-            </span>
-          </Link>
-          <Link href="/login" className="text-[14px] text-blue-500 font-medium hover:text-blue-600 transition-colors">
-            로그인
-          </Link>
-        </div>
-        <div className="h-[0.5px] bg-gray-200/80" />
-      </header>
+      <Header />
 
       {/* 히어로 — 풀스크린 배경 이미지 */}
       <section className="h-[calc(100vh-56px)] relative flex items-center justify-center overflow-hidden">

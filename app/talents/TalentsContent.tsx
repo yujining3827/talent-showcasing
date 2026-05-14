@@ -1,11 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { Talent } from "@/lib/types";
 import { TalentCard } from "@/app/components/talent/TalentCard";
 import { FilterChips } from "@/app/components/talent/FilterChips";
 import { TalentDetailModal } from "@/app/components/talent/TalentDetailModal";
+import { Header } from "@/app/components/Header";
 
 export default function TalentsContent({ talents }: { talents: Talent[] }) {
   const availableCount = talents.filter(
@@ -16,24 +16,7 @@ export default function TalentsContent({ talents }: { talents: Talent[] }) {
 
   return (
     <main className="min-h-screen bg-[#F7F8FA]">
-      {/* 헤더 */}
-      <header className="bg-white sticky top-0 z-10">
-        <div className="mx-auto max-w-[1080px] px-5 h-[56px] flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="VTM" width={24} height={24} className="rounded-[4px]" />
-            <span className="text-[18px] text-gray-900 tracking-tight" style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 700 }}>
-              Vtm
-            </span>
-          </Link>
-          <Link
-            href="/login"
-            className="text-[14px] text-blue-500 font-medium hover:text-blue-600 transition-colors"
-          >
-            로그인
-          </Link>
-        </div>
-        <div className="h-[0.5px] bg-gray-200/80" />
-      </header>
+      <Header />
 
       <div className="mx-auto max-w-[1080px] px-5 pt-8 pb-16">
         {/* 타이틀 */}
