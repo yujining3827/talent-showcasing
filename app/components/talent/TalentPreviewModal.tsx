@@ -52,7 +52,7 @@ export function TalentPreviewModal({ talent, onClose }: { talent: Talent; onClos
         <div className="flex items-center justify-between p-6 pb-0">
           <div className="flex items-center gap-4">
             {talent.photo_url ? (
-              <img src={talent.photo_url} alt="" className="w-[72px] h-[72px] rounded-full object-cover" />
+              <img src={talent.photo_url} alt="" className="w-[72px] h-[72px] rounded-full object-cover blur-[3px]" />
             ) : (
               <div className="w-[72px] h-[72px] rounded-full bg-blue-50 flex items-center justify-center">
                 <span className="text-[22px] font-medium text-blue-500">{toInitials(talent.name)}</span>

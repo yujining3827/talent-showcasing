@@ -2,11 +2,81 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Talent } from "@/lib/types";
-import { supabase } from "@/lib/supabase";
 import { TalentCard } from "@/app/components/talent/TalentCard";
 import { TalentPreviewModal } from "@/app/components/talent/TalentPreviewModal";
 import { Header } from "@/app/components/Header";
+import type { Talent } from "@/lib/types";
+
+const LANDING_TALENTS: Talent[] = [
+  {
+    id: "landing-1", name: "Tran N.", role: "프론트엔드", years_exp: 3, location: "호치민",
+    ovr_score: 89, ovr_grade: "S", top_skills: ["React", "TypeScript"], korean_level: 4,
+    desired_salary_krw: 150, availability: "immediate",
+    ktc_comment: "한국 기업 협업 경험 풍부. 의사소통 명료하고 일정 준수 우수.",
+    tags: ["한국어 비즈니스", "원격 가능", "한국 기업 경험"],
+    abilities: { technical: 88, korean: 85, english: 78, collaboration: 92, stability: 90, growth: 86 },
+    detailed_skills: [
+      { name: "React", score: 92, type: "core" }, { name: "TypeScript", score: 85, type: "core" },
+      { name: "Next.js", score: 80, type: "core" }, { name: "Tailwind CSS", score: 78, type: "sub" },
+    ],
+    career_history: [
+      { tier: "Tier 1 한국계 IT 기업", position: "시니어 프론트엔드", startDate: "2022.03", endDate: "current", current: true },
+      { tier: "Tier 2 베트남 스타트업", position: "프론트엔드 개발자", startDate: "2020.06", endDate: "2022.02", current: false },
+    ],
+    photo_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    id: "landing-2", name: "Hoang L.", role: "백엔드", years_exp: 4, location: "하노이",
+    ovr_score: 85, ovr_grade: "S", top_skills: ["Java", "Spring Boot"], korean_level: 3,
+    desired_salary_krw: 180, availability: "negotiable",
+    ktc_comment: "대규모 트래픽 처리 경험 보유. 꼼꼼한 성격으로 코드 리뷰에 적극적.",
+    tags: ["대규모 트래픽", "MSA 경험", "코드 리뷰 문화"],
+    abilities: { technical: 90, korean: 72, english: 82, collaboration: 78, stability: 88, growth: 80 },
+    detailed_skills: [
+      { name: "Java", score: 90, type: "core" }, { name: "Spring Boot", score: 88, type: "core" },
+      { name: "MySQL", score: 82, type: "core" }, { name: "AWS", score: 75, type: "sub" },
+    ],
+    career_history: [
+      { tier: "Tier 1 한국계 IT 기업", position: "백엔드 리드", startDate: "2021.01", endDate: "current", current: true },
+      { tier: "Tier 1 글로벌 기업 베트남 지사", position: "시니어 백엔드", startDate: "2018.06", endDate: "2020.12", current: false },
+    ],
+    photo_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    id: "landing-3", name: "Minh T.", role: "UI/UX 디자이너", years_exp: 3, location: "호치민",
+    ovr_score: 87, ovr_grade: "S", top_skills: ["Figma", "Prototyping"], korean_level: 5,
+    desired_salary_krw: 130, availability: "immediate",
+    ktc_comment: "차분하고 논리적인 디자이너. 한국어 능통하여 커뮤니케이션 비용 매우 낮음.",
+    tags: ["한국어 능통", "디자인 시스템", "스타트업 경험"],
+    abilities: { technical: 82, korean: 95, english: 70, collaboration: 90, stability: 85, growth: 88 },
+    detailed_skills: [
+      { name: "Figma", score: 95, type: "core" }, { name: "Prototyping", score: 88, type: "core" },
+      { name: "Design System", score: 82, type: "core" }, { name: "HTML/CSS", score: 65, type: "sub" },
+    ],
+    career_history: [
+      { tier: "Tier 1 한국계 스타트업", position: "리드 디자이너", startDate: "2023.01", endDate: "current", current: true },
+      { tier: "Tier 2 베트남 에이전시", position: "UI/UX 디자이너", startDate: "2021.03", endDate: "2022.12", current: false },
+    ],
+    photo_url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
+  },
+  {
+    id: "landing-4", name: "Duc P.", role: "풀스택", years_exp: 3, location: "다낭",
+    ovr_score: 78, ovr_grade: "A", top_skills: ["Node.js", "React"], korean_level: 2,
+    desired_salary_krw: 140, availability: "negotiable",
+    ktc_comment: "프론트와 백엔드를 균형 있게 다루는 타입. 팀 협업에서 강점.",
+    tags: ["풀스택", "팀 플레이어", "원격 가능"],
+    abilities: { technical: 80, korean: 55, english: 78, collaboration: 82, stability: 75, growth: 76 },
+    detailed_skills: [
+      { name: "Node.js", score: 82, type: "core" }, { name: "React", score: 78, type: "core" },
+      { name: "PostgreSQL", score: 75, type: "core" }, { name: "AWS", score: 65, type: "sub" },
+    ],
+    career_history: [
+      { tier: "Tier 2 한국계 중소기업", position: "풀스택 개발자", startDate: "2021.06", endDate: "current", current: true },
+      { tier: "Tier 2 베트남 스타트업", position: "웹 개발자", startDate: "2019.03", endDate: "2021.05", current: false },
+    ],
+    photo_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
+  },
+];
 
 function useInView(ref: React.RefObject<HTMLElement | null>, threshold = 0.3) {
   const [visible, setVisible] = useState(false);
@@ -212,7 +282,7 @@ function CompareSection() {
   );
 }
 
-function PreviewSection({ talents, onSelectTalent }: { talents: Talent[]; onSelectTalent: (t: Talent) => void }) {
+function PreviewSection({ onSelectTalent }: { onSelectTalent: (t: Talent) => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const visible = useInView(ref, 0.4);
   const [showTitle, setShowTitle] = useState(false);
@@ -237,7 +307,7 @@ function PreviewSection({ talents, onSelectTalent }: { talents: Talent[]; onSele
           </p>
         </div>
         <div className={`grid grid-cols-2 md:grid-cols-4 gap-[10px] max-w-[900px] mx-auto transition-all duration-700 ${showCards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          {talents.map((talent, i) => (
+          {LANDING_TALENTS.map((talent, i) => (
             <div
               key={talent.id}
               onClick={() => onSelectTalent(talent)}
@@ -281,21 +351,7 @@ function CtaSection() {
 }
 
 export default function LandingPage() {
-  const [previewTalents, setPreviewTalents] = useState<Talent[]>([]);
   const [selectedTalent, setSelectedTalent] = useState<Talent | null>(null);
-
-  useEffect(() => {
-    supabase
-      .from("talents")
-      .select("*")
-      .neq("availability", "employed")
-      .order("ovr_score", { ascending: false })
-      .limit(4)
-      .then(({ data }) => {
-        if (data) setPreviewTalents(data as Talent[]);
-      });
-  }, []);
-
   const stepsRef = useRef<HTMLDivElement>(null);
   const stepsVisible = useInView(stepsRef, 0.3);
   const [stepTitleShow, setStepTitleShow] = useState(false);
@@ -438,7 +494,7 @@ export default function LandingPage() {
       </section>
 
       {/* 인재 미리보기 */}
-      <PreviewSection talents={previewTalents} onSelectTalent={setSelectedTalent} />
+      <PreviewSection onSelectTalent={setSelectedTalent} />
 
       {/* 최종 CTA */}
       <CtaSection />

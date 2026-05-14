@@ -50,7 +50,7 @@ export function TalentCard({ talent }: { talent: Talent }) {
       {/* 상단: 아바타 + OVR 뱃지 */}
       <div className="flex items-start justify-between mb-3">
         {talent.photo_url ? (
-          <img src={talent.photo_url} alt="" className="w-[42px] h-[42px] rounded-full object-cover" />
+          <img src={talent.photo_url} alt="" className="w-[42px] h-[42px] rounded-full object-cover blur-[2px]" />
         ) : (
           <div className="w-[42px] h-[42px] rounded-full bg-blue-50 flex items-center justify-center">
             <span className="text-[13px] font-medium text-blue-500">
