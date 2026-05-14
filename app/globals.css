@@ -90,6 +90,19 @@ body {
   animation-delay: 0.1s;
 }
 
+/* 스텝 카드 순차 강조 */
+@keyframes stepHighlight {
+  0% { transform: scale(1); border-color: rgba(229,232,235,0.6); }
+  5% { transform: scale(1.03); border-color: #3182F6; }
+  28% { transform: scale(1.03); border-color: #3182F6; }
+  33.33% { transform: scale(1); border-color: rgba(229,232,235,0.6); }
+  100% { transform: scale(1); border-color: rgba(229,232,235,0.6); }
+}
+
+.step-card-1 > div { animation: stepHighlight 4.5s linear 0s infinite; }
+.step-card-2 > div { animation: stepHighlight 4.5s linear 1.5s infinite; }
+.step-card-3 > div { animation: stepHighlight 4.5s linear 3s infinite; }
+
 /* ─── 랜딩 히어로 일러스트 ─── */
 
 /* 메인 카드: 왼쪽에서 슬라이드 + 페이드 */

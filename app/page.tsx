@@ -62,67 +62,108 @@ export default function LandingPage() {
         <p className="text-[12px] text-blue-500 font-medium mb-2 text-center">
           이용 방법
         </p>
-        <p className="text-[22px] font-medium text-gray-900 tracking-tight text-center mb-10">
+        <p className="text-[22px] font-medium text-gray-900 tracking-tight text-center mb-12">
           3단계로 끝나는 채용
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {([
-            {
-              step: "01",
-              title: "인재 카드 비교",
-              desc: "직무, 경력, 한국어 능력, OVR 점수를 한눈에 비교하세요. 이력서를 열어볼 필요 없습니다.",
-              icon: (
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#3182F6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="3" width="9" height="9" rx="2" />
-                  <rect x="16" y="3" width="9" height="9" rx="2" />
-                  <rect x="3" y="16" width="9" height="9" rx="2" />
-                  <rect x="16" y="16" width="9" height="9" rx="2" />
+
+        <div className="flex flex-col md:flex-row items-stretch gap-0">
+          {/* STEP 01 */}
+          <div className="flex-1 animate-section step-card-1" style={{ animationDelay: "0.15s" }}>
+            <div className="bg-white border-[0.5px] border-gray-200/60 rounded-[20px] p-6 h-full">
+              <div className="mb-5">
+                <svg width="100%" height="80" viewBox="0 0 200 80" fill="none">
+                  <rect x="10" y="5" width="56" height="70" rx="8" fill="#F2F4F6" stroke="#E5E8EB" strokeWidth="0.5" />
+                  <circle cx="30" cy="24" r="8" fill="#E8F3FF" />
+                  <rect x="20" y="40" width="36" height="4" rx="2" fill="#D1D6DB" />
+                  <rect x="20" y="50" width="24" height="3" rx="1.5" fill="#E5E8EB" />
+                  <rect x="20" y="60" width="30" height="3" rx="1.5" fill="#E5E8EB" />
+                  <rect x="72" y="5" width="56" height="70" rx="8" fill="#F2F4F6" stroke="#E5E8EB" strokeWidth="0.5" />
+                  <circle cx="92" cy="24" r="8" fill="#E8F3FF" />
+                  <rect x="82" y="40" width="36" height="4" rx="2" fill="#D1D6DB" />
+                  <rect x="82" y="50" width="24" height="3" rx="1.5" fill="#E5E8EB" />
+                  <rect x="82" y="60" width="30" height="3" rx="1.5" fill="#E5E8EB" />
+                  <rect x="134" y="5" width="56" height="70" rx="8" fill="#F2F4F6" stroke="#E5E8EB" strokeWidth="0.5" />
+                  <circle cx="154" cy="24" r="8" fill="#E8F3FF" />
+                  <rect x="144" y="40" width="36" height="4" rx="2" fill="#D1D6DB" />
+                  <rect x="144" y="50" width="24" height="3" rx="1.5" fill="#E5E8EB" />
+                  <rect x="144" y="60" width="30" height="3" rx="1.5" fill="#E5E8EB" />
+                  <circle cx="110" cy="35" r="4" fill="#3182F6" opacity="0.25" className="landing-dot-1" />
                 </svg>
-              ),
-            },
-            {
-              step: "02",
-              title: "인터뷰 요청",
-              desc: "마음에 드는 인재를 발견하면 버튼 한 번으로 인터뷰를 요청하세요. 회사 정보만 입력하면 됩니다.",
-              icon: (
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#3182F6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M22 7L10.5 18.5 6 14" />
-                </svg>
-              ),
-            },
-            {
-              step: "03",
-              title: "KTC 매니저가 연결",
-              desc: "영업일 1일 내에 KTC 매니저가 후보자와 일정을 조율하고, 면접을 세팅해 드립니다.",
-              icon: (
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="#3182F6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="14" cy="10" r="4" />
-                  <path d="M6 24c0-4.42 3.58-8 8-8s8 3.58 8 8" />
-                </svg>
-              ),
-            },
-          ] as const).map((item, i) => (
-            <div
-              key={item.step}
-              className="bg-white border-[0.5px] border-gray-200/60 rounded-[20px] p-6 animate-section"
-              style={{ animationDelay: `${0.1 + i * 0.1}s` }}
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center">
-                  {item.icon}
-                </div>
-                <span className="text-[12px] font-medium text-blue-500">
-                  STEP {item.step}
-                </span>
               </div>
-              <p className="text-[15px] font-medium text-gray-900 mb-2">
-                {item.title}
-              </p>
+              <span className="text-[11px] font-medium text-blue-500 mb-2 block">STEP 01</span>
+              <p className="text-[15px] font-medium text-gray-900 mb-2">인재 카드 비교</p>
               <p className="text-[13px] text-gray-500 leading-relaxed">
-                {item.desc}
+                직무, 경력, 한국어 능력, OVR 점수를 한눈에 비교하세요. 이력서를 열어볼 필요가 없습니다.
               </p>
             </div>
-          ))}
+          </div>
+
+          {/* 화살표 1 */}
+          <div className="flex items-center justify-center py-3 md:py-0 md:px-3 flex-shrink-0 animate-section" style={{ animationDelay: "0.45s" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-300 rotate-90 md:rotate-0">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          {/* STEP 02 */}
+          <div className="flex-1 animate-section step-card-2" style={{ animationDelay: "0.6s" }}>
+            <div className="bg-white border-[0.5px] border-gray-200/60 rounded-[20px] p-6 h-full">
+              <div className="mb-5">
+                <svg width="100%" height="80" viewBox="0 0 200 80" fill="none">
+                  <rect x="30" y="2" width="140" height="76" rx="12" fill="#F9FAFB" stroke="#E5E8EB" strokeWidth="0.5" />
+                  <circle cx="56" cy="22" r="8" fill="#E8F3FF" />
+                  <rect x="70" y="18" width="50" height="4" rx="2" fill="#D1D6DB" />
+                  <rect x="70" y="26" width="35" height="3" rx="1.5" fill="#E5E8EB" />
+                  <rect x="44" y="40" width="112" height="12" rx="4" fill="white" stroke="#E5E8EB" strokeWidth="0.5" />
+                  <rect x="50" y="44" width="40" height="4" rx="2" fill="#E5E8EB" />
+                  <rect x="44" y="58" width="112" height="16" rx="8" fill="#3182F6" />
+                  <rect x="72" y="64" width="56" height="4" rx="2" fill="white" opacity="0.8" />
+                </svg>
+              </div>
+              <span className="text-[11px] font-medium text-blue-500 mb-2 block">STEP 02</span>
+              <p className="text-[15px] font-medium text-gray-900 mb-2">인터뷰 요청</p>
+              <p className="text-[13px] text-gray-500 leading-relaxed">
+                마음에 드는 인재에게 버튼 한 번으로 인터뷰를 요청하세요. 회사 정보만 입력하면 됩니다.
+              </p>
+            </div>
+          </div>
+
+          {/* 화살표 2 */}
+          <div className="flex items-center justify-center py-3 md:py-0 md:px-3 flex-shrink-0 animate-section" style={{ animationDelay: "0.9s" }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-300 rotate-90 md:rotate-0">
+              <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+
+          {/* STEP 03 */}
+          <div className="flex-1 animate-section step-card-3" style={{ animationDelay: "1.05s" }}>
+            <div className="bg-white border-[0.5px] border-gray-200/60 rounded-[20px] p-6 h-full">
+              <div className="mb-5">
+                <svg width="100%" height="80" viewBox="0 0 200 80" fill="none">
+                  <rect x="16" y="16" width="48" height="48" rx="12" fill="#F2F4F6" stroke="#E5E8EB" strokeWidth="0.5" />
+                  <rect x="28" y="30" width="24" height="4" rx="2" fill="#D1D6DB" />
+                  <rect x="30" y="38" width="20" height="3" rx="1.5" fill="#E5E8EB" />
+                  <rect x="32" y="46" width="16" height="3" rx="1.5" fill="#E5E8EB" />
+                  <circle cx="100" cy="32" r="14" fill="#E8F3FF" />
+                  <circle cx="100" cy="29" r="5" fill="#3182F6" opacity="0.3" />
+                  <path d="M91 42c0-5 4-9 9-9s9 4 9 9" stroke="#3182F6" strokeWidth="1" strokeLinecap="round" opacity="0.3" />
+                  <text x="100" y="60" textAnchor="middle" fill="#3182F6" fontSize="8" fontWeight="500" style={{ fontFamily: "inherit" }}>KTC 매니저</text>
+                  <rect x="136" y="16" width="48" height="48" rx="12" fill="#F2F4F6" stroke="#E5E8EB" strokeWidth="0.5" />
+                  <circle cx="160" cy="32" r="8" fill="#E8F3FF" />
+                  <rect x="148" y="46" width="24" height="3" rx="1.5" fill="#E5E8EB" />
+                  <path d="M64 40h22" stroke="#D1D6DB" strokeWidth="1" strokeDasharray="3 2" />
+                  <path d="M114 40h22" stroke="#D1D6DB" strokeWidth="1" strokeDasharray="3 2" />
+                  <circle cx="172" cy="22" r="6" fill="#1D9E75" opacity="0.15" />
+                  <path d="M169 22l2 2 4-4" stroke="#1D9E75" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <span className="text-[11px] font-medium text-blue-500 mb-2 block">STEP 03</span>
+              <p className="text-[15px] font-medium text-gray-900 mb-2">KTC 매니저가 연결</p>
+              <p className="text-[13px] text-gray-500 leading-relaxed">
+                영업일 1일 내에 KTC 매니저가 후보자와 일정을 조율하고, 면접을 세팅해 드립니다.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
