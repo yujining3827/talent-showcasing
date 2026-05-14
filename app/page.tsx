@@ -313,7 +313,7 @@ function PreviewSection({ onSelectTalent }: { onSelectTalent: (t: Talent) => voi
               onClick={() => onSelectTalent(talent)}
               className={`cursor-pointer transition-transform duration-200 hover:scale-[1.02] hover:z-10 ${showCards && i === 0 ? "animate-nudge" : ""}`}
             >
-              <TalentCard talent={talent} />
+              <TalentCard talent={talent} blurPhoto />
             </div>
           ))}
         </div>

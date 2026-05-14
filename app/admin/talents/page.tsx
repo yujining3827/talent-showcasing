@@ -135,9 +135,13 @@ export default function AdminTalentsPage() {
             >
               <div className="flex items-start gap-4">
                 {/* 아바타 */}
-                <div className="w-[42px] h-[42px] rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
-                  <span className="text-[13px] font-medium text-blue-500">{t.name.charAt(0)}</span>
-                </div>
+                {t.photo_url ? (
+                  <img src={t.photo_url} alt="" className="w-[42px] h-[42px] rounded-full object-cover flex-shrink-0" />
+                ) : (
+                  <div className="w-[42px] h-[42px] rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                    <span className="text-[13px] font-medium text-blue-500">{t.name.charAt(0)}</span>
+                  </div>
+                )}
 
                 {/* 정보 */}
                 <div className="flex-1 min-w-0">

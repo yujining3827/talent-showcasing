@@ -1,7 +1,7 @@
 import { fetchTalents } from "@/lib/supabase-queries";
 import TalentsContent from "./TalentsContent";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function TalentsPage() {
   const talents = await fetchTalents();

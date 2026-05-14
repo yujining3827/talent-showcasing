@@ -720,7 +720,7 @@ export function TalentForm({
                 />
                 <input
                   type="number"
-                  className={inputClass + " w-[56px] text-center px-1"}
+                  className="w-[48px] flex-shrink-0 text-center px-1 py-2.5 bg-white border-[0.5px] border-gray-200 rounded-xl text-[14px] text-gray-900 placeholder-gray-400 focus:outline-none focus:border-blue-500 transition-colors [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [appearance:textfield]"
                   value={skill.score || ""}
                   onChange={(e) => updateDetailedSkill(i, "score", Math.min(100, Math.max(0, parseInt(e.target.value) || 0)))}
                   placeholder="0"

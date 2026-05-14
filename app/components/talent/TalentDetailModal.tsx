@@ -6,13 +6,6 @@ import { RadarChart } from "./RadarChart";
 import { InterviewRequestModal } from "./InterviewRequestModal";
 import { Toast } from "@/app/components/ui/Toast";
 
-const PHOTO_MAP: Record<string, string> = {
-  "1": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-  "2": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
-  "3": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
-  "4": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-  "5": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-};
 
 const ABILITY_LABELS: Record<string, string> = {
   technical: "기술력",
@@ -44,7 +37,7 @@ export function TalentDetailModal({ talent, onClose }: { talent: Talent; onClose
   const [showInterview, setShowInterview] = useState(false);
   const [toast, setToast] = useState("");
   const [scrapped, setScrapped] = useState(false);
-  const photo = PHOTO_MAP[talent.id];
+  const photo = talent.photo_url;
 
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("talent-market:scraps") || "[]");
@@ -86,7 +79,7 @@ export function TalentDetailModal({ talent, onClose }: { talent: Talent; onClose
         <div className="flex items-center justify-between p-6 pb-0">
           <div className="flex items-center gap-4">
             {photo ? (
-              <img src={photo} alt="" className="w-[72px] h-[72px] rounded-full object-cover blur-[3px]" />
+              <img src={photo} alt="" className="w-[72px] h-[72px] rounded-full object-cover" />
             ) : (
               <div className="w-[72px] h-[72px] rounded-full bg-blue-50 flex items-center justify-center">
                 <span className="text-[22px] font-medium text-blue-500">{toInitials(talent.name)}</span>
