@@ -1,5 +1,14 @@
 import { supabase } from './supabase'
 
+export type UserProfile = {
+  id: string
+  email: string
+  name: string
+  avatar_url: string
+  role: 'super_admin' | 'admin' | 'user'
+  status: 'pending' | 'approved' | 'rejected'
+}
+
 export async function signInWithGoogle() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
@@ -11,16 +20,23 @@ export async function signInWithGoogle() {
 }
 
 export async function signOut() {
+  if (typeof window !== 'undefined') {
+    sessionStorage.removeItem('vtm:profile')
+  }
   const { error } = await supabase.auth.signOut()
   return { error }
 }
 
-export async function getCurrentUser() {
-  const { data: { user } } = await supabase.auth.getUser()
-  return user
-}
+export async function getUserProfile(userId: string, skipCache = false): Promise<UserProfile | null> {
+  // 캐시 확인
+  if (!skipCache && typeof window !== 'undefined') {
+    const cached = sessionStorage.getItem('vtm:profile')
+    if (cached) {
+      const parsed = JSON.parse(cached) as UserProfile
+      if (parsed.id === userId) return parsed
+    }
+  }
 
-export async function getUserProfile(userId: string) {
   const { data, error } = await supabase
     .from('user_profiles')
     .select('*')
@@ -28,12 +44,13 @@ export async function getUserProfile(userId: string) {
     .single()
 
   if (error) return null
-  return data as {
-    id: string
-    email: string
-    name: string
-    avatar_url: string
-    role: 'super_admin' | 'admin' | 'user'
-    status: 'pending' | 'approved' | 'rejected'
+
+  const profile = data as UserProfile
+
+  // 캐시 저장
+  if (typeof window !== 'undefined') {
+    sessionStorage.setItem('vtm:profile', JSON.stringify(profile))
   }
+
+  return profile
 }

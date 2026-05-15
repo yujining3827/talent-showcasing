@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getCurrentUser, getUserProfile } from "@/lib/supabase-auth";
+import { getUserProfile } from "@/lib/supabase-auth";
+import { supabase } from "@/lib/supabase";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "사용자 관리", icon: "users" },
@@ -45,9 +46,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   useEffect(() => {
     async function checkAdmin() {
-      const user = await getCurrentUser();
-      if (!user) { window.location.href = "/login"; return; }
-      const profile = await getUserProfile(user.id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { window.location.href = "/login"; return; }
+      const profile = await getUserProfile(session.user.id);
       if (!profile || (profile.role !== "admin" && profile.role !== "super_admin")) { window.location.href = "/"; return; }
       setAuthorized(true);
       setLoading(false);

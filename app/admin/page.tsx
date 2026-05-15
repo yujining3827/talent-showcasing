@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { getCurrentUser, getUserProfile } from "@/lib/supabase-auth";
+import { getUserProfile } from "@/lib/supabase-auth";
 
 type UserProfile = {
   id: string;
@@ -28,9 +28,9 @@ export default function AdminUsersPage() {
 
   useEffect(() => {
     async function init() {
-      const me = await getCurrentUser();
-      if (me) {
-        const p = await getUserProfile(me.id);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        const p = await getUserProfile(session.user.id);
         if (p) setMyRole(p.role);
       }
       await loadUsers();
