@@ -13,6 +13,8 @@ type UserProfile = {
   name: string;
   email: string;
   avatar_url: string;
+  company_name: string | null;
+  contact_name: string | null;
 };
 
 export default function LoginPage() {
@@ -20,14 +22,19 @@ export default function LoginPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // 가입 신청 폼 상태
+  const [regForm, setRegForm] = useState({ companyName: "", contactName: "" });
+  const [regErrors, setRegErrors] = useState<Record<string, string>>({});
+  const [regSubmitting, setRegSubmitting] = useState(false);
+
   useEffect(() => {
     async function loadSession() {
       const { data: { session } } = await supabase.auth.getSession();
       const u = session?.user ?? null;
       setUser(u);
       if (u) {
-        const p = await getUserProfile(u.id);
-        setProfile(p);
+        const p = await getUserProfile(u.id, true);
+        setProfile(p as UserProfile | null);
       }
       setLoading(false);
     }
@@ -39,8 +46,8 @@ export default function LoginPage() {
         const u = session?.user ?? null;
         setUser(u);
         if (u) {
-          const p = await getUserProfile(u.id);
-          setProfile(p);
+          const p = await getUserProfile(u.id, true);
+          setProfile(p as UserProfile | null);
           setLoading(false);
         } else {
           setProfile(null);
@@ -56,7 +63,6 @@ export default function LoginPage() {
     const { error } = await signInWithGoogle();
     if (error) alert("로그인 중 오류가 발생했습니다: " + error.message);
   }
-
 
   async function handleSignOut() {
     await signOut();
@@ -79,6 +85,41 @@ export default function LoginPage() {
     setProfile(null);
     window.location.href = "/";
   }
+
+  async function handleRegSubmit() {
+    const errors: Record<string, string> = {};
+    if (!regForm.companyName.trim()) errors.companyName = "필수 입력 항목입니다";
+    if (!regForm.contactName.trim()) errors.contactName = "필수 입력 항목입니다";
+
+    if (Object.keys(errors).length > 0) {
+      setRegErrors(errors);
+      return;
+    }
+
+    setRegSubmitting(true);
+    const { error } = await supabase
+      .from("user_profiles")
+      .update({
+        company_name: regForm.companyName.trim(),
+        contact_name: regForm.contactName.trim(),
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", user!.id);
+
+    if (error) {
+      alert("저장 중 오류가 발생했습니다. 다시 시도해주세요.");
+      setRegSubmitting(false);
+      return;
+    }
+
+    // 프로필 다시 로드
+    const p = await getUserProfile(user!.id, true);
+    setProfile(p as UserProfile | null);
+    setRegSubmitting(false);
+  }
+
+  // 가입 신청 폼이 필요한지 판별: 로그인 됐고, 프로필은 있지만 company_name이 없는 경우
+  const needsRegistration = user && profile && !profile.company_name;
 
   if (loading) {
     return (
@@ -183,8 +224,102 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* 로그인 됨 - 승인 대기 */}
-          {user && profile?.status === "pending" && (
+          {/* 로그인 됨 - 가입 신청 폼 (회사명/담당자명 미입력) */}
+          {needsRegistration && (
+            <div>
+              <div className="text-center mb-8">
+                {profile.avatar_url ? (
+                  <img src={profile.avatar_url} alt="" className="w-16 h-16 rounded-full mx-auto mb-4" />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4">
+                    <span className="text-[22px] font-medium text-blue-500">
+                      {profile.name?.charAt(0) || profile.email?.charAt(0) || "?"}
+                    </span>
+                  </div>
+                )}
+                <h1 className="text-[22px] font-medium text-gray-900 tracking-tight mb-2">
+                  가입 신청
+                </h1>
+                <p className="text-[14px] text-gray-500 leading-relaxed">
+                  서비스 이용을 위해 아래 정보를 입력해주세요
+                </p>
+              </div>
+
+              <div className="bg-white border-[0.5px] border-gray-200/60 rounded-2xl p-6">
+                {/* 이메일 (읽기 전용) */}
+                <div className="mb-4">
+                  <label className="text-[13px] text-gray-500 mb-1.5 block">이메일</label>
+                  <div className="w-full px-3.5 py-3 bg-gray-50 border-[0.5px] border-gray-200/60 rounded-xl text-[14px] text-gray-500">
+                    {profile.email}
+                  </div>
+                </div>
+
+                {/* 이름 (읽기 전용 — Google에서 가져옴) */}
+                {profile.name && (
+                  <div className="mb-4">
+                    <label className="text-[13px] text-gray-500 mb-1.5 block">이름</label>
+                    <div className="w-full px-3.5 py-3 bg-gray-50 border-[0.5px] border-gray-200/60 rounded-xl text-[14px] text-gray-500">
+                      {profile.name}
+                    </div>
+                  </div>
+                )}
+
+                {/* 회사명 */}
+                <div className="mb-4">
+                  <label className="text-[13px] text-gray-500 mb-1.5 block">회사명</label>
+                  <input
+                    type="text"
+                    placeholder="예: ABC상사"
+                    value={regForm.companyName}
+                    onChange={(e) => {
+                      setRegForm((prev) => ({ ...prev, companyName: e.target.value }));
+                      if (regErrors.companyName) setRegErrors((prev) => { const n = { ...prev }; delete n.companyName; return n; });
+                    }}
+                    className={`w-full px-3.5 py-3 bg-white border-[0.5px] rounded-xl text-[14px] text-gray-900 outline-none transition-colors placeholder:text-gray-400 ${
+                      regErrors.companyName ? "border-red-400 focus:border-red-400" : "border-gray-200/60 focus:border-blue-500"
+                    }`}
+                  />
+                  {regErrors.companyName && <p className="text-[11px] text-red-500 mt-1">{regErrors.companyName}</p>}
+                </div>
+
+                {/* 담당자명 */}
+                <div className="mb-6">
+                  <label className="text-[13px] text-gray-500 mb-1.5 block">담당자명</label>
+                  <input
+                    type="text"
+                    placeholder="예: 김인사"
+                    value={regForm.contactName}
+                    onChange={(e) => {
+                      setRegForm((prev) => ({ ...prev, contactName: e.target.value }));
+                      if (regErrors.contactName) setRegErrors((prev) => { const n = { ...prev }; delete n.contactName; return n; });
+                    }}
+                    className={`w-full px-3.5 py-3 bg-white border-[0.5px] rounded-xl text-[14px] text-gray-900 outline-none transition-colors placeholder:text-gray-400 ${
+                      regErrors.contactName ? "border-red-400 focus:border-red-400" : "border-gray-200/60 focus:border-blue-500"
+                    }`}
+                  />
+                  {regErrors.contactName && <p className="text-[11px] text-red-500 mt-1">{regErrors.contactName}</p>}
+                </div>
+
+                <button
+                  onClick={handleRegSubmit}
+                  disabled={regSubmitting}
+                  className="w-full py-3.5 bg-blue-500 text-white rounded-xl text-[15px] font-medium hover:bg-blue-600 active:scale-[0.98] transition disabled:opacity-60"
+                >
+                  {regSubmitting ? "제출 중..." : "가입 신청하기"}
+                </button>
+              </div>
+
+              <button
+                onClick={handleSignOut}
+                className="w-full mt-4 text-[13px] text-gray-500 hover:text-gray-700 transition-colors text-center"
+              >
+                로그아웃
+              </button>
+            </div>
+          )}
+
+          {/* 로그인 됨 - 승인 대기 (가입 신청 완료 후) */}
+          {user && profile?.status === "pending" && !needsRegistration && (
             <div className="text-center">
               <img src="/time.png" alt="" width={64} height={64} className="mx-auto mb-5" />
               <h1 className="text-[22px] font-medium text-gray-900 tracking-tight mb-3">
@@ -206,7 +341,7 @@ export default function LoginPage() {
           )}
 
           {/* 로그인 됨 - 승인 거절 */}
-          {user && profile?.status === "rejected" && (
+          {user && profile?.status === "rejected" && !needsRegistration && (
             <div className="text-center">
               <div className="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-5">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#E8590C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -230,7 +365,7 @@ export default function LoginPage() {
           )}
 
           {/* 로그인 됨 - 승인 완료: 프로필 */}
-          {user && profile?.status === "approved" && (
+          {user && profile?.status === "approved" && !needsRegistration && (
             <div>
               {/* 프로필 카드 */}
               <div className="bg-white border-[0.5px] border-gray-200/60 rounded-2xl p-6 mb-4">
@@ -268,6 +403,18 @@ export default function LoginPage() {
                     <span className="text-[13px] text-gray-500">이메일</span>
                     <span className="text-[13px] text-gray-900">{profile.email}</span>
                   </div>
+                  {profile.company_name && (
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-[13px] text-gray-500">회사</span>
+                      <span className="text-[13px] text-gray-900">{profile.company_name}</span>
+                    </div>
+                  )}
+                  {profile.contact_name && (
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-[13px] text-gray-500">담당자</span>
+                      <span className="text-[13px] text-gray-900">{profile.contact_name}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

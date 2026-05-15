@@ -11,6 +11,8 @@ type UserProfile = {
   avatar_url: string;
   role: "super_admin" | "admin" | "user";
   status: "pending" | "approved" | "rejected";
+  company_name: string | null;
+  contact_name: string | null;
   created_at: string;
 };
 
@@ -149,7 +151,10 @@ export default function AdminUsersPage() {
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="text-[15px] font-medium text-gray-900 truncate">
-                    {u.name || "이름 없음"}
+                    {u.contact_name || u.name || "이름 없음"}
+                    {u.company_name && (
+                      <span className="text-[13px] font-normal text-gray-500"> · {u.company_name}</span>
+                    )}
                   </p>
                   <p className="text-[13px] text-gray-500 truncate">{u.email}</p>
                 </div>

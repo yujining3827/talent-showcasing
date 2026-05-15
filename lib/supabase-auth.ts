@@ -7,6 +7,8 @@ export type UserProfile = {
   avatar_url: string
   role: 'super_admin' | 'admin' | 'user'
   status: 'pending' | 'approved' | 'rejected'
+  company_name: string | null
+  contact_name: string | null
 }
 
 export async function signInWithGoogle() {

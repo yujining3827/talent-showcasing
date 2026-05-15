@@ -9,6 +9,8 @@ import {
 } from "@/lib/guest-user";
 import { submitInterviewRequest } from "@/lib/supabase-queries";
 import { availabilityKR, formatRoleTitle } from "@/lib/i18n";
+import { supabase } from "@/lib/supabase";
+import { getUserProfile } from "@/lib/supabase-auth";
 
 export function InterviewRequestModal({
   talent,
@@ -27,6 +29,30 @@ export function InterviewRequestModal({
     contactName: savedGuest?.contactName ?? "",
     contactEmail: savedGuest?.contactEmail ?? "",
   });
+
+  // 로그인 유저면 프로필에서 자동 채움
+  useEffect(() => {
+    async function prefillFromProfile() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+      const profile = await getUserProfile(session.user.id);
+      if (!profile) return;
+
+      const hasProfileData = profile.company_name || profile.contact_name;
+      if (!hasProfileData) return;
+
+      setForm((prev) => ({
+        companyName: prev.companyName || profile.company_name || "",
+        contactName: prev.contactName || profile.contact_name || "",
+        contactEmail: prev.contactEmail || profile.email || "",
+      }));
+      // 프로필 데이터가 있으면 편집 모드 끄기
+      if (profile.company_name && profile.contact_name) {
+        setIsEditing(false);
+      }
+    }
+    if (!savedGuest) prefillFromProfile();
+  }, []);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const firstInputRef = useRef<HTMLInputElement>(null);
 
