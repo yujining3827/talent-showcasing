@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { signInWithGoogle, signOut, getUserProfile } from "@/lib/supabase-auth";
+import { Header } from "@/app/components/Header";
 import type { User } from "@supabase/supabase-js";
 
 type UserProfile = {
@@ -56,9 +57,10 @@ export default function LoginPage() {
     if (error) alert("로그인 중 오류가 발생했습니다: " + error.message);
   }
 
-  // 승인된 유저는 바로 인재열람으로 이동
+  // OAuth 콜백으로 돌아온 경우에만 인재열람으로 이동
   useEffect(() => {
-    if (user && profile?.status === "approved") {
+    const isCallback = window.location.hash.includes("access_token") || document.referrer.includes("accounts.google");
+    if (isCallback && user && profile?.status === "approved") {
       window.location.href = "/talents";
     }
   }, [user, profile]);
@@ -79,18 +81,7 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen bg-[#F7F8FA] flex flex-col">
-      {/* 헤더 */}
-      <header className="bg-white">
-        <div className="mx-auto max-w-[1080px] px-5 h-[56px] flex items-center">
-          <Link href="/" className="flex items-center gap-2">
-            <img src="/logo.png" alt="VTM" width={24} height={24} className="rounded-[4px]" />
-            <span className="text-[18px] text-gray-900 tracking-tight" style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 700 }}>
-              Vtm
-            </span>
-          </Link>
-        </div>
-        <div className="h-[0.5px] bg-gray-200/80" />
-      </header>
+      <Header />
 
       <div className="flex-1 flex items-center justify-center px-5 py-12">
         <div className="w-full max-w-[400px]">
@@ -186,12 +177,7 @@ export default function LoginPage() {
           {/* 로그인 됨 - 승인 대기 */}
           {user && profile?.status === "pending" && (
             <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-5">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#3182F6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <circle cx="12" cy="12" r="10"/>
-                  <path d="M12 6v6l4 2"/>
-                </svg>
-              </div>
+              <img src="/time.png" alt="" width={64} height={64} className="mx-auto mb-5" />
               <h1 className="text-[22px] font-medium text-gray-900 tracking-tight mb-3">
                 가입 신청이 완료되었습니다
               </h1>
@@ -234,46 +220,55 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* 로그인 됨 - 승인 완료 */}
+          {/* 로그인 됨 - 승인 완료: 프로필 */}
           {user && profile?.status === "approved" && (
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-5">
-                {profile.avatar_url ? (
-                  <img src={profile.avatar_url} alt="" className="w-16 h-16 rounded-full" />
-                ) : (
-                  <span className="text-[22px] font-medium text-blue-500">
-                    {profile.name?.charAt(0) || profile.email?.charAt(0) || "?"}
+            <div>
+              {/* 프로필 카드 */}
+              <div className="bg-white border-[0.5px] border-gray-200/60 rounded-2xl p-6 mb-4">
+                <div className="flex items-center gap-4 mb-5">
+                  {profile.avatar_url ? (
+                    <img src={profile.avatar_url} alt="" className="w-14 h-14 rounded-full" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-full bg-blue-50 flex items-center justify-center">
+                      <span className="text-[20px] font-medium text-blue-500">
+                        {profile.name?.charAt(0) || profile.email?.charAt(0) || "?"}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[17px] font-medium text-gray-900 truncate">
+                      {profile.name || "사용자"}
+                    </p>
+                    <p className="text-[13px] text-gray-500 truncate">{profile.email}</p>
+                  </div>
+                  <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${
+                    profile.role === "super_admin" ? "text-[#E8590C] bg-[#FFF8F0]" :
+                    profile.role === "admin" ? "text-blue-500 bg-blue-50" :
+                    "text-gray-500 bg-gray-100"
+                  }`}>
+                    {profile.role === "super_admin" ? "총 관리자" : profile.role === "admin" ? "관리자" : "일반"}
                   </span>
-                )}
+                </div>
+
+                <div className="border-t border-gray-100 pt-4">
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-[13px] text-gray-500">계정 상태</span>
+                    <span className="text-[13px] text-[#1D9E75] font-medium">승인됨</span>
+                  </div>
+                  <div className="flex items-center justify-between py-2">
+                    <span className="text-[13px] text-gray-500">이메일</span>
+                    <span className="text-[13px] text-gray-900">{profile.email}</span>
+                  </div>
+                </div>
               </div>
-              <h1 className="text-[22px] font-medium text-gray-900 tracking-tight mb-1">
-                {profile.name || "사용자"}님, 환영합니다
-              </h1>
-              <p className="text-[14px] text-gray-500 mb-8">
-                {profile.email}
-              </p>
-              <div className="flex flex-col gap-3">
-                <Link
-                  href="/talents"
-                  className="w-full py-3.5 bg-blue-500 text-white rounded-xl text-[15px] font-medium hover:bg-blue-600 active:scale-[0.98] transition text-center"
-                >
-                  인재 둘러보기
-                </Link>
-                {(profile.role === "admin" || profile.role === "super_admin") && (
-                  <Link
-                    href="/admin"
-                    className="w-full py-3.5 bg-gray-900 text-white rounded-xl text-[15px] font-medium hover:bg-gray-800 active:scale-[0.98] transition text-center"
-                  >
-                    관리자 페이지
-                  </Link>
-                )}
-                <button
-                  onClick={handleSignOut}
-                  className="text-[13px] text-gray-500 hover:text-gray-700 transition-colors mt-2"
-                >
-                  로그아웃
-                </button>
-              </div>
+
+              {/* 로그아웃 */}
+              <button
+                onClick={handleSignOut}
+                className="w-full py-3.5 bg-white border-[0.5px] border-gray-200/60 rounded-2xl text-[14px] text-gray-500 hover:bg-gray-50 transition-colors"
+              >
+                로그아웃
+              </button>
             </div>
           )}
         </div>

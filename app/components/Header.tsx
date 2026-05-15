@@ -8,6 +8,7 @@ import { signOut, getUserProfile } from "@/lib/supabase-auth";
 export function Header() {
   const [user, setUser] = useState<{ email?: string; avatar?: string; isAdmin?: boolean } | null>(null);
   const [showMenu, setShowMenu] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     async function loadUser(u: { id: string; email?: string; user_metadata: Record<string, string> }) {
@@ -20,7 +21,11 @@ export function Header() {
     }
 
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) loadUser(session.user);
+      if (session?.user) {
+        loadUser(session.user).then(() => setLoaded(true));
+      } else {
+        setLoaded(true);
+      }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -38,6 +43,7 @@ export function Header() {
     await signOut();
     setUser(null);
     setShowMenu(false);
+    window.location.href = "/";
   }
 
   return (
@@ -63,7 +69,9 @@ export function Header() {
             </Link>
           </nav>
 
-          {user ? (
+          {!loaded ? (
+          <div className="w-8 h-8" />
+        ) : user ? (
           <div className="relative">
             <button
               onClick={() => setShowMenu(!showMenu)}
