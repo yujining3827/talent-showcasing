@@ -84,7 +84,7 @@ export async function POST() {
           const score = c.llm_score || 0;
 
           const role = llm.role || c.position || "Unknown";
-          const yearsExp = llm.years_exp || parseInt((c.yoe || "0").match(/(\d+)/)?.[1] || "0");
+          const yearsExp = Math.round(llm.years_exp || parseInt((c.yoe || "0").match(/(\d+)/)?.[1] || "0"));
           const location = mapLocation(llm.location || c.city || "");
           const topSkills: string[] = (llm.top_skills || []).slice(0, 5);
           const strengthsKo: string[] = llm.strengths_ko || llm.strengths || [];

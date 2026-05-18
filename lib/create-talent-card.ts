@@ -51,7 +51,7 @@ export async function createTalentCard(
     .insert({
       name: candidate.full_name,
       role: result.role || candidate.position || "Unknown",
-      years_exp: result.years_exp || parseInt((candidate.yoe || "0").match(/(\d+)/)?.[1] || "0"),
+      years_exp: Math.round(result.years_exp || parseInt((candidate.yoe || "0").match(/(\d+)/)?.[1] || "0")),
       location: mapLocation(result.location || candidate.city || ""),
       ovr_score: score,
       ovr_grade: scoreToGrade(score),
