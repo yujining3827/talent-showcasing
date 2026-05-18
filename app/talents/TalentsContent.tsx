@@ -33,19 +33,19 @@ export default function TalentsContent({ talents }: { talents: Talent[] }) {
   useEffect(() => {
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) {
-        router.replace("/login");
+        setAuthed(false);
         return;
       }
       const profile = await getUserProfile(session.user.id);
       if (!profile || profile.status !== "approved") {
-        router.replace("/login");
+        setAuthed(false);
         return;
       }
       setAuthed(true);
     });
   }, [router]);
 
-  if (!authed) {
+  if (authed === null) {
     return (
       <main className="min-h-screen bg-[#F7F8FA] flex items-center justify-center">
         <p className="text-[14px] text-gray-500">로딩 중...</p>
@@ -107,12 +107,39 @@ export default function TalentsContent({ talents }: { talents: Talent[] }) {
         </div>
 
         {/* 카드 그리드 */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-[10px]">
-          {talents.map((talent) => (
-            <div key={talent.id} onClick={() => setSelected(talent)} className="cursor-pointer">
-              <TalentCard talent={talent} />
+        <div className="relative">
+          <div className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-[10px] ${!authed ? "blur-[6px] select-none" : ""}`}>
+            {talents.map((talent) => (
+              <div
+                key={talent.id}
+                onClick={() => {
+                  if (authed) setSelected(talent);
+                }}
+                className="cursor-pointer"
+              >
+                <TalentCard talent={talent} />
+              </div>
+            ))}
+          </div>
+          {!authed && (
+            <div
+              className="absolute inset-0 z-10 flex items-center justify-center cursor-pointer"
+              onClick={() => router.push("/login")}
+            >
+              <div className="bg-white border border-[#E5E8EB] rounded-2xl px-8 py-6 text-center">
+                <div className="w-10 h-10 mx-auto mb-3 rounded-full bg-[#E8F3FF] flex items-center justify-center">
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 4a3 3 0 100 6 3 3 0 000-6zM5 16a5 5 0 0110 0" stroke="#3182F6" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+                <p className="text-[16px] font-medium text-[#191F28]">로그인이 필요합니다</p>
+                <p className="text-[13px] text-[#8B95A1] mt-1">인재 정보를 확인하려면 로그인하세요</p>
+                <div className="mt-4 bg-[#3182F6] text-white text-[14px] font-medium rounded-full px-5 py-2.5">
+                  로그인하기
+                </div>
+              </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
 

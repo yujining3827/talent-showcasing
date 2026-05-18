@@ -64,7 +64,7 @@ export function Header() {
 
         <div className="flex items-center gap-5">
           <nav className="hidden sm:flex items-center gap-5">
-            <Link href={user ? "/talents" : "/login"} className="text-[14px] text-gray-600 hover:text-gray-900 transition-colors">
+            <Link href="/talents" className="text-[14px] text-gray-600 hover:text-gray-900 transition-colors">
               인재 열람
             </Link>
             <Link href="/notice" className="text-[14px] text-gray-600 hover:text-gray-900 transition-colors">
