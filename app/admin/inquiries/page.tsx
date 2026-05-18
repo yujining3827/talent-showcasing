@@ -139,6 +139,7 @@ export default function InquiriesPage() {
   const [note, setNote] = useState("");
   const [myEmail, setMyEmail] = useState("");
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [search, setSearch] = useState("");
 
   useEffect(() => { init(); }, []);
 
@@ -225,7 +226,7 @@ export default function InquiriesPage() {
     if (tab === "active") return isActive(r);
     if (tab === "completed") return r.status === "onboarded";
     return r.status === "cancelled" || r.status === "rejected";
-  });
+  }).filter((r) => !search || r.company_name.toLowerCase().includes(search.toLowerCase()) || r.contact_name.toLowerCase().includes(search.toLowerCase()));
 
   const counts = {
     active: requests.filter(isActive).length,
@@ -237,6 +238,12 @@ export default function InquiriesPage() {
     <div>
       <h1 className="text-[22px] font-medium text-gray-900 tracking-tight mb-1">인재 문의</h1>
       <p className="text-[14px] text-gray-500 mb-6">채용 파이프라인 관리</p>
+
+      <div className="mb-4">
+        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+          placeholder="회사명 또는 담당자명으로 검색..."
+          className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-gray-300" />
+      </div>
 
       {/* 탭 */}
       <div className="flex gap-2 mb-6">

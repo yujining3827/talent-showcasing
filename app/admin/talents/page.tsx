@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import type { Talent } from "@/lib/types";
+import { useAdminI18n } from "@/lib/admin-i18n";
 
 type TalentWithPublished = Talent & { published: boolean };
 
@@ -24,10 +25,12 @@ function getAvailabilityLabel(a: string) {
 }
 
 export default function AdminTalentsPage() {
+  const { t, lang } = useAdminI18n();
   const [talents, setTalents] = useState<TalentWithPublished[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "published" | "draft">("all");
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadTalents();
@@ -77,14 +80,14 @@ export default function AdminTalentsPage() {
     if (filter === "published") return t.published;
     if (filter === "draft") return !t.published;
     return true;
-  });
+  }).filter((t) => !search || t.name.toLowerCase().includes(search.toLowerCase()) || t.role.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-[22px] font-medium text-gray-900 tracking-tight mb-1">
-            인재 관리
+            {t("talents.title")}
           </h1>
           <p className="text-[14px] text-gray-500">
             총 {talents.length}명 · 게시 {talents.filter((t) => t.published).length}명
@@ -93,17 +96,23 @@ export default function AdminTalentsPage() {
         <div className="flex gap-2">
           <button onClick={publishAll}
             className="px-4 py-2.5 bg-[#3182F6] text-white rounded-xl text-[13px] hover:bg-[#2272EB] transition-colors">
-            전체 게시
+            {t("talents.publishAll")}
           </button>
           <button onClick={unpublishAll}
             className="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-[13px] hover:border-gray-300 transition-colors">
-            전체 비공개
+            {t("talents.unpublishAll")}
           </button>
           <Link href="/admin/talents/new"
             className="px-4 py-2.5 bg-gray-900 text-white rounded-xl text-[13px] hover:bg-gray-800 transition-colors">
-            + 인재 등록
+            {t("talents.addTalent")}
           </Link>
         </div>
+      </div>
+
+      <div className="mb-4">
+        <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
+          placeholder={lang === "ko" ? "이름 또는 역할로 검색..." : lang === "vi" ? "Tìm theo tên hoặc vai trò..." : "Search by name or role..."}
+          className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-gray-300" />
       </div>
 
       {/* 필터 */}

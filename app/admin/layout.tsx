@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getUserProfile } from "@/lib/supabase-auth";
 import { supabase } from "@/lib/supabase";
+import { AdminI18nProvider, useAdminI18n, LangSelector } from "@/lib/admin-i18n";
 
-const NAV_ITEMS = [
-  { href: "/admin", label: "사용자 관리", icon: "users" },
-  { href: "/admin/candidates", label: "후보자 관리", icon: "candidates" },
-  { href: "/admin/talents", label: "인재 관리", icon: "talents" },
-  { href: "/admin/inquiries", label: "인재 문의", icon: "inquiries" },
-  { href: "/admin/roles", label: "권한 안내", icon: "roles" },
+const NAV_KEYS = [
+  { href: "/admin", labelKey: "nav.users", icon: "users" },
+  { href: "/admin/candidates", labelKey: "nav.candidates", icon: "candidates" },
+  { href: "/admin/talents", labelKey: "nav.talents", icon: "talents" },
+  { href: "/admin/inquiries", labelKey: "nav.inquiries", icon: "inquiries" },
+  { href: "/admin/roles", labelKey: "nav.roles", icon: "roles" },
 ];
 
 function NavIcon({ type }: { type: string }) {
@@ -57,8 +58,9 @@ function NavIcon({ type }: { type: string }) {
   );
 }
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+function AdminLayoutInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { t } = useAdminI18n();
   const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -98,12 +100,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </Link>
             <span className="text-[12px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">관리자</span>
           </div>
-          <Link href="/login" className="w-8 h-8 rounded-full border-[1.5px] border-gray-300 flex items-center justify-center hover:border-gray-400 transition-colors">
-            <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
-              <circle cx="14" cy="11" r="4.5" stroke="#8B95A1" strokeWidth="2"/>
-              <path d="M5.5 24c0-4.14 3.82-7.5 8.5-7.5s8.5 3.36 8.5 7.5" stroke="#8B95A1" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
-          </Link>
+          <div className="flex items-center gap-3">
+            <LangSelector />
+            <Link href="/login" className="w-8 h-8 rounded-full border-[1.5px] border-gray-300 flex items-center justify-center hover:border-gray-400 transition-colors">
+              <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
+                <circle cx="14" cy="11" r="4.5" stroke="#8B95A1" strokeWidth="2"/>
+                <path d="M5.5 24c0-4.14 3.82-7.5 8.5-7.5s8.5 3.36 8.5 7.5" stroke="#8B95A1" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
+            </Link>
+          </div>
         </div>
         <div className="h-[0.5px] bg-gray-200/80" />
       </header>
@@ -112,7 +117,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* 사이드바 */}
         <nav className="w-[200px] flex-shrink-0 hidden md:block">
           <div className="flex flex-col gap-1">
-            {NAV_ITEMS.map((item) => {
+            {NAV_KEYS.map((item) => {
               const isActive = item.href === "/admin"
                 ? pathname === "/admin"
                 : pathname.startsWith(item.href);
@@ -127,7 +132,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   }`}
                 >
                   <NavIcon type={item.icon} />
-                  {item.label}
+                  {t(item.labelKey)}
                 </Link>
               );
             })}
@@ -136,7 +141,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* 모바일 탭 */}
         <div className="flex gap-2 mb-4 md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-5 py-3 z-10">
-          {NAV_ITEMS.map((item) => {
+          {NAV_KEYS.map((item) => {
             const isActive = item.href === "/admin"
               ? pathname === "/admin"
               : pathname.startsWith(item.href);
@@ -151,7 +156,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 }`}
               >
                 <NavIcon type={item.icon} />
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             );
           })}
@@ -161,5 +166,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <main className="flex-1 min-w-0">{children}</main>
       </div>
     </div>
+  );
+}
+
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <AdminI18nProvider>
+      <AdminLayoutInner>{children}</AdminLayoutInner>
+    </AdminI18nProvider>
   );
 }
