@@ -9,17 +9,18 @@ const ROLE_CATEGORIES: { label: string; roles: string[] }[] = [
   { label: "전체", roles: [] },
   {
     label: "개발자",
-    roles: ["프론트엔드", "백엔드", "풀스택", "DevOps", "모바일"],
+    roles: ["프론트엔드", "백엔드", "풀스택", "DevOps", "모바일", "Frontend", "Backend", "Fullstack", "Full-stack", "Full Stack", "Embedded", "Mobile", "Software"],
   },
   {
     label: "디자이너",
-    roles: ["UI/UX 디자이너", "그래픽 디자이너", "모션 디자이너"],
+    roles: ["UI/UX 디자이너", "그래픽 디자이너", "모션 디자이너", "UI/UX", "UX/UI", "Designer"],
   },
   {
     label: "데이터",
-    roles: ["데이터 분석가", "데이터 엔지니어", "AI/ML"],
+    roles: ["데이터 분석가", "데이터 엔지니어", "AI/ML", "Data", "AI", "IoT"],
   },
-  { label: "QA", roles: ["QA"] },
+  { label: "QA", roles: ["QA", "Test"] },
+  { label: "마케팅", roles: ["Marketing", "TikTok", "Content", "마케팅"] },
 ];
 
 const SORT_OPTIONS: { label: string; value: string }[] = [

@@ -21,7 +21,7 @@ export default function TalentsContent({ talents }: { talents: Talent[] }) {
 
     // 직무 필터
     if (roleFilter.length > 0) {
-      result = result.filter((t) => roleFilter.includes(t.role));
+      result = result.filter((t) => roleFilter.some((r) => t.role.toLowerCase().includes(r.toLowerCase())));
     }
 
     // 정렬
@@ -94,15 +94,11 @@ export default function TalentsContent({ talents }: { talents: Talent[] }) {
 
       <div className="mx-auto max-w-[1080px] px-5 pt-8 pb-16">
         {/* 타이틀 */}
-        <div className="mb-5">
-          <h1 className="text-[22px] font-medium text-gray-900 tracking-tight">
-            베트남 IT 인재
-          </h1>
-          <div className="flex items-center gap-3 mt-1">
-            <p className="text-[14px] text-gray-500">
-              지금 합류 가능한 인재{" "}
-              <span className="text-blue-500 font-medium">{availableCount}명</span>
-            </p>
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <h1 className="text-[22px] font-medium text-gray-900 tracking-tight">
+              베트남 IT 인재
+            </h1>
             <Link
               href="/talents/criteria"
               className="inline-flex items-center gap-1.5 text-[12px] text-[#3182F6] font-medium hover:bg-[#E8F3FF] bg-[#E8F3FF]/60 transition-colors rounded-full px-3 py-1.5"
@@ -127,7 +123,7 @@ export default function TalentsContent({ talents }: { talents: Talent[] }) {
 
         {/* 결과 헤더 */}
         <div className="flex items-center justify-between mb-3">
-          <span className="text-[12px] text-[#8B95A1]">{filteredTalents.length}명 표시</span>
+          <span className="text-[12px] text-[#8B95A1]">총 {filteredTalents.length}명</span>
           <Link
             href="/talents/scraps"
             className="flex items-center gap-1.5 text-[12px] text-[#6B7684] hover:text-[#191F28] transition-colors"
