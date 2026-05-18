@@ -35,7 +35,8 @@ const TAB_KEYS = [
   { key: "phone_pending", labelKey: "candidates.tab.phonePending", statuses: ["phone_interview_pending"] },
   { key: "phone_done", labelKey: "candidates.tab.phoneDone", statuses: ["phone_interview_done"] },
   { key: "final_passed", labelKey: "candidates.tab.finalPassed", statuses: ["final_passed"] },
-  { key: "rejected", labelKey: "candidates.tab.rejected", statuses: ["rejected", "screening_failed"] },
+  { key: "screening_failed", labelKey: "candidates.tab.screeningFailed", statuses: ["screening_failed"] },
+  { key: "rejected", labelKey: "candidates.tab.rejected", statuses: ["rejected"] },
 ] as const;
 
 const STATUS_COLORS: Record<string, string> = {
@@ -152,7 +153,8 @@ export default function CandidatesPage() {
     phone_pending: candidates.filter((c) => c.pipeline_status === "phone_interview_pending").length,
     phone_done: candidates.filter((c) => c.pipeline_status === "phone_interview_done").length,
     final_passed: candidates.filter((c) => c.pipeline_status === "final_passed").length,
-    rejected: candidates.filter((c) => c.pipeline_status === "rejected" || c.pipeline_status === "screening_failed").length,
+    screening_failed: candidates.filter((c) => c.pipeline_status === "screening_failed").length,
+    rejected: candidates.filter((c) => c.pipeline_status === "rejected").length,
   };
 
   const STAT_KEYS: { key: keyof typeof counts; labelKey: string; color: string }[] = [
@@ -161,6 +163,7 @@ export default function CandidatesPage() {
     { key: "phone_pending", labelKey: "candidates.stat.phonePending", color: "#E8590C" },
     { key: "phone_done", labelKey: "candidates.stat.phoneDone", color: "#6B7684" },
     { key: "final_passed", labelKey: "candidates.stat.finalPassed", color: "#1D9E75" },
+    { key: "screening_failed", labelKey: "candidates.stat.screeningFailed", color: "#B0B8C1" },
     { key: "rejected", labelKey: "candidates.stat.rejected", color: "#B0B8C1" },
   ];
 
