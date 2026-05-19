@@ -40,7 +40,7 @@ export async function submitInterviewRequest(req: {
 }) {
   const { data, error } = await supabase
     .from('interview_requests')
-    .insert(req)
+    .insert({ ...req, status: 'received' })
     .select()
     .single()
 
