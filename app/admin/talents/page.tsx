@@ -200,6 +200,16 @@ export default function AdminTalentsPage() {
 
               {/* 액션 - 항상 선명하게 */}
               <div className="flex items-center justify-end gap-2 mt-3 relative z-[2]">
+                  {t.resume_url && (
+                    <a
+                      href={t.resume_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 bg-gray-100 text-blue-500 rounded-lg text-[12px] font-medium hover:bg-blue-50 transition-colors mr-auto"
+                    >
+                      이력서
+                    </a>
+                  )}
                   <button
                     onClick={() => togglePublished(t.id, t.published)}
                     className={`px-3 py-1.5 rounded-lg text-[12px] font-medium transition-colors ${
