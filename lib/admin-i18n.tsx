@@ -19,6 +19,7 @@ const translations: Record<string, Record<AdminLang, string>> = {
   "nav.candidates": { ko: "후보자 관리", en: "Candidate Management", vi: "Quản lý ứng viên" },
   "nav.talents": { ko: "인재 관리", en: "Talent Management", vi: "Quản lý nhân tài" },
   "nav.inquiries": { ko: "인재 문의", en: "Inquiries", vi: "Yêu cầu tuyển dụng" },
+  "nav.pool": { ko: "인재풀 등록", en: "Talent Pool", vi: "Đăng ký nhân tài" },
   "nav.roles": { ko: "권한 안내", en: "Permissions", vi: "Phân quyền" },
 
   // 후보자 관리
@@ -83,6 +84,23 @@ const translations: Record<string, Record<AdminLang, string>> = {
   "talents.publishAll": { ko: "전체 게시", en: "Publish All", vi: "Đăng tất cả" },
   "talents.unpublishAll": { ko: "전체 비공개", en: "Unpublish All", vi: "Ẩn tất cả" },
   "talents.addTalent": { ko: "+ 인재 등록", en: "+ Add Talent", vi: "+ Thêm nhân tài" },
+
+  // 인재풀 등록
+  "pool.title": { ko: "인재풀 등록", en: "Talent Pool Registration", vi: "Đăng ký nhân tài" },
+  "pool.dropzone": { ko: "PDF 파일을 드래그하거나 클릭하여 업로드", en: "Drag PDF files here or click to upload", vi: "Kéo file PDF vào đây hoặc nhấp để tải lên" },
+  "pool.dropzoneHint": { ko: "여러 파일을 한 번에 업로드할 수 있습니다 (PDF만 지원)", en: "You can upload multiple files at once (PDF only)", vi: "Có thể tải lên nhiều file cùng lúc (chỉ PDF)" },
+  "pool.total": { ko: "전체", en: "Total", vi: "Tổng" },
+  "pool.pending": { ko: "대기", en: "Pending", vi: "Chờ" },
+  "pool.done": { ko: "완료", en: "Done", vi: "Xong" },
+  "pool.error": { ko: "실패", en: "Error", vi: "Lỗi" },
+  "pool.clearAll": { ko: "전체 삭제", en: "Clear All", vi: "Xóa tất cả" },
+  "pool.runAll": { ko: "전체 스크리닝", en: "Screen All", vi: "Sàng lọc tất cả" },
+  "pool.screening": { ko: "스크리닝 중", en: "Screening", vi: "Đang sàng lọc" },
+  "pool.screeningInProgress": { ko: "스크리닝 중...", en: "Screening...", vi: "Đang sàng lọc..." },
+  "pool.retry": { ko: "재시도", en: "Retry", vi: "Thử lại" },
+  "pool.viewCard": { ko: "카드 보기", en: "View Card", vi: "Xem thẻ" },
+  "pool.empty": { ko: "등록된 포트폴리오가 없습니다", en: "No portfolios registered", vi: "Chưa có portfolio nào" },
+  "pool.emptyHint": { ko: "PDF 파일을 업로드하여 인재풀에 등록하세요", en: "Upload PDF files to register in the talent pool", vi: "Tải lên file PDF để đăng ký nhân tài" },
 
   // 상태
   "status.new": { ko: "대기", en: "Pending", vi: "Chờ" },
