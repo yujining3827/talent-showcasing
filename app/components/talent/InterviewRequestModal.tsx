@@ -121,6 +121,23 @@ export function InterviewRequestModal({
       alert("요청 중 오류가 발생했습니다. 다시 시도해주세요.");
       return;
     }
+
+    // 관리자에게 알림 이메일 발송 (실패해도 요청은 정상 처리)
+    fetch("/api/notify-admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "inquiry",
+        companyName: guest.companyName,
+        contactName: guest.contactName,
+        contactEmail: guest.contactEmail,
+        talentRole: talent.role,
+        talentYearsExp: talent.years_exp,
+        talentOvr: talent.ovr_score,
+        message: message || undefined,
+      }),
+    }).catch(() => {});
+
     onSuccess();
   }
 

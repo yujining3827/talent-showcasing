@@ -112,6 +112,19 @@ export default function LoginPage() {
       return;
     }
 
+    // 관리자에게 알림 이메일 발송 (실패해도 가입 신청은 정상 처리)
+    fetch("/api/notify-admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "signup",
+        email: profile!.email,
+        name: profile!.name,
+        companyName: regForm.companyName.trim(),
+        contactName: regForm.contactName.trim(),
+      }),
+    }).catch(() => {});
+
     // 프로필 다시 로드
     const p = await getUserProfile(user!.id, true);
     setProfile(p as UserProfile | null);
