@@ -35,15 +35,9 @@ export async function POST() {
           return;
         }
 
-        // 우선 처리 대상 회사 (없으면 전체)
-        const PRIORITY_CODES = ["FPT401", "AW801", "LM1001", "SHU1101", "SHU1102"];
-
         const matchable = candidates.filter((c) => {
           const code = matchJobCode(c.applied_job || "");
-          if (!code || !JD_MAP[code]) return false;
-          // 우선 대상 필터 (빈 배열이면 전체)
-          if (PRIORITY_CODES.length > 0) return PRIORITY_CODES.includes(code);
-          return true;
+          return code && JD_MAP[code];
         });
 
         const total = matchable.length;

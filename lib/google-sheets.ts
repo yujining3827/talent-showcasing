@@ -150,8 +150,13 @@ export async function fetchSheetData(
     // 이름 없으면 스킵
     if (!fullName) continue;
 
-    // 고유 식별자: ID 우선, 없으면 이메일
-    const rowId = get("_id") || email || `${sheetName}-row-${i}`;
+    // 고유 식별자: 이메일 우선, 없으면 이름+폰, 최후에 이름+탭+행번호
+    const phone = get("phone");
+    const rowId = email
+      ? email
+      : phone
+        ? `${fullName}-${phone}`
+        : `${sheetName}-${fullName}-row-${i}`;
 
     candidates.push({
       full_name: fullName,
