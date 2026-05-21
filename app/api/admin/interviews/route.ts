@@ -19,17 +19,35 @@ export async function GET(req: NextRequest) {
   }
   const { data: sessions } = await query;
 
-  // 답변 수 조회 (in_progress, abandoned 세션용)
+  // candidate_phone이 없는 세션은 candidates 테이블에서 보충
+  const sessionList = sessions || [];
+  const missingPhoneIds = sessionList
+    .filter((s) => !s.candidate_phone && s.candidate_id)
+    .map((s) => s.candidate_id);
+
+  let phoneMap: Record<string, string> = {};
+  if (missingPhoneIds.length > 0) {
+    const { data: candidates } = await supabase
+      .from("candidates")
+      .select("id, phone")
+      .in("id", missingPhoneIds);
+    if (candidates) {
+      phoneMap = Object.fromEntries(candidates.filter((c) => c.phone).map((c) => [c.id, c.phone]));
+    }
+  }
+
+  // 답변 수 조회 (in_progress, abandoned 세션용) + phone 보충
   const sessionsWithCount = await Promise.all(
-    (sessions || []).map(async (s) => {
+    sessionList.map(async (s) => {
+      const phone = s.candidate_phone || phoneMap[s.candidate_id] || null;
       if (s.status === "in_progress" || s.status === "abandoned") {
         const { count } = await supabase
           .from("interview_responses")
           .select("*", { count: "exact", head: true })
           .eq("session_id", s.id);
-        return { ...s, response_count: count || 0 };
+        return { ...s, candidate_phone: phone, response_count: count || 0 };
       }
-      return s;
+      return { ...s, candidate_phone: phone };
     })
   );
 

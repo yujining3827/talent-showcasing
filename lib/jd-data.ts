@@ -371,7 +371,7 @@ Knowledge of Software, IoT, or AI. Trilingual capabilities.`,
   },
 };
 
-export function matchJobCode(appliedJob: string): string | null {
+export function matchJobCode(appliedJob: string, allCodes?: string[]): string | null {
   if (!appliedJob) return null;
 
   const codePatterns: Record<string, RegExp> = {
@@ -399,7 +399,46 @@ export function matchJobCode(appliedJob: string): string | null {
     if (pattern.test(appliedJob)) return code;
   }
 
+  // DB에서 추가된 JD 코드 매칭 (정확한 코드 매칭)
+  if (allCodes) {
+    for (const code of allCodes) {
+      if (appliedJob.toUpperCase().includes(code.toUpperCase())) return code;
+    }
+  }
+
   return null;
+}
+
+export async function loadAllJDs(supabaseClient: { from: (table: string) => { select: (columns: string) => Promise<{ data: JobDescriptionRow[] | null }> } }): Promise<Record<string, JobDescription>> {
+  const merged = { ...JD_MAP };
+  const { data } = await supabaseClient.from("jd_definitions").select("*");
+  if (data) {
+    for (const row of data) {
+      merged[row.code] = {
+        company: row.company,
+        position: row.position,
+        experience: row.experience,
+        hires: row.hires,
+        salary: row.salary,
+        responsibilities: row.responsibilities,
+        qualifications: row.qualifications,
+        preferred: row.preferred,
+      };
+    }
+  }
+  return merged;
+}
+
+interface JobDescriptionRow {
+  code: string;
+  company: string;
+  position: string;
+  experience: string;
+  hires: number;
+  salary: string;
+  responsibilities: string;
+  qualifications: string;
+  preferred: string;
 }
 
 export function buildJDText(jd: JobDescription): string {

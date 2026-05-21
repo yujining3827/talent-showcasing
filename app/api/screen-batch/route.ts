@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { screenCandidate } from "@/lib/gemini-screening";
-import { JD_MAP, matchJobCode, buildJDText } from "@/lib/jd-data";
+import { loadAllJDs, matchJobCode, buildJDText } from "@/lib/jd-data";
 import { createTalentCard } from "@/lib/create-talent-card";
 
 function getSupabaseAdmin() {
@@ -20,6 +20,8 @@ export async function POST() {
 
       try {
         const supabase = getSupabaseAdmin();
+        const JD_MAP = await loadAllJDs(supabase as never);
+        const allCodes = Object.keys(JD_MAP);
 
         // JD 매칭 가능하고, CV 있고, 아직 스크리닝 안 된 후보자만
         const { data: candidates } = await supabase
@@ -36,7 +38,7 @@ export async function POST() {
         }
 
         const matchable = candidates.filter((c) => {
-          const code = matchJobCode(c.applied_job || "");
+          const code = matchJobCode(c.applied_job || "", allCodes);
           return code && JD_MAP[code];
         });
 
@@ -55,7 +57,7 @@ export async function POST() {
 
         for (let i = 0; i < matchable.length; i++) {
           const c = matchable[i];
-          const jobCode = matchJobCode(c.applied_job || "")!;
+          const jobCode = matchJobCode(c.applied_job || "", allCodes)!;
           const jd = JD_MAP[jobCode];
           const jdText = buildJDText(jd);
 

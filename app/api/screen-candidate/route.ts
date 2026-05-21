@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { screenCandidate } from "@/lib/gemini-screening";
-import { JD_MAP, matchJobCode, buildJDText } from "@/lib/jd-data";
+import { loadAllJDs, matchJobCode, buildJDText } from "@/lib/jd-data";
 
 function getSupabaseAdmin() {
   return createClient(
@@ -30,7 +30,9 @@ export async function POST(req: Request) {
     }
 
     // applied_job으로 JD 매칭
-    const jobCode = matchJobCode(candidate.applied_job || "");
+    const JD_MAP = await loadAllJDs(supabase as never);
+    const allCodes = Object.keys(JD_MAP);
+    const jobCode = matchJobCode(candidate.applied_job || "", allCodes);
     if (!jobCode || !JD_MAP[jobCode]) {
       return Response.json({ error: "매칭되는 JD가 없습니다." }, { status: 400 });
     }

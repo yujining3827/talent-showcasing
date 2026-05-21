@@ -2,8 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { JD_MAP, type JobDescription } from "@/lib/jd-data";
+import { JD_MAP, loadAllJDs, type JobDescription } from "@/lib/jd-data";
 import { useAdminI18n } from "@/lib/admin-i18n";
+
+interface JDPosting {
+  id: string;
+  jd_code: string;
+  platform: string;
+  url: string;
+  posted_at: string | null;
+  status: string;
+  created_at: string;
+}
 
 interface JDWithStats {
   code: string;
@@ -12,38 +22,90 @@ interface JDWithStats {
   statusCounts: Record<string, number>;
 }
 
+const PLATFORM_OPTIONS = [
+  "ITviec", "LinkedIn", "TopDev", "Glint", "YBOX", "VietnamWorks",
+  "Facebook", "자사 사이트", "기타",
+];
+
 export default function JDPage() {
   const { t } = useAdminI18n();
   const [jdList, setJdList] = useState<JDWithStats[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedCode, setExpandedCode] = useState<string | null>(null);
+  const [postings, setPostings] = useState<Record<string, JDPosting[]>>({});
+  const [addingFor, setAddingFor] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [showAddJD, setShowAddJD] = useState(false);
+  const [editingJDCode, setEditingJDCode] = useState<string | null>(null);
+  const [dbJDCodes, setDbJDCodes] = useState<Set<string>>(new Set());
+
+  const loadPostings = async () => {
+    const { data } = await supabase
+      .from("jd_postings")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    const grouped: Record<string, JDPosting[]> = {};
+    (data || []).forEach((p: JDPosting) => {
+      if (!grouped[p.jd_code]) grouped[p.jd_code] = [];
+      grouped[p.jd_code].push(p);
+    });
+    setPostings(grouped);
+  };
+
+  const loadJDs = async () => {
+    // 하드코딩 JD 중 DB에 없는 것 자동 삽입
+    const { data: dbJDs } = await supabase.from("jd_definitions").select("code");
+    const existingCodes = new Set((dbJDs || []).map((r: { code: string }) => r.code));
+    const missing = Object.entries(JD_MAP).filter(([code]) => !existingCodes.has(code));
+    if (missing.length > 0) {
+      await supabase.from("jd_definitions").upsert(
+        missing.map(([code, jd]) => ({
+          code,
+          company: jd.company,
+          position: jd.position,
+          experience: jd.experience,
+          hires: jd.hires,
+          salary: jd.salary,
+          responsibilities: jd.responsibilities,
+          qualifications: jd.qualifications,
+          preferred: jd.preferred,
+        }))
+      );
+    }
+
+    const allJDs = await loadAllJDs(supabase as never);
+
+    const { data: dbJDsRefresh } = await supabase.from("jd_definitions").select("code");
+    setDbJDCodes(new Set((dbJDsRefresh || []).map((r: { code: string }) => r.code)));
+
+    const { data: candidates } = await supabase
+      .from("candidates")
+      .select("applied_job, pipeline_status");
+
+    const countsByCode: Record<string, Record<string, number>> = {};
+
+    (candidates || []).forEach((c) => {
+      const match = c.applied_job?.match(/^([A-Z]+\d+)/);
+      if (!match) return;
+      const code = match[1];
+      if (!countsByCode[code]) countsByCode[code] = {};
+      countsByCode[code][c.pipeline_status] = (countsByCode[code][c.pipeline_status] || 0) + 1;
+    });
+
+    const list: JDWithStats[] = Object.entries(allJDs).map(([code, jd]) => {
+      const statusCounts = countsByCode[code] || {};
+      const totalCandidates = Object.values(statusCounts).reduce((a, b) => a + b, 0);
+      return { code, jd, totalCandidates, statusCounts };
+    });
+
+    setJdList(list);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    async function load() {
-      const { data: candidates } = await supabase
-        .from("candidates")
-        .select("applied_job, pipeline_status");
-
-      const countsByCode: Record<string, Record<string, number>> = {};
-
-      (candidates || []).forEach((c) => {
-        const match = c.applied_job?.match(/^([A-Z]+\d+)/);
-        if (!match) return;
-        const code = match[1];
-        if (!countsByCode[code]) countsByCode[code] = {};
-        countsByCode[code][c.pipeline_status] = (countsByCode[code][c.pipeline_status] || 0) + 1;
-      });
-
-      const list: JDWithStats[] = Object.entries(JD_MAP).map(([code, jd]) => {
-        const statusCounts = countsByCode[code] || {};
-        const totalCandidates = Object.values(statusCounts).reduce((a, b) => a + b, 0);
-        return { code, jd, totalCandidates, statusCounts };
-      });
-
-      setJdList(list);
-      setLoading(false);
-    }
-    load();
+    loadJDs();
+    loadPostings();
   }, []);
 
   if (loading) {
@@ -63,13 +125,27 @@ export default function JDPage() {
     <div>
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-[22px] font-medium text-gray-900">{t("nav.jd")}</h1>
+        <button
+          onClick={() => { setShowAddJD(true); setEditingJDCode(null); }}
+          className="px-4 py-2 text-[13px] text-white bg-[#3182F6] rounded-xl hover:bg-[#2272EB] transition-colors"
+        >
+          {t("jd.addNew")}
+        </button>
       </div>
 
+      {showAddJD && (
+        <JDDefinitionForm
+          t={t}
+          onSave={() => { setShowAddJD(false); loadJDs(); }}
+          onCancel={() => setShowAddJD(false)}
+        />
+      )}
+
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-        <StatCard label="전체 JD" value={totalJDs} color="#191F28" />
-        <StatCard label="후보자 있는 JD" value={activeJDs} color="#3182F6" />
-        <StatCard label="총 채용 인원" value={totalHires} color="#1D9E75" />
-        <StatCard label="총 지원자" value={totalCandidatesAll} color="#E8590C" />
+        <StatCard label={t("jd.totalJD")} value={totalJDs} color="#191F28" />
+        <StatCard label={t("jd.activeJD")} value={activeJDs} color="#3182F6" />
+        <StatCard label={t("jd.totalHires")} value={totalHires} color="#1D9E75" />
+        <StatCard label={t("jd.totalApplicants")} value={totalCandidatesAll} color="#E8590C" />
       </div>
 
       <div className="space-y-3">
@@ -105,16 +181,44 @@ export default function JDPage() {
               <div className="flex items-center gap-3 flex-shrink-0">
                 <div className="text-right">
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] text-gray-500">채용</span>
-                    <span className="text-[14px] font-medium text-gray-900">{item.jd.hires}명</span>
+                    <span className="text-[12px] text-gray-500">{t("jd.hires")}</span>
+                    <span className="text-[14px] font-medium text-gray-900">{item.jd.hires}</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-[12px] text-gray-500">지원</span>
+                    <span className="text-[12px] text-gray-500">{t("jd.applicants")}</span>
                     <span className={`text-[14px] font-medium ${item.totalCandidates > 0 ? "text-[#3182F6]" : "text-gray-400"}`}>
-                      {item.totalCandidates}명
+                      {item.totalCandidates}
                     </span>
                   </div>
                 </div>
+                {dbJDCodes.has(item.code) && (
+                  <div className="flex items-center gap-0.5" onClick={(e) => e.stopPropagation()}>
+                    <button
+                      onClick={() => { setEditingJDCode(item.code); setShowAddJD(false); }}
+                      className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                      title={t("common.edit")}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                    </button>
+                    <button
+                      onClick={async () => {
+                        if (!confirm(`"${item.code}" — ${t("jd.deleteConfirm")}`)) return;
+                        await supabase.from("jd_definitions").delete().eq("code", item.code);
+                        loadJDs();
+                      }}
+                      className="p-1.5 text-gray-400 hover:text-[#E8590C] transition-colors"
+                      title={t("common.delete")}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
                 <svg
                   width="16" height="16" viewBox="0 0 24 24" fill="none"
                   stroke="#B0B8C1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
@@ -125,14 +229,25 @@ export default function JDPage() {
               </div>
             </div>
 
+            {editingJDCode === item.code && (
+              <div className="px-5 pb-5 border-t border-gray-100 pt-4">
+                <JDDefinitionForm
+                  t={t}
+                  initial={{ code: item.code, ...item.jd }}
+                  onSave={() => { setEditingJDCode(null); loadJDs(); }}
+                  onCancel={() => setEditingJDCode(null)}
+                />
+              </div>
+            )}
+
             {expandedCode === item.code && (
               <div className="px-5 pb-5 border-t border-gray-100">
                 {item.totalCandidates > 0 && (
                   <div className="flex flex-wrap gap-1.5 pt-4 mb-4">
                     {Object.entries(item.statusCounts).map(([status, count]) => (
                       <span key={status} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px]"
-                        style={{ backgroundColor: statusColor(status) + "18", color: statusColor(status) }}>
-                        {statusLabel(status)} {count}
+                        style={{ backgroundColor: pipelineStatusColor(status) + "18", color: pipelineStatusColor(status) }}>
+                        {t(`status.${status}`)} {count}
                       </span>
                     ))}
                   </div>
@@ -142,6 +257,63 @@ export default function JDPage() {
                   <DetailSection title="Responsibilities" content={item.jd.responsibilities} />
                   <DetailSection title="Qualifications" content={item.jd.qualifications} />
                   {item.jd.preferred && <DetailSection title="Preferred" content={item.jd.preferred} />}
+                </div>
+
+                <div className="mt-4 pt-4 border-t border-gray-100">
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-[12px] font-medium text-gray-700">{t("jd.postingLinks")}</p>
+                    <button
+                      onClick={() => setAddingFor(addingFor === item.code ? null : item.code)}
+                      className="text-[11px] text-[#3182F6] hover:text-[#2272EB] transition-colors"
+                    >
+                      {addingFor === item.code ? t("common.cancel") : t("jd.add")}
+                    </button>
+                  </div>
+
+                  {addingFor === item.code && (
+                    <PostingForm
+                      t={t}
+                      jdCode={item.code}
+                      onSave={() => { setAddingFor(null); loadPostings(); }}
+                      onCancel={() => setAddingFor(null)}
+                    />
+                  )}
+
+                  {(postings[item.code] || []).length > 0 ? (
+                    <div className="space-y-2">
+                      {(postings[item.code] || []).map((posting) => (
+                        editingId === posting.id ? (
+                          <PostingForm
+                            key={posting.id}
+                            t={t}
+                            jdCode={item.code}
+                            initial={posting}
+                            onSave={() => { setEditingId(null); loadPostings(); }}
+                            onCancel={() => setEditingId(null)}
+                          />
+                        ) : (
+                          <PostingRow
+                            key={posting.id}
+                            t={t}
+                            posting={posting}
+                            onEdit={() => setEditingId(posting.id)}
+                            onDelete={async () => {
+                              await supabase.from("jd_postings").delete().eq("id", posting.id);
+                              loadPostings();
+                            }}
+                            onStatusChange={async (newStatus: string) => {
+                              await supabase.from("jd_postings").update({ status: newStatus, updated_at: new Date().toISOString() }).eq("id", posting.id);
+                              loadPostings();
+                            }}
+                          />
+                        )
+                      ))}
+                    </div>
+                  ) : (
+                    !addingFor && (
+                      <p className="text-[11px] text-gray-400 py-2">{t("jd.noPostings")}</p>
+                    )
+                  )}
                 </div>
               </div>
             )}
@@ -172,7 +344,7 @@ function DetailSection({ title, content }: { title: string; content: string }) {
   );
 }
 
-function statusColor(status: string): string {
+function pipelineStatusColor(status: string): string {
   const map: Record<string, string> = {
     new: "#8B95A1",
     passed: "#3182F6",
@@ -185,15 +357,403 @@ function statusColor(status: string): string {
   return map[status] || "#8B95A1";
 }
 
-function statusLabel(status: string): string {
-  const map: Record<string, string> = {
-    new: "대기",
-    passed: "스크리닝 합격",
-    ai_interview_sent: "인터뷰 발송",
-    ai_interview_done: "인터뷰 완료",
-    final_passed: "최종 합격",
-    rejected: "불합격",
-    screening_failed: "스크리닝 실패",
+type TFn = (key: string) => string;
+
+const POSTING_STATUS_KEYS: { value: string; labelKey: string; color: string }[] = [
+  { value: "active", labelKey: "jd.posting.active", color: "#1D9E75" },
+  { value: "paused", labelKey: "jd.posting.paused", color: "#E8590C" },
+  { value: "closed", labelKey: "jd.posting.closed", color: "#B0B8C1" },
+  { value: "expired", labelKey: "jd.posting.expired", color: "#8B95A1" },
+];
+
+interface JDFormData {
+  code: string;
+  company: string;
+  position: string;
+  experience: string;
+  hires: number;
+  salary: string;
+  responsibilities: string;
+  qualifications: string;
+  preferred: string;
+}
+
+function JDDefinitionForm({
+  t,
+  initial,
+  onSave,
+  onCancel,
+}: {
+  t: TFn;
+  initial?: JDFormData;
+  onSave: () => void;
+  onCancel: () => void;
+}) {
+  const [form, setForm] = useState<JDFormData>(
+    initial || {
+      code: "",
+      company: "",
+      position: "",
+      experience: "",
+      hires: 1,
+      salary: "",
+      responsibilities: "",
+      qualifications: "",
+      preferred: "",
+    }
+  );
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const isEdit = !!initial;
+
+  const set = (field: keyof JDFormData, value: string | number) =>
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+  const handleSubmit = async () => {
+    if (!form.code.trim() || !form.company.trim() || !form.position.trim()) {
+      setError(t("jd.form.required"));
+      return;
+    }
+    setSaving(true);
+    setError("");
+
+    const payload = {
+      code: form.code.trim().toUpperCase(),
+      company: form.company.trim(),
+      position: form.position.trim(),
+      experience: form.experience.trim(),
+      hires: form.hires,
+      salary: form.salary.trim(),
+      responsibilities: form.responsibilities.trim(),
+      qualifications: form.qualifications.trim(),
+      preferred: form.preferred.trim(),
+      updated_at: new Date().toISOString(),
+    };
+
+    let hasError = false;
+    if (isEdit) {
+      const { error: err } = await supabase
+        .from("jd_definitions")
+        .update(payload)
+        .eq("code", initial.code);
+      if (err) { setError(err.message); hasError = true; }
+    } else {
+      const { error: err } = await supabase
+        .from("jd_definitions")
+        .insert(payload);
+      if (err) {
+        setError(err.message.includes("duplicate") ? t("jd.form.duplicateCode") : err.message);
+        hasError = true;
+      }
+    }
+
+    setSaving(false);
+    if (!hasError) onSave();
   };
-  return map[status] || status;
+
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200/60 p-5 mb-5 space-y-3">
+      <p className="text-[14px] font-medium text-gray-900 mb-2">
+        {isEdit ? `${t("jd.form.editTitle")} — ${initial.code}` : t("jd.form.addTitle")}
+      </p>
+
+      {error && (
+        <p className="text-[11px] text-[#E8590C] bg-[#FFF8F0] px-3 py-2 rounded-lg">{error}</p>
+      )}
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.form.code")} *</label>
+          <input
+            value={form.code}
+            onChange={(e) => set("code", e.target.value)}
+            disabled={isEdit}
+            placeholder="ABC101"
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6] disabled:bg-gray-50 disabled:text-gray-500"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.form.company")} *</label>
+          <input
+            value={form.company}
+            onChange={(e) => set("company", e.target.value)}
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.form.position")} *</label>
+          <input
+            value={form.position}
+            onChange={(e) => set("position", e.target.value)}
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.form.hires")}</label>
+          <input
+            type="number"
+            min={1}
+            value={form.hires}
+            onChange={(e) => set("hires", parseInt(e.target.value) || 1)}
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+          />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.form.experience")}</label>
+          <input
+            value={form.experience}
+            onChange={(e) => set("experience", e.target.value)}
+            placeholder="3-5 years"
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+          />
+        </div>
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.form.salary")}</label>
+          <input
+            value={form.salary}
+            onChange={(e) => set("salary", e.target.value)}
+            placeholder="20M – 30M VND"
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+          />
+        </div>
+      </div>
+
+      <div>
+        <label className="text-[10px] text-gray-500 mb-0.5 block">Responsibilities</label>
+        <textarea
+          value={form.responsibilities}
+          onChange={(e) => set("responsibilities", e.target.value)}
+          rows={4}
+          className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6] resize-y"
+        />
+      </div>
+
+      <div>
+        <label className="text-[10px] text-gray-500 mb-0.5 block">Qualifications</label>
+        <textarea
+          value={form.qualifications}
+          onChange={(e) => set("qualifications", e.target.value)}
+          rows={4}
+          className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6] resize-y"
+        />
+      </div>
+
+      <div>
+        <label className="text-[10px] text-gray-500 mb-0.5 block">Preferred</label>
+        <textarea
+          value={form.preferred}
+          onChange={(e) => set("preferred", e.target.value)}
+          rows={3}
+          className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6] resize-y"
+        />
+      </div>
+
+      <div className="flex justify-end gap-2 pt-2">
+        <button
+          onClick={onCancel}
+          className="px-4 py-2 text-[12px] text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          {t("common.cancel")}
+        </button>
+        <button
+          onClick={handleSubmit}
+          disabled={saving}
+          className="px-4 py-2 text-[12px] text-white bg-[#3182F6] rounded-lg hover:bg-[#2272EB] disabled:opacity-50 transition-colors"
+        >
+          {saving ? t("jd.form.saving") : isEdit ? t("common.edit") : t("jd.form.add")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PostingForm({
+  t,
+  jdCode,
+  initial,
+  onSave,
+  onCancel,
+}: {
+  t: TFn;
+  jdCode: string;
+  initial?: JDPosting;
+  onSave: () => void;
+  onCancel: () => void;
+}) {
+  const [platform, setPlatform] = useState(initial?.platform || PLATFORM_OPTIONS[0]);
+  const [url, setUrl] = useState(initial?.url || "");
+  const [postedAt, setPostedAt] = useState(
+    initial?.posted_at ? initial.posted_at.slice(0, 16) : ""
+  );
+  const [status, setStatus] = useState(initial?.status || "active");
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async () => {
+    if (!url.trim()) return;
+    setSaving(true);
+
+    const payload = {
+      jd_code: jdCode,
+      platform,
+      url: url.trim(),
+      posted_at: postedAt ? new Date(postedAt).toISOString() : null,
+      status,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (initial) {
+      await supabase.from("jd_postings").update(payload).eq("id", initial.id);
+    } else {
+      await supabase.from("jd_postings").insert(payload);
+    }
+
+    setSaving(false);
+    onSave();
+  };
+
+  return (
+    <div className="bg-gray-50 rounded-xl p-3 mb-2 space-y-2.5">
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.posting.platform")}</label>
+          <select
+            value={platform}
+            onChange={(e) => setPlatform(e.target.value)}
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+          >
+            {PLATFORM_OPTIONS.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.posting.status")}</label>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+          >
+            {POSTING_STATUS_KEYS.map((s) => (
+              <option key={s.value} value={s.value}>{t(s.labelKey)}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div>
+        <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.posting.url")}</label>
+        <input
+          type="url"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="https://..."
+          className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+        />
+      </div>
+      <div>
+        <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.posting.postedAt")}</label>
+        <input
+          type="datetime-local"
+          value={postedAt}
+          onChange={(e) => setPostedAt(e.target.value)}
+          className="w-full text-[12px] px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white text-gray-900 outline-none focus:border-[#3182F6]"
+        />
+      </div>
+      <div className="flex justify-end gap-2 pt-1">
+        <button
+          onClick={onCancel}
+          className="px-3 py-1.5 text-[11px] text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          {t("common.cancel")}
+        </button>
+        <button
+          onClick={handleSubmit}
+          disabled={saving || !url.trim()}
+          className="px-3 py-1.5 text-[11px] text-white bg-[#3182F6] rounded-lg hover:bg-[#2272EB] disabled:opacity-50 transition-colors"
+        >
+          {saving ? t("jd.form.saving") : initial ? t("common.edit") : t("common.save")}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function PostingRow({
+  t,
+  posting,
+  onEdit,
+  onDelete,
+  onStatusChange,
+}: {
+  t: TFn;
+  posting: JDPosting;
+  onEdit: () => void;
+  onDelete: () => void;
+  onStatusChange: (status: string) => void;
+}) {
+  const statusOption = POSTING_STATUS_KEYS.find((s) => s.value === posting.status);
+  const sColor = statusOption?.color || "#8B95A1";
+
+  return (
+    <div className="flex items-center gap-3 bg-white rounded-xl border border-gray-200/60 px-3 py-2.5">
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-0.5">
+          <span className="text-[11px] font-medium text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full flex-shrink-0">
+            {posting.platform}
+          </span>
+          <select
+            value={posting.status}
+            onChange={(e) => onStatusChange(e.target.value)}
+            className="text-[10px] font-medium rounded-full px-2 py-0.5 border-none outline-none cursor-pointer"
+            style={{ backgroundColor: sColor + "18", color: sColor }}
+          >
+            {POSTING_STATUS_KEYS.map((s) => (
+              <option key={s.value} value={s.value}>{t(s.labelKey)}</option>
+            ))}
+          </select>
+        </div>
+        <a
+          href={posting.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[11px] text-[#3182F6] hover:text-[#2272EB] truncate block transition-colors"
+        >
+          {posting.url}
+        </a>
+        {posting.posted_at && (
+          <p className="text-[10px] text-gray-400 mt-0.5">
+            {t("jd.posted")}: {new Date(posting.posted_at).toLocaleDateString("ko-KR", {
+              year: "numeric", month: "short", day: "numeric",
+              hour: "2-digit", minute: "2-digit",
+            })}
+          </p>
+        )}
+      </div>
+      <div className="flex items-center gap-1 flex-shrink-0">
+        <button
+          onClick={onEdit}
+          className="p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+          title={t("common.edit")}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+          </svg>
+        </button>
+        <button
+          onClick={onDelete}
+          className="p-1.5 text-gray-400 hover:text-[#E8590C] transition-colors"
+          title={t("common.delete")}
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  );
 }

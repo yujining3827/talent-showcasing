@@ -135,7 +135,12 @@ function AdminLayoutInner({ children }: { children: React.ReactNode }) {
     }
     fetchUnread();
     const interval = setInterval(fetchUnread, 30000);
-    return () => clearInterval(interval);
+    // 메시지 읽음 시 즉시 갱신
+    window.addEventListener("voc-read", fetchUnread);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("voc-read", fetchUnread);
+    };
   }, [authorized]);
 
   if (loading) {

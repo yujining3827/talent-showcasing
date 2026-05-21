@@ -4,7 +4,7 @@ import React, { useEffect, useState, useCallback, useRef } from "react";
 import { supabase } from "@/lib/supabase";
 import { updateTalentVerification } from "@/lib/create-talent-card";
 import { useAdminI18n } from "@/lib/admin-i18n";
-import { JD_MAP } from "@/lib/jd-data";
+import { JD_MAP, type JobDescription } from "@/lib/jd-data";
 import { getUserProfile } from "@/lib/supabase-auth";
 
 function Dropdown({ value, onChange, options, placeholder }: {
@@ -159,10 +159,30 @@ export default function CandidatesPage() {
   const [sendingAll, setSendingAll] = useState(false);
   const [showSendModal, setShowSendModal] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [allJDs, setAllJDs] = useState<Record<string, JobDescription>>(JD_MAP);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) getUserProfile(session.user.id).then((p) => { if (p?.role === "super_admin") setIsSuperAdmin(true); });
+    });
+    // DB JDs 병합
+    supabase.from("jd_definitions").select("*").then(({ data }) => {
+      if (data && data.length > 0) {
+        const merged = { ...JD_MAP };
+        for (const row of data) {
+          merged[row.code] = {
+            company: row.company,
+            position: row.position,
+            experience: row.experience,
+            hires: row.hires,
+            salary: row.salary,
+            responsibilities: row.responsibilities,
+            qualifications: row.qualifications,
+            preferred: row.preferred,
+          };
+        }
+        setAllJDs(merged);
+      }
     });
   }, []);
 
@@ -242,27 +262,27 @@ export default function CandidatesPage() {
 
   const tabGroup = ALL_STEPS.find((tab) => tab.key === activeTab)!;
   const sources = Array.from(new Set(candidates.map((c) => c.source)));
-  // applied_job에서 JD_MAP을 통해 회사/포지션 추출
+  // applied_job에서 allJDs를 통해 회사/포지션 추출
   const companyOptions = Array.from(new Set(
     candidates.map((c) => {
       const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
-      return code && JD_MAP[code] ? JD_MAP[code].company : null;
+      return code && allJDs[code] ? allJDs[code].company : null;
     }).filter(Boolean)
   )) as string[];
   const positionOptions = Array.from(new Set(
     candidates.map((c) => {
       const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
-      return code && JD_MAP[code] ? JD_MAP[code].position : null;
+      return code && allJDs[code] ? allJDs[code].position : null;
     }).filter(Boolean)
   )) as string[];
 
   const getCompany = (c: Candidate) => {
     const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
-    return code && JD_MAP[code] ? JD_MAP[code].company : null;
+    return code && allJDs[code] ? allJDs[code].company : null;
   };
   const getPosition = (c: Candidate) => {
     const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
-    return code && JD_MAP[code] ? JD_MAP[code].position : null;
+    return code && allJDs[code] ? allJDs[code].position : null;
   };
 
   // 필터(소스/회사/포지션) 적용된 베이스 — 탭/검색 제외
@@ -516,7 +536,7 @@ export default function CandidatesPage() {
       </div>
 
       {selectedCandidate && (
-        <CandidateDetailModal candidate={selectedCandidate} onClose={() => { setSelectedCandidate(null); fetchCandidates(); }} />
+        <CandidateDetailModal candidate={selectedCandidate} onClose={() => { setSelectedCandidate(null); fetchCandidates(); }} jdMap={allJDs} />
       )}
     </div>
   );
@@ -532,7 +552,7 @@ const STAGE_OPTIONS = [
   { value: "rejected", label: "불합격" },
 ];
 
-function CandidateDetailModal({ candidate: initCandidate, onClose }: { candidate: Candidate; onClose: () => void }) {
+function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { candidate: Candidate; onClose: () => void; jdMap: Record<string, JobDescription> }) {
   const { t, lang } = useAdminI18n();
   const [c, setC] = useState(initCandidate);
   const [memo, setMemo] = useState(c.phone_interview_note || "");
@@ -564,7 +584,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose }: { candidate
 
   const assignJD = async (code: string) => {
     setAssigningJD(true);
-    const jd = JD_MAP[code];
+    const jd = jdMap[code];
     const newAppliedJob = code ? `${code} - ${jd?.position || ""}` : "";
     await supabase.from("candidates").update({
       applied_job: newAppliedJob || null,
@@ -675,7 +695,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose }: { candidate
 
           <div>
             <p className="text-[11px] text-gray-500 mb-3">JD 배정</p>
-            <JDDropdown value={currentJobCode} onChange={assignJD} disabled={assigningJD} />
+            <JDDropdown value={currentJobCode} onChange={assignJD} disabled={assigningJD} jdMap={jdMap} />
           </div>
 
           {summary && (
@@ -1106,10 +1126,10 @@ function SendInterviewModal({ count, sampleName, sampleCompany, onConfirm, onClo
   );
 }
 
-function JDDropdown({ value, onChange, disabled }: { value: string; onChange: (v: string) => void; disabled: boolean }) {
+function JDDropdown({ value, onChange, disabled, jdMap }: { value: string; onChange: (v: string) => void; disabled: boolean; jdMap: Record<string, JobDescription> }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
-  const jd = value ? JD_MAP[value] : null;
+  const jd = value ? jdMap[value] : null;
   const label = jd ? `${value} — ${jd.company} · ${jd.position}` : "미배정";
 
   useEffect(() => {
@@ -1146,7 +1166,7 @@ function JDDropdown({ value, onChange, disabled }: { value: string; onChange: (v
           >
             미배정
           </button>
-          {Object.entries(JD_MAP).map(([code, j]) => (
+          {Object.entries(jdMap).map(([code, j]) => (
             <button
               key={code}
               onClick={() => { onChange(code); setOpen(false); }}

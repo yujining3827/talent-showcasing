@@ -9,6 +9,7 @@ interface Session {
   access_code: string;
   candidate_name: string;
   candidate_email: string;
+  candidate_phone: string | null;
   applied_company: string | null;
   applied_position: string | null;
   candidate_id: string | null;
@@ -176,6 +177,7 @@ export default function InterviewsAdminPage() {
       s.access_code.toLowerCase().includes(q) ||
       (s.candidate_name || "").toLowerCase().includes(q) ||
       (s.candidate_email || "").toLowerCase().includes(q) ||
+      (s.candidate_phone || "").toLowerCase().includes(q) ||
       (s.applied_company || "").toLowerCase().includes(q) ||
       (s.applied_position || "").toLowerCase().includes(q) ||
       s.status.toLowerCase().includes(q)
@@ -296,6 +298,7 @@ export default function InterviewsAdminPage() {
               <tr>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.code")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.name")}</th>
+                <th className="px-4 py-3 text-left text-gray-500 font-medium">Phone</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.company")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.position")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.status")}</th>
@@ -313,6 +316,7 @@ export default function InterviewsAdminPage() {
                       <Link href={`/admin/interviews/${s.id}`} className="text-blue-500 hover:text-blue-600 hover:underline">{s.access_code}</Link>
                     </td>
                     <td className="px-4 py-3">{s.candidate_name || <span className="text-gray-400">—</span>}</td>
+                    <td className="px-4 py-3 text-[12px] text-gray-600">{s.candidate_phone || <span className="text-gray-400">—</span>}</td>
                     <td className="px-4 py-3 text-[12px] text-gray-600">{s.applied_company || <span className="text-gray-400">—</span>}</td>
                     <td className="px-4 py-3 text-[12px] text-gray-600">{s.applied_position || <span className="text-gray-400">—</span>}</td>
                     <td className="px-4 py-3">
@@ -340,7 +344,7 @@ export default function InterviewsAdminPage() {
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-12 text-center text-gray-500">
+                  <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
                     {search || companyFilter !== "all" ? t("interviews.noResult") : t("interviews.noData")}
                   </td>
                 </tr>

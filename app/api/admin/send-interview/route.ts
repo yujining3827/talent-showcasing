@@ -196,7 +196,7 @@ export async function POST(req: NextRequest) {
   // 후보자 정보 조회
   const { data: candidates } = await supabase
     .from("candidates")
-    .select("id, full_name, email, applied_company, applied_job")
+    .select("id, full_name, email, phone, applied_company, applied_job")
     .in("id", candidateIds);
 
   if (!candidates || candidates.length === 0) {
@@ -246,6 +246,7 @@ export async function POST(req: NextRequest) {
       candidate_id: c.id,
       candidate_name: c.full_name,
       candidate_email: c.email,
+      candidate_phone: c.phone || null,
       applied_company: company,
       deadline: deadlineISO,
       status: "pending",

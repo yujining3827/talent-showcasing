@@ -148,10 +148,15 @@ export default function MessagesPage() {
         .map((m) => m.id);
 
       if (unreadIds.length > 0) {
-        await supabase
+        const { error: updateErr } = await supabase
           .from("email_messages")
           .update({ read_at: new Date().toISOString() })
           .in("id", unreadIds);
+
+        if (!updateErr) {
+          // 사이드바 배지 즉시 갱신
+          window.dispatchEvent(new Event("voc-read"));
+        }
       }
     } catch (err) {
       console.error("Failed to load thread:", err);
