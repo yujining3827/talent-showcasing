@@ -45,8 +45,8 @@ begin
     new.email,
     coalesce(new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'name', ''),
     coalesce(new.raw_user_meta_data->>'avatar_url', new.raw_user_meta_data->>'picture', ''),
-    case when new.email = 'wsj@likelion.net' then 'admin' else 'user' end,
-    case when new.email = 'wsj@likelion.net' then 'approved' else 'pending' end
+    case when new.email = 'ktc@likelion.net' then 'admin' else 'user' end,
+    case when new.email = 'ktc@likelion.net' then 'approved' else 'pending' end
   );
   return new;
 end;

@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
           <div style="border-top: 1px solid #E5E8EB; padding-top: 20px;">
             <p style="font-size: 12px; color: #B0B8C1; line-height: 1.6; margin: 0;">
               베팀 · 멋쟁이사자처럼 신사업본부<br/>
-              문의: wsj@likelion.net
+              문의: ktc@likelion.net
             </p>
           </div>
         </div>

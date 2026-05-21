@@ -500,7 +500,7 @@ export default function LandingPage() {
             <p>상호명: 멋쟁이사자처럼 · 대표: 나성영</p>
             <p>사업자 번호: 264-88-01106 · 통신판매업 신고번호: 2022-서울종로-1534</p>
             <p>주소: 서울 종로구 종로3길17, 광화문D타워 D1동 16층, 17층</p>
-            <p>전화번호: 02-6203-3222 · wsj@likelion.net</p>
+            <p>전화번호: 02-6203-3222 · ktc@likelion.net</p>
           </div>
           <div className="mt-4 mb-2">
             <Link href="/interview" className="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 border-[0.5px] border-gray-200 rounded-full px-3 py-1 transition-colors duration-100">

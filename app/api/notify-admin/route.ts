@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
-const ADMIN_EMAIL = "wsj@likelion.net";
+const ADMIN_EMAIL = "ktc@likelion.net";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",

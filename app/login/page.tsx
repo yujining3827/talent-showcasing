@@ -366,7 +366,7 @@ export default function LoginPage() {
                 가입이 승인되지 않았습니다
               </h1>
               <p className="text-[14px] text-gray-500 mb-8">
-                문의사항이 있으시면 wsj@likelion.net으로 연락해주세요.
+                문의사항이 있으시면 ktc@likelion.net으로 연락해주세요.
               </p>
               <button
                 onClick={handleSignOut}

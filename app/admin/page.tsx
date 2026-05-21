@@ -217,7 +217,7 @@ export default function AdminUsersPage() {
                     </>
                   )}
 
-                  {tab === "approved" && (u.role === "admin" || u.role === "super_admin") && isSuperAdmin && u.email !== "wsj@likelion.net" && (
+                  {tab === "approved" && (u.role === "admin" || u.role === "super_admin") && isSuperAdmin && u.email !== "ktc@likelion.net" && (
                     <button
                       onClick={() => updateRole(u.id, "user")}
                       className="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-[13px] font-medium hover:bg-gray-200 transition-colors"
