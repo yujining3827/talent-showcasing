@@ -26,6 +26,7 @@ export async function POST(req: NextRequest) {
   if (!session) return NextResponse.json({ success: false }, { status: 404 });
 
   // 비동기 채점 완료 대기 (최대 30초, 2초 간격 폴링)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let responses: Record<string, any>[] | null = null;
   for (let i = 0; i < 15; i++) {
     const { data } = await supabase
@@ -38,6 +39,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, message: "No responses" }, { status: 400 });
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const allScored = data.every((r: Record<string, any>) => r.score !== null);
     if (allScored) {
       responses = data;
