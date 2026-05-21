@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { updateTalentVerification } from "@/lib/create-talent-card";
 
 function getSupabaseAdmin() {
   return createClient(
@@ -53,6 +54,29 @@ export async function PATCH(
     human_review_note: note,
     human_reviewed_at: new Date().toISOString(),
   }).eq("id", params.id);
+
+  // PASS/FAIL 시 candidate pipeline_status 자동 변경
+  const { data: session } = await supabase
+    .from("interview_sessions")
+    .select("candidate_id")
+    .eq("id", params.id)
+    .single();
+
+  if (session?.candidate_id) {
+    if (decision === "pass") {
+      await supabase.from("candidates").update({
+        pipeline_status: "ai_interview_passed",
+        updated_at: new Date().toISOString(),
+      }).eq("id", session.candidate_id);
+      await updateTalentVerification(supabase, session.candidate_id, "ai_interview_passed");
+    } else if (decision === "fail") {
+      await supabase.from("candidates").update({
+        pipeline_status: "rejected",
+        rejection_reason: "AI interview rejected",
+        updated_at: new Date().toISOString(),
+      }).eq("id", session.candidate_id);
+    }
+  }
 
   return NextResponse.json({ success: true });
 }

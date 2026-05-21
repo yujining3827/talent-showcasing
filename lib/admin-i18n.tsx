@@ -27,6 +27,7 @@ const translations: Record<string, Record<AdminLang, string>> = {
   "nav.pool": { ko: "인재풀 등록", en: "Talent Pool", vi: "Đăng ký nhân tài" },
   "nav.roles": { ko: "권한 안내", en: "Permissions", vi: "Phân quyền" },
   "nav.interviews": { ko: "AI 인터뷰", en: "AI Interviews", vi: "Phỏng vấn AI" },
+  "nav.profiles": { ko: "프로필 카드", en: "Profile Cards", vi: "Thẻ hồ sơ" },
   "nav.messages": { ko: "VOC", en: "VOC", vi: "VOC" },
   "nav.jd": { ko: "JD 관리", en: "JD Management", vi: "Quản lý JD" },
 
@@ -87,6 +88,7 @@ const translations: Record<string, Record<AdminLang, string>> = {
   "candidates.tab.aiPassed": { ko: "스크리닝 합격", en: "Screening Passed", vi: "Đạt sàng lọc" },
   "candidates.tab.aiInterviewSent": { ko: "AI 인터뷰 발송", en: "AI Interview Sent", vi: "Đã gửi PV AI" },
   "candidates.tab.aiInterviewDone": { ko: "AI 인터뷰 완료", en: "AI Interview Done", vi: "PV AI xong" },
+  "candidates.tab.aiInterviewPassed": { ko: "AI 인터뷰 합격", en: "AI Interview Passed", vi: "Đạt PV AI" },
   "candidates.tab.finalPassed": { ko: "최종 합격", en: "Final Passed", vi: "Đạt" },
   "candidates.tab.screeningFailed": { ko: "스크리닝 실패", en: "Screening Failed", vi: "Sàng lọc thất bại" },
   "candidates.tab.rejected": { ko: "불합격", en: "Rejected", vi: "Không đạt" },
@@ -218,6 +220,7 @@ const translations: Record<string, Record<AdminLang, string>> = {
   "status.passed": { ko: "스크리닝 합격", en: "Screening Passed", vi: "Đạt sàng lọc" },
   "status.ai_interview_sent": { ko: "AI 인터뷰 발송", en: "AI Sent", vi: "Đã gửi AI" },
   "status.ai_interview_done": { ko: "AI 인터뷰 완료", en: "AI Done", vi: "AI xong" },
+  "status.ai_interview_passed": { ko: "AI 인터뷰 합격", en: "AI Passed", vi: "Đạt PV AI" },
   "status.final_passed": { ko: "최종 합격", en: "Final Passed", vi: "Đạt" },
   "status.rejected": { ko: "불합격", en: "Rejected", vi: "Không đạt" },
   "status.screening_failed": { ko: "스크리닝 실패", en: "Screening Failed", vi: "Sàng lọc thất bại" },

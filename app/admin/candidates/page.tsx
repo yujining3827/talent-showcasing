@@ -93,6 +93,7 @@ const PIPELINE_STEPS = [
   { key: "ai_passed", labelKey: "candidates.tab.aiPassed", statuses: ["passed"], color: "#3182F6" },
   { key: "ai_interview_sent", labelKey: "candidates.tab.aiInterviewSent", statuses: ["ai_interview_sent"], color: "#E8590C" },
   { key: "ai_interview_done", labelKey: "candidates.tab.aiInterviewDone", statuses: ["ai_interview_done"], color: "#6B7684" },
+  { key: "ai_interview_passed", labelKey: "candidates.tab.aiInterviewPassed", statuses: ["ai_interview_passed"], color: "#1D9E75" },
   { key: "final_passed", labelKey: "candidates.tab.finalPassed", statuses: ["final_passed"], color: "#1D9E75" },
 ] as const;
 
@@ -108,6 +109,7 @@ const STATUS_COLORS: Record<string, string> = {
   passed: "#3182F6",
   ai_interview_sent: "#E8590C",
   ai_interview_done: "#6B7684",
+  ai_interview_passed: "#1D9E75",
   final_passed: "#1D9E75",
   rejected: "#B0B8C1",
   screening_failed: "#B0B8C1",
@@ -296,6 +298,7 @@ export default function CandidatesPage() {
     ai_passed: filteredBase.filter((c) => c.pipeline_status === "passed").length,
     ai_interview_sent: filteredBase.filter((c) => c.pipeline_status === "ai_interview_sent").length,
     ai_interview_done: filteredBase.filter((c) => c.pipeline_status === "ai_interview_done").length,
+    ai_interview_passed: filteredBase.filter((c) => c.pipeline_status === "ai_interview_passed").length,
     final_passed: filteredBase.filter((c) => c.pipeline_status === "final_passed").length,
     screening_failed: filteredBase.filter((c) => c.pipeline_status === "screening_failed").length,
     rejected: filteredBase.filter((c) => c.pipeline_status === "rejected").length,
@@ -547,6 +550,7 @@ const STAGE_OPTIONS = [
   { value: "passed", label: "스크리닝 합격" },
   { value: "ai_interview_sent", label: "AI 인터뷰 발송" },
   { value: "ai_interview_done", label: "AI 인터뷰 완료" },
+  { value: "ai_interview_passed", label: "AI 인터뷰 합격" },
   { value: "final_passed", label: "최종 합격" },
   { value: "screening_failed", label: "스크리닝 실패" },
   { value: "rejected", label: "불합격" },
@@ -617,7 +621,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
 
   // AI 인터뷰 세션 조회
   useEffect(() => {
-    if (["ai_interview_sent", "ai_interview_done", "final_passed"].includes(c.pipeline_status)) {
+    if (["ai_interview_sent", "ai_interview_done", "ai_interview_passed", "final_passed"].includes(c.pipeline_status)) {
       setLoadingSession(true);
       fetch(`/api/admin/interviews?candidateId=${c.id}`)
         .then((r) => r.json())
@@ -791,7 +795,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
             )}
           </div>
 
-          {["ai_interview_sent", "ai_interview_done", "final_passed"].includes(c.pipeline_status) && (
+          {["ai_interview_sent", "ai_interview_done", "ai_interview_passed", "final_passed"].includes(c.pipeline_status) && (
             <>
               {/* AI 인터뷰 상태 */}
               <div>
@@ -867,6 +871,13 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
                   {t("aiInterview.reject")}
                 </button>
               </div>
+            )}
+
+            {(c.pipeline_status === "ai_interview_passed" || c.pipeline_status === "final_passed") && (
+              <a href={`/admin/profiles/${c.id}`}
+                className="block w-full py-3 bg-[#1D9E75] text-white text-[14px] text-center rounded-xl hover:bg-[#178A64] transition-colors">
+                프로필 카드 보기
+              </a>
             )}
           </div>
 
