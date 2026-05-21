@@ -19,20 +19,36 @@ export async function GET(req: NextRequest) {
   }
   const { data: sessions } = await query;
 
-  // candidate_phone이 없는 세션은 candidates 테이블에서 보충
   const sessionList = sessions || [];
-  const missingPhoneIds = sessionList
-    .filter((s) => !s.candidate_phone && s.candidate_id)
-    .map((s) => s.candidate_id);
+
+  // candidate_id가 있는 세션에서 phone, talent_id, cv_url 조회
+  const candidateIds = [...new Set(sessionList.filter(s => s.candidate_id).map(s => s.candidate_id))];
 
   let phoneMap: Record<string, string> = {};
-  if (missingPhoneIds.length > 0) {
+  let talentIdMap: Record<string, string> = {};
+  let cvUrlMap: Record<string, string> = {};
+  if (candidateIds.length > 0) {
     const { data: candidates } = await supabase
       .from("candidates")
-      .select("id, phone")
-      .in("id", missingPhoneIds);
+      .select("id, phone, talent_id, cv_url")
+      .in("id", candidateIds);
     if (candidates) {
       phoneMap = Object.fromEntries(candidates.filter((c) => c.phone).map((c) => [c.id, c.phone]));
+      talentIdMap = Object.fromEntries(candidates.filter((c) => c.talent_id).map((c) => [c.id, c.talent_id]));
+      cvUrlMap = Object.fromEntries(candidates.filter((c) => c.cv_url).map((c) => [c.id, c.cv_url]));
+    }
+  }
+
+  // talent_id → ovr_score (스크리닝 점수) 조회
+  const talentIds = [...new Set(Object.values(talentIdMap))];
+  let screeningScoreMap: Record<string, number> = {};
+  if (talentIds.length > 0) {
+    const { data: talents } = await supabase
+      .from("talents")
+      .select("id, ovr_score")
+      .in("id", talentIds);
+    if (talents) {
+      screeningScoreMap = Object.fromEntries(talents.map((t) => [t.id, t.ovr_score]));
     }
   }
 
@@ -40,14 +56,17 @@ export async function GET(req: NextRequest) {
   const sessionsWithCount = await Promise.all(
     sessionList.map(async (s) => {
       const phone = s.candidate_phone || phoneMap[s.candidate_id] || null;
+      const talentId = talentIdMap[s.candidate_id];
+      const screeningScore = talentId ? (screeningScoreMap[talentId] ?? null) : null;
+      const cvUrl = cvUrlMap[s.candidate_id] || null;
       if (s.status === "in_progress" || s.status === "abandoned") {
         const { count } = await supabase
           .from("interview_responses")
           .select("*", { count: "exact", head: true })
           .eq("session_id", s.id);
-        return { ...s, candidate_phone: phone, response_count: count || 0 };
+        return { ...s, candidate_phone: phone, screening_score: screeningScore, cv_url: cvUrl, response_count: count || 0 };
       }
-      return { ...s, candidate_phone: phone };
+      return { ...s, candidate_phone: phone, screening_score: screeningScore, cv_url: cvUrl };
     })
   );
 

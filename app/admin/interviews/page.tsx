@@ -13,6 +13,8 @@ interface Session {
   applied_company: string | null;
   applied_position: string | null;
   candidate_id: string | null;
+  screening_score: number | null;
+  cv_url: string | null;
   status: string;
   total_score: number | null;
   human_decision: string | null;
@@ -186,6 +188,31 @@ export default function InterviewsAdminPage() {
 
   const overdueCount = filtered.filter(s => isOverdue(s)).length;
 
+  const exportCsv = () => {
+    const headers = ["코드", "이름", "스크리닝 점수", "Phone", "회사", "포지션", "상태", "데드라인", "인터뷰 점수", "결정"];
+    const rows = filtered.map(s => [
+      s.access_code,
+      s.candidate_name || "",
+      s.screening_score !== null && s.screening_score !== undefined ? String(s.screening_score) : "",
+      s.candidate_phone || "",
+      s.applied_company || "",
+      s.applied_position || "",
+      s.status,
+      s.deadline ? formatDeadline(s.deadline) : "",
+      s.total_score !== null ? `${s.total_score}/70 (${Math.round(s.total_score/70*100)}%)` : "",
+      s.human_decision || "",
+    ]);
+    const bom = "\uFEFF";
+    const csv = bom + [headers, ...rows].map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `interviews_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
@@ -199,10 +226,19 @@ export default function InterviewsAdminPage() {
             {overdueCount > 0 && <span className="text-red-500"> | {t("interviews.overdue")}: {overdueCount}</span>}
           </p>
         </div>
-        <button onClick={() => setShowIssueModal(true)}
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-[14px] font-medium transition-colors duration-100">
-          + {t("interviews.issueCodes")}
-        </button>
+        <div className="flex gap-2">
+          <button onClick={exportCsv}
+            className="flex items-center gap-1.5 border-[0.5px] border-gray-200 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-[14px] font-medium transition-colors duration-100">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            CSV
+          </button>
+          <button onClick={() => setShowIssueModal(true)}
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl text-[14px] font-medium transition-colors duration-100">
+            + {t("interviews.issueCodes")}
+          </button>
+        </div>
       </div>
 
       {/* 필터 */}
@@ -298,6 +334,7 @@ export default function InterviewsAdminPage() {
               <tr>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.code")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.name")}</th>
+                <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.screeningScore")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">Phone</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.company")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.position")}</th>
@@ -316,6 +353,11 @@ export default function InterviewsAdminPage() {
                       <Link href={`/admin/interviews/${s.id}`} className="text-blue-500 hover:text-blue-600 hover:underline">{s.access_code}</Link>
                     </td>
                     <td className="px-4 py-3">{s.candidate_name || <span className="text-gray-400">—</span>}</td>
+                    <td className="px-4 py-3 text-[12px]">
+                      {s.screening_score !== null && s.screening_score !== undefined ? (
+                        <span className={`font-medium ${s.screening_score >= 85 ? "text-grade-s-text" : s.screening_score >= 70 ? "text-blue-500" : "text-gray-600"}`}>{s.screening_score}</span>
+                      ) : <span className="text-gray-400">—</span>}
+                    </td>
                     <td className="px-4 py-3 text-[12px] text-gray-600">{s.candidate_phone || <span className="text-gray-400">—</span>}</td>
                     <td className="px-4 py-3 text-[12px] text-gray-600">{s.applied_company || <span className="text-gray-400">—</span>}</td>
                     <td className="px-4 py-3 text-[12px] text-gray-600">{s.applied_position || <span className="text-gray-400">—</span>}</td>
@@ -344,7 +386,7 @@ export default function InterviewsAdminPage() {
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-4 py-12 text-center text-gray-500">
+                  <td colSpan={10} className="px-4 py-12 text-center text-gray-500">
                     {search || companyFilter !== "all" ? t("interviews.noResult") : t("interviews.noData")}
                   </td>
                 </tr>

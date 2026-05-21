@@ -53,7 +53,8 @@ const translations: Record<string, Record<AdminLang, string>> = {
   "interviews.col.company": { ko: "회사", en: "Company", vi: "Công ty" },
   "interviews.col.position": { ko: "포지션", en: "Position", vi: "Vị trí" },
   "interviews.col.status": { ko: "상태", en: "Status", vi: "Trạng thái" },
-  "interviews.col.score": { ko: "점수", en: "Score", vi: "Điểm" },
+  "interviews.col.screeningScore": { ko: "스크리닝", en: "Screening", vi: "Sàng lọc" },
+  "interviews.col.score": { ko: "인터뷰 점수", en: "Interview Score", vi: "Điểm PV" },
   "interviews.col.decision": { ko: "결정", en: "Decision", vi: "Quyết định" },
 
   // AI 인터뷰 상세
