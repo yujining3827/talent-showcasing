@@ -17,6 +17,7 @@ const NAV_KEYS = [
   { href: "/admin/pool", labelKey: "nav.pool", icon: "pool", group: "ktc" },
   { href: "/admin/interviews", labelKey: "nav.interviews", icon: "interviews", group: "ktc" },
   { href: "/admin/messages", labelKey: "nav.messages", icon: "messages", group: "ktc" },
+  { href: "/admin/delivery", labelKey: "nav.delivery", icon: "delivery", group: "ktc" },
   // VTM 인재 열람
   { href: "/admin/talents", labelKey: "nav.talents", icon: "talents", group: "vtm" },
   { href: "/admin/inquiries", labelKey: "nav.inquiries", icon: "inquiries", group: "vtm" },
@@ -93,6 +94,15 @@ function NavIcon({ type }: { type: string }) {
         <line x1="16" y1="13" x2="8" y2="13" />
         <line x1="16" y1="17" x2="8" y2="17" />
         <polyline points="10 9 9 9 8 9" />
+      </svg>
+    );
+  }
+  if (type === "delivery") {
+    return (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" />
+        <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+        <path d="M12 11l4 4M12 11l-4 4M12 11v8" />
       </svg>
     );
   }
