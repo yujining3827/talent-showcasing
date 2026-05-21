@@ -47,11 +47,18 @@ function isOverdue(session: Session): boolean {
 
 function formatDeadline(d: string): string {
   const date = new Date(d);
-  const m = (date.getMonth() + 1).toString().padStart(2, "0");
-  const day = date.getDate().toString().padStart(2, "0");
-  const h = date.getHours().toString().padStart(2, "0");
-  const min = date.getMinutes().toString().padStart(2, "0");
-  return `${m}/${day} ${h}:${min}`;
+  // 베트남 시간(GMT+7) 기준으로 표시
+  const vnStr = date.toLocaleString("en-US", {
+    timeZone: "Asia/Ho_Chi_Minh",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+  const parts = vnStr.match(/(\d+)\/(\d+),?\s*(\d+):(\d+)/);
+  if (!parts) return d;
+  return `${parts[1]}/${parts[2]} ${parts[3]}:${parts[4]}`;
 }
 
 export default function InterviewsAdminPage() {

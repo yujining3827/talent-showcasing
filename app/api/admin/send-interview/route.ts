@@ -29,18 +29,33 @@ const transporter = nodemailer.createTransport({
 const INTERVIEW_BASE = "https://vtm-neon.vercel.app/interview";
 const LOGO_URL = "https://vtm-neon.vercel.app/logo.png";
 
-function getDeadline(): string {
+function getDefaultDeadlineISO(): string {
   // 내일 오전 10시 베트남 시간 (GMT+7)
   const now = new Date();
   const vn = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh" }));
   const tomorrow = new Date(vn);
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-  return `${months[tomorrow.getMonth()]} ${tomorrow.getDate()}, ${tomorrow.getFullYear()} at 10:00`;
+  const y = tomorrow.getFullYear();
+  const m = String(tomorrow.getMonth() + 1).padStart(2, "0");
+  const d = String(tomorrow.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}T10:00:00+07:00`;
 }
 
-function buildEmailHtml(name: string, company: string, code: string, deadline: string): string {
+function formatDeadlineForEmail(isoStr: string): string {
+  // ISO 문자열 → "May 22, 2026 at 13:00" 형식 (베트남 시간)
+  const date = new Date(isoStr);
+  const months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  const vnStr = date.toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh", hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+  // 파싱: MM/DD/YYYY, HH:MM
+  const parts = vnStr.match(/(\d+)\/(\d+)\/(\d+),?\s*(\d+):(\d+)/);
+  if (!parts) return isoStr;
+  const [, mo, day, year, hr, min] = parts;
+  return `${months[Number(mo) - 1]} ${Number(day)}, ${year} at ${hr}:${min}`;
+}
+
+function buildEmailHtml(name: string, company: string, code: string, deadlineISO: string): string {
   const interviewUrl = INTERVIEW_BASE;
+  const deadlineDisplay = formatDeadlineForEmail(deadlineISO);
   return `
     <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 520px; margin: 0 auto; padding: 40px 20px;">
       <div style="margin-bottom: 28px;">
@@ -82,7 +97,7 @@ function buildEmailHtml(name: string, company: string, code: string, deadline: s
       <div style="background: #F9FAFB; border-radius: 12px; padding: 16px; margin-bottom: 24px;">
         <p style="font-size: 13px; color: #191F28; font-weight: 500; margin: 0 0 4px;">Deadline</p>
         <p style="font-size: 15px; color: #E8590C; font-weight: 500; margin: 0 0 8px;">
-          ${deadline} (Vietnam time, GMT+7)
+          ${deadlineDisplay} (Vietnam time, GMT+7)
         </p>
         <p style="font-size: 13px; color: #8B95A1; margin: 0;">
           If not completed by the deadline, the application will be automatically closed.
@@ -128,7 +143,7 @@ export async function POST(req: NextRequest) {
   // 테스트 모드: testEmail이 있으면 DB 조회 없이 바로 발송
   if (body.testEmail) {
     const code = generateCode();
-    const deadline = getDeadline();
+    const deadline = getDefaultDeadlineISO();
     const company = body.company || "Test Company";
     const name = body.name || "Test User";
     try {
@@ -150,7 +165,9 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = getSupabaseAdmin();
-  const deadline = customDeadline || getDeadline();
+  const deadline = customDeadline || getDefaultDeadlineISO();
+  // DB 저장용 ISO 문자열로 정규화
+  const deadlineISO = new Date(deadline).toISOString();
 
   // 후보자 정보 조회
   const { data: candidates } = await supabase
@@ -205,7 +222,7 @@ export async function POST(req: NextRequest) {
       candidate_name: c.full_name,
       candidate_email: c.email,
       applied_company: company,
-      deadline: deadline,
+      deadline: deadlineISO,
       status: "pending",
     });
 

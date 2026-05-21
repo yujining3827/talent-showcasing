@@ -59,7 +59,7 @@ export default function InterviewDetailPage({ params }: { params: { id: string }
     { label: t("interviews.label.phone"), value: session.candidate_phone },
     { label: t("interviews.label.company"), value: session.applied_company },
     { label: t("interviews.label.position"), value: session.applied_position },
-    { label: t("interviews.label.deadline"), value: session.deadline ? new Date(session.deadline).toLocaleString() : null, overdue: deadlineOverdue },
+    { label: t("interviews.label.deadline"), value: session.deadline ? new Date(session.deadline).toLocaleString("en-US", { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false }) + " (GMT+7)" : null, overdue: deadlineOverdue },
   ];
 
   return (

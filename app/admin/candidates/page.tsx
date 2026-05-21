@@ -149,8 +149,8 @@ export default function CandidatesPage() {
   const [activeTab, setActiveTab] = useState<string>("pending");
   const [selectedCandidate, setSelectedCandidate] = useState<Candidate | null>(null);
   const [sourceFilter, setSourceFilter] = useState<string>("all");
+  const [companyFilter, setCompanyFilter] = useState<string>("all");
   const [positionFilter, setPositionFilter] = useState<string>("all");
-  const [jobFilter, setJobFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -242,13 +242,34 @@ export default function CandidatesPage() {
 
   const tabGroup = ALL_STEPS.find((tab) => tab.key === activeTab)!;
   const sources = Array.from(new Set(candidates.map((c) => c.source)));
-  const positions = Array.from(new Set(candidates.map((c) => c.position).filter(Boolean))) as string[];
-  const jobCodes = Array.from(new Set(candidates.map((c) => c.applied_job?.match(/^([A-Z]+\d+)/)?.[1]).filter(Boolean))) as string[];
-  // 필터(소스/직군/회사) 적용된 베이스 — 탭/검색 제외
+  // applied_job에서 JD_MAP을 통해 회사/포지션 추출
+  const companyOptions = Array.from(new Set(
+    candidates.map((c) => {
+      const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
+      return code && JD_MAP[code] ? JD_MAP[code].company : null;
+    }).filter(Boolean)
+  )) as string[];
+  const positionOptions = Array.from(new Set(
+    candidates.map((c) => {
+      const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
+      return code && JD_MAP[code] ? JD_MAP[code].position : null;
+    }).filter(Boolean)
+  )) as string[];
+
+  const getCompany = (c: Candidate) => {
+    const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
+    return code && JD_MAP[code] ? JD_MAP[code].company : null;
+  };
+  const getPosition = (c: Candidate) => {
+    const code = c.applied_job?.match(/^([A-Z]+\d+)/)?.[1];
+    return code && JD_MAP[code] ? JD_MAP[code].position : null;
+  };
+
+  // 필터(소스/회사/포지션) 적용된 베이스 — 탭/검색 제외
   const filteredBase = candidates
     .filter((c) => sourceFilter === "all" || c.source === sourceFilter)
-    .filter((c) => positionFilter === "all" || c.position === positionFilter)
-    .filter((c) => jobFilter === "all" || (c.applied_job || "").startsWith(jobFilter));
+    .filter((c) => companyFilter === "all" || getCompany(c) === companyFilter)
+    .filter((c) => positionFilter === "all" || getPosition(c) === positionFilter);
 
   const counts = {
     pending: filteredBase.filter((c) => c.pipeline_status === "new").length,
@@ -322,46 +343,30 @@ export default function CandidatesPage() {
           {PIPELINE_STEPS.map((step, i) => {
             const isActive = activeTab === step.key;
             const count = counts[step.key as keyof typeof counts];
-            const isPast = PIPELINE_STEPS.findIndex((s) => s.key === activeTab) > i;
             return (
               <React.Fragment key={step.key}>
                 <button
                   onClick={() => setActiveTab(step.key)}
-                  className={`flex flex-col items-center gap-1.5 px-2 py-2 rounded-xl transition-colors flex-1 min-w-0 ${
-                    isActive ? "bg-gray-50" : "hover:bg-gray-50/50"
+                  className={`flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl transition-colors flex-1 min-w-0 ${
+                    isActive ? "" : "hover:bg-gray-50/50"
                   }`}
+                  style={isActive ? { backgroundColor: step.color + "0C" } : undefined}
                 >
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-[14px] font-medium transition-colors ${
-                      isActive
-                        ? "text-white"
-                        : isPast
-                        ? "bg-gray-100 text-gray-400"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
-                    style={isActive ? { backgroundColor: step.color } : undefined}
+                    className="w-9 h-9 rounded-full flex items-center justify-center text-[15px] font-medium text-white"
+                    style={{ backgroundColor: isActive ? step.color : step.color + "60" }}
                   >
-                    {isPast ? (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="20 6 9 17 4 12" />
-                      </svg>
-                    ) : (
-                      count
-                    )}
+                    {count}
                   </div>
-                  <span className={`text-[11px] leading-tight text-center truncate w-full ${
-                    isActive ? "text-gray-900 font-medium" : "text-gray-500"
-                  }`}>
+                  <span
+                    className={`text-[11px] leading-tight text-center truncate w-full ${isActive ? "font-medium" : ""}`}
+                    style={{ color: isActive ? step.color : "#6B7684" }}
+                  >
                     {t(step.labelKey)}
                   </span>
-                  {isActive && (
-                    <span className="text-[18px] font-medium" style={{ color: step.color }}>
-                      {count}명
-                    </span>
-                  )}
                 </button>
                 {i < PIPELINE_STEPS.length - 1 && (
-                  <div className={`flex-shrink-0 ${isPast ? "text-gray-300" : "text-gray-200"}`}>
+                  <div className="flex-shrink-0 text-gray-200">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
@@ -408,24 +413,21 @@ export default function CandidatesPage() {
 
       <div className="flex gap-2 mb-4 flex-wrap">
         <Dropdown
+          value={companyFilter}
+          onChange={setCompanyFilter}
+          placeholder={t("candidates.allCompanies")}
+          options={[
+            { value: "all", label: t("candidates.allCompanies") },
+            ...companyOptions.map((company) => ({ value: company, label: company })),
+          ]}
+        />
+        <Dropdown
           value={positionFilter}
           onChange={setPositionFilter}
           placeholder={t("candidates.allPositions")}
           options={[
             { value: "all", label: t("candidates.allPositions") },
-            ...positions.map((pos) => ({ value: pos, label: pos })),
-          ]}
-        />
-        <Dropdown
-          value={jobFilter}
-          onChange={setJobFilter}
-          placeholder={t("candidates.allJobs")}
-          options={[
-            { value: "all", label: t("candidates.allJobs") },
-            ...jobCodes.map((code) => {
-              const jd = JD_MAP[code];
-              return { value: code, label: jd ? `${code} · ${jd.company}` : code };
-            }),
+            ...positionOptions.map((pos) => ({ value: pos, label: pos })),
           ]}
         />
         <Dropdown
@@ -484,14 +486,13 @@ export default function CandidatesPage() {
                     <StatusBadge status={c.pipeline_status} score={c.llm_score} t={t} />
                   </div>
                   <div className="flex items-center gap-2 text-[12px] text-gray-500">
-                    {c.applied_job?.match(/^([A-Z]+\d+)/)?.[1] && (
+                    {getCompany(c) && (
                       <span className="bg-[#E8F3FF] text-[#3182F6] px-1.5 py-0.5 rounded text-[11px] font-medium">
-                        {c.applied_job.match(/^([A-Z]+\d+)/)?.[1]}
+                        {getCompany(c)}
                       </span>
                     )}
-                    {c.applied_job?.match(/^([A-Z]+\d+)/)?.[1] && c.position && <span>·</span>}
-                    {c.position && <span>{c.position}</span>}
-                    {(c.position || c.applied_job) && c.city && <span>·</span>}
+                    {getPosition(c) && <span>{getPosition(c)}</span>}
+                    {(getCompany(c) || getPosition(c)) && c.city && <span>·</span>}
                     {c.city && <span>{c.city}</span>}
                   </div>
                 </div>
@@ -916,8 +917,14 @@ function SendInterviewModal({ count, sampleName, sampleCompany, onConfirm, onClo
     return `${y}년 ${Number(m)}월 ${Number(d)}일 ${hour}:${minute} (베트남 시간, GMT+7)`;
   };
 
+  const getDeadlineISO = () => {
+    if (!date) return "";
+    // 베트남 시간(GMT+7) 기준 ISO 문자열 생성
+    return `${date}T${hour}:${minute}:00+07:00`;
+  };
+
   const handleConfirm = () => {
-    onConfirm(getDeadlineEn());
+    onConfirm(getDeadlineISO());
   };
 
   const sampleCode = "KTC-A2B3C4";
