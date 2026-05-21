@@ -53,9 +53,55 @@ export default function MessagesPage() {
 
   const loadThreads = useCallback(async () => {
     try {
-      const res = await fetch("/api/admin/messages", { cache: "no-store" });
-      const data = await res.json();
-      setThreads(data.threads || []);
+      // 삭제된 스레드 조회
+      const { data: deletedMeta } = await supabase
+        .from("email_thread_meta")
+        .select("thread_id")
+        .not("deleted_at", "is", null);
+      const deletedIds = new Set((deletedMeta || []).map((m) => m.thread_id));
+
+      // 별표 스레드 조회
+      const { data: starredMeta } = await supabase
+        .from("email_thread_meta")
+        .select("thread_id")
+        .eq("starred", true);
+      const starredIds = new Set((starredMeta || []).map((m) => m.thread_id));
+
+      // 모든 메시지 조회
+      const { data: allMessages } = await supabase
+        .from("email_messages")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      const threadMap = new Map<string, Thread>();
+      for (const msg of allMessages || []) {
+        if (deletedIds.has(msg.thread_id)) continue;
+        const existing = threadMap.get(msg.thread_id);
+        if (!existing) {
+          threadMap.set(msg.thread_id, {
+            thread_id: msg.thread_id,
+            subject: msg.subject,
+            to_email: msg.direction === "outbound" ? msg.to_email : msg.from_email,
+            to_name: msg.to_name,
+            last_message_at: msg.created_at,
+            message_count: 1,
+            unread_count: msg.direction === "inbound" && !msg.read_at ? 1 : 0,
+            last_direction: msg.direction,
+            last_body_text: msg.body_text,
+            starred: starredIds.has(msg.thread_id),
+          });
+        } else {
+          existing.message_count++;
+          if (msg.direction === "inbound" && !msg.read_at) existing.unread_count++;
+        }
+      }
+
+      const sorted = Array.from(threadMap.values()).sort((a, b) => {
+        if (a.starred !== b.starred) return a.starred ? -1 : 1;
+        return new Date(b.last_message_at).getTime() - new Date(a.last_message_at).getTime();
+      });
+
+      setThreads(sorted);
     } catch {
       console.error("Failed to load threads");
     } finally {
@@ -79,14 +125,34 @@ export default function MessagesPage() {
 
   async function refreshMessages(threadId: string) {
     try {
-      const res = await fetch(`/api/admin/messages/${threadId}`, { cache: "no-store" });
-      const data = await res.json();
-      console.log("[Messages Debug] API response for thread", threadId, ":", JSON.stringify(data));
-      console.log("[Messages Debug] Message count:", data.messages?.length, "Directions:", data.messages?.map((m: Message) => m.direction));
-      setMessages(data.messages || []);
+      // 직접 Supabase에서 조회 (API 루트 캐싱 문제 우회)
+      const { data: msgs, error } = await supabase
+        .from("email_messages")
+        .select("*")
+        .eq("thread_id", threadId)
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Failed to load thread:", error.message);
+        return;
+      }
+
+      setMessages(msgs || []);
       setThreads((prev) =>
         prev.map((t) => (t.thread_id === threadId ? { ...t, unread_count: 0 } : t))
       );
+
+      // 인바운드 읽음 처리
+      const unreadIds = (msgs || [])
+        .filter((m) => m.direction === "inbound" && !m.read_at)
+        .map((m) => m.id);
+
+      if (unreadIds.length > 0) {
+        await supabase
+          .from("email_messages")
+          .update({ read_at: new Date().toISOString() })
+          .in("id", unreadIds);
+      }
     } catch (err) {
       console.error("Failed to load thread:", err);
     }

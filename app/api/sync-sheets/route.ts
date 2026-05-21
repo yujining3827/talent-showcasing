@@ -33,14 +33,14 @@ export async function POST() {
 
         // 기존 후보자의 식별자 + pipeline_status 조회 (1000행 제한 우회)
         send({ type: "status", message: "기존 후보자 조회 중..." });
-        const existingAll: { sheet_source: string; sheet_row_identifier: string; pipeline_status: string }[] = [];
+        const existingAll: { full_name: string; email: string | null; phone: string | null; sheet_row_identifier: string; pipeline_status: string }[] = [];
         {
           const PAGE = 1000;
           let from = 0;
           while (true) {
             const { data } = await supabase
               .from("candidates")
-              .select("sheet_source, sheet_row_identifier, pipeline_status")
+              .select("full_name, email, phone, sheet_row_identifier, pipeline_status")
               .range(from, from + PAGE - 1);
             if (!data || data.length === 0) break;
             existingAll.push(...data);
@@ -49,16 +49,23 @@ export async function POST() {
           }
         }
 
-        // sheet_row_identifier만으로 dedup (같은 사람이 여러 탭에 있어도 1건만)
-        const existingMap = new Map<string, string>();
-        existingAll.forEach((e) => {
-          if (e.sheet_row_identifier) {
-            const current = existingMap.get(e.sheet_row_identifier);
-            // 이미 진행된 상태(passed 등)가 있으면 그걸 우선
-            if (!current || current === "new") {
-              existingMap.set(e.sheet_row_identifier, e.pipeline_status);
-            }
+        // 중복 체크용 맵 구축: sheet_row_identifier + 이메일 + 이름+전화번호
+        // identifier가 바뀌어도 이메일이나 이름+전화번호로 잡아냄
+        const existingMap = new Map<string, string>(); // key → pipeline_status (non-"new" 우선)
+        function setMap(key: string, status: string) {
+          if (!key) return;
+          const current = existingMap.get(key);
+          if (!current || current === "new") {
+            existingMap.set(key, status);
           }
+        }
+        existingAll.forEach((e) => {
+          // 1차: sheet_row_identifier
+          setMap(e.sheet_row_identifier, e.pipeline_status);
+          // 2차: 이메일 (identifier가 바뀌어도 이메일로 매칭)
+          if (e.email) setMap(e.email, e.pipeline_status);
+          // 3차: 이름+전화번호 (이메일 없는 경우 대비)
+          if (e.full_name && e.phone) setMap(`${e.full_name}-${e.phone}`, e.pipeline_status);
         });
 
         // 이번 동기화에서도 같은 row_identifier 중복 방지
@@ -78,7 +85,10 @@ export async function POST() {
             // 같은 batch 내 중복 스킵
             if (seenInBatch.has(rowId)) { skipped++; continue; }
             seenInBatch.add(rowId);
-            const existingStatus = existingMap.get(rowId);
+            // 다중 키로 기존 후보자 매칭: identifier → 이메일 → 이름+전화번호
+            const existingStatus = existingMap.get(rowId)
+              ?? (c.email ? existingMap.get(c.email) : undefined)
+              ?? (c.full_name && c.phone ? existingMap.get(`${c.full_name}-${c.phone}`) : undefined);
             const row = {
               full_name: c.full_name,
               email: c.email || null,
