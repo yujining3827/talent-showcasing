@@ -42,6 +42,26 @@ interface IssuedResult {
 
 const emptyRow = (): CandidateRow => ({ candidate_name: "", candidate_email: "", applied_company: "", applied_position: "" });
 
+function calcGrade(screening: number | null, interview: number | null): { score: number; grade: string } | null {
+  if (screening === null || screening === undefined || interview === null || interview === undefined) return null;
+  const normalizedInterview = (interview / 70) * 100;
+  const combined = Math.round((screening + normalizedInterview) / 2);
+  let grade = "F";
+  if (combined >= 80) grade = "A";
+  else if (combined >= 65) grade = "B";
+  else if (combined >= 50) grade = "C";
+  else if (combined >= 35) grade = "D";
+  return { score: combined, grade };
+}
+
+const gradeBadge = (grade: string) => {
+  if (grade === "A") return "bg-grade-s-bg text-grade-s-text";
+  if (grade === "B") return "bg-blue-50 text-blue-500";
+  if (grade === "C") return "bg-gray-100 text-gray-600";
+  if (grade === "D") return "bg-gray-100 text-gray-500";
+  return "bg-red-400/10 text-red-500"; // F
+};
+
 function isOverdue(session: Session): boolean {
   if (!session.deadline) return false;
   if (session.status === "scored" || session.status === "completed") return false;
@@ -189,19 +209,23 @@ export default function InterviewsAdminPage() {
   const overdueCount = filtered.filter(s => isOverdue(s)).length;
 
   const exportCsv = () => {
-    const headers = ["코드", "이름", "스크리닝 점수", "Phone", "회사", "포지션", "상태", "데드라인", "인터뷰 점수", "결정"];
-    const rows = filtered.map(s => [
-      s.access_code,
-      s.candidate_name || "",
-      s.screening_score !== null && s.screening_score !== undefined ? String(s.screening_score) : "",
-      s.candidate_phone || "",
-      s.applied_company || "",
-      s.applied_position || "",
-      s.status,
-      s.deadline ? formatDeadline(s.deadline) : "",
-      s.total_score !== null ? `${s.total_score}/70 (${Math.round(s.total_score/70*100)}%)` : "",
-      s.human_decision || "",
-    ]);
+    const headers = ["코드", "이름", "스크리닝 점수", "Phone", "회사", "포지션", "상태", "데드라인", "인터뷰 점수", "등급", "결정"];
+    const rows = filtered.map(s => {
+      const g = calcGrade(s.screening_score, s.total_score);
+      return [
+        s.access_code,
+        s.candidate_name || "",
+        s.screening_score !== null && s.screening_score !== undefined ? String(s.screening_score) : "",
+        s.candidate_phone || "",
+        s.applied_company || "",
+        s.applied_position || "",
+        s.status,
+        s.deadline ? formatDeadline(s.deadline) : "",
+        s.total_score !== null ? `${s.total_score}/70 (${Math.round(s.total_score/70*100)}%)` : "",
+        g ? `${g.grade} ${g.score}` : "",
+        s.human_decision || "",
+      ];
+    });
     const bom = "\uFEFF";
     const csv = bom + [headers, ...rows].map(r => r.map(c => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -328,8 +352,8 @@ export default function InterviewsAdminPage() {
       {loading ? (
         <div className="text-center py-12 text-gray-500 text-[14px]">{t("common.loading")}</div>
       ) : (
-        <div className="bg-white rounded-2xl border-[0.5px] border-gray-200/60 overflow-hidden">
-          <table className="w-full text-[13px]">
+        <div className="bg-white rounded-2xl border-[0.5px] border-gray-200/60 overflow-x-auto">
+          <table className="w-full text-[13px] whitespace-nowrap">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.code")}</th>
@@ -341,6 +365,7 @@ export default function InterviewsAdminPage() {
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.status")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.deadline")}</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.score")}</th>
+                <th className="px-4 py-3 text-left text-gray-500 font-medium">등급</th>
                 <th className="px-4 py-3 text-left text-gray-500 font-medium">{t("interviews.col.decision")}</th>
               </tr>
             </thead>
@@ -376,6 +401,17 @@ export default function InterviewsAdminPage() {
                       {s.total_score !== null ? `${s.total_score}/70 (${Math.round(s.total_score/70*100)}%)` : <span className="text-gray-400">—</span>}
                     </td>
                     <td className="px-4 py-3">
+                      {(() => {
+                        const result = calcGrade(s.screening_score, s.total_score);
+                        if (!result) return <span className="text-gray-400">—</span>;
+                        return (
+                          <span className={`text-[12px] px-2 py-1 rounded-full font-medium ${gradeBadge(result.grade)}`}>
+                            {result.grade} {result.score}
+                          </span>
+                        );
+                      })()}
+                    </td>
+                    <td className="px-4 py-3">
                       {s.human_decision === "pass" && <span className="text-status-available font-medium">PASS</span>}
                       {s.human_decision === "fail" && <span className="text-red-500 font-medium">FAIL</span>}
                       {s.human_decision === "hold" && <span className="text-grade-s-text font-medium">HOLD</span>}
@@ -386,7 +422,7 @@ export default function InterviewsAdminPage() {
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-12 text-center text-gray-500">
+                  <td colSpan={11} className="px-4 py-12 text-center text-gray-500">
                     {search || companyFilter !== "all" ? t("interviews.noResult") : t("interviews.noData")}
                   </td>
                 </tr>
