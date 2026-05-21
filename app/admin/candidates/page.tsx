@@ -244,22 +244,25 @@ export default function CandidatesPage() {
   const sources = Array.from(new Set(candidates.map((c) => c.source)));
   const positions = Array.from(new Set(candidates.map((c) => c.position).filter(Boolean))) as string[];
   const jobCodes = Array.from(new Set(candidates.map((c) => c.applied_job?.match(/^([A-Z]+\d+)/)?.[1]).filter(Boolean))) as string[];
-  const filtered = candidates
-    .filter((c) => tabGroup.statuses.includes(c.pipeline_status as never))
+  // 필터(소스/직군/회사) 적용된 베이스 — 탭/검색 제외
+  const filteredBase = candidates
     .filter((c) => sourceFilter === "all" || c.source === sourceFilter)
     .filter((c) => positionFilter === "all" || c.position === positionFilter)
-    .filter((c) => jobFilter === "all" || (c.applied_job || "").startsWith(jobFilter))
-    .filter((c) => !search || c.full_name.toLowerCase().includes(search.toLowerCase()));
+    .filter((c) => jobFilter === "all" || (c.applied_job || "").startsWith(jobFilter));
 
   const counts = {
-    pending: candidates.filter((c) => c.pipeline_status === "new").length,
-    ai_passed: candidates.filter((c) => c.pipeline_status === "passed").length,
-    ai_interview_sent: candidates.filter((c) => c.pipeline_status === "ai_interview_sent").length,
-    ai_interview_done: candidates.filter((c) => c.pipeline_status === "ai_interview_done").length,
-    final_passed: candidates.filter((c) => c.pipeline_status === "final_passed").length,
-    screening_failed: candidates.filter((c) => c.pipeline_status === "screening_failed").length,
-    rejected: candidates.filter((c) => c.pipeline_status === "rejected").length,
+    pending: filteredBase.filter((c) => c.pipeline_status === "new").length,
+    ai_passed: filteredBase.filter((c) => c.pipeline_status === "passed").length,
+    ai_interview_sent: filteredBase.filter((c) => c.pipeline_status === "ai_interview_sent").length,
+    ai_interview_done: filteredBase.filter((c) => c.pipeline_status === "ai_interview_done").length,
+    final_passed: filteredBase.filter((c) => c.pipeline_status === "final_passed").length,
+    screening_failed: filteredBase.filter((c) => c.pipeline_status === "screening_failed").length,
+    rejected: filteredBase.filter((c) => c.pipeline_status === "rejected").length,
   };
+
+  const filtered = filteredBase
+    .filter((c) => tabGroup.statuses.includes(c.pipeline_status as never))
+    .filter((c) => !search || c.full_name.toLowerCase().includes(search.toLowerCase()));
 
 
   if (loading) return <div className="flex items-center justify-center py-20"><p className="text-[14px] text-gray-500">{t("common.loading")}</p></div>;
@@ -575,13 +578,14 @@ function CandidateDetailModal({ candidate: initCandidate, onClose }: { candidate
     setDeleting(true);
     try {
       const res = await fetch(`/api/admin/candidates/${c.id}`, { method: "DELETE" });
+      const json = await res.json();
       if (res.ok) {
         onClose();
       } else {
-        alert("삭제 실패");
+        alert(`삭제 실패: ${json.error || "알 수 없는 오류"}`);
       }
-    } catch {
-      alert("삭제 실패");
+    } catch (e) {
+      alert(`삭제 실패: ${e}`);
     }
     setDeleting(false);
   };
