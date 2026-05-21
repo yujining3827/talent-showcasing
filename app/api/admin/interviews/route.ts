@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
   const sessionList = sessions || [];
 
   // candidate_id가 있는 세션에서 phone, talent_id, cv_url 조회
-  const candidateIds = [...new Set(sessionList.filter(s => s.candidate_id).map(s => s.candidate_id))];
+  const candidateIds = Array.from(new Set(sessionList.filter(s => s.candidate_id).map(s => s.candidate_id)));
 
   let phoneMap: Record<string, string> = {};
   let talentIdMap: Record<string, string> = {};
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
   }
 
   // talent_id → ovr_score (스크리닝 점수) 조회
-  const talentIds = [...new Set(Object.values(talentIdMap))];
+  const talentIds = Array.from(new Set(Object.values(talentIdMap)));
   let screeningScoreMap: Record<string, number> = {};
   if (talentIds.length > 0) {
     const { data: talents } = await supabase
