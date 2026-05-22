@@ -11,44 +11,20 @@ function getSupabaseAdmin() {
 export async function GET() {
   const supabase = getSupabaseAdmin();
 
-  // 인터뷰 완료 + human_decision = pass인 세션 조회
-  const { data: sessions } = await supabase
-    .from("interview_sessions")
+  // ai_interview_passed 또는 final_passed 상태인 후보자 조회
+  const { data: candidates } = await supabase
+    .from("candidates")
     .select("*")
-    .eq("human_decision", "pass")
+    .in("pipeline_status", ["ai_interview_passed", "final_passed"])
     .order("applied_company", { ascending: true })
-    .order("created_at", { ascending: true });
+    .order("updated_at", { ascending: true });
 
-  if (!sessions || sessions.length === 0) {
+  if (!candidates || candidates.length === 0) {
     return NextResponse.json({ success: true, items: [] });
   }
 
-  // candidate_id로 후보자 정보 조회
-  const candidateIds = Array.from(
-    new Set(sessions.filter((s) => s.candidate_id).map((s) => s.candidate_id))
-  );
-
-  let candidateMap: Record<string, { yoe: string | null; llm_summary: string | null; cv_url: string | null; talent_id: string | null; llm_score: number | null }> = {};
-  if (candidateIds.length > 0) {
-    const { data: candidates } = await supabase
-      .from("candidates")
-      .select("id, yoe, llm_summary, cv_url, talent_id, llm_score")
-      .in("id", candidateIds);
-    if (candidates) {
-      candidateMap = Object.fromEntries(
-        candidates.map((c) => [c.id, { yoe: c.yoe, llm_summary: c.llm_summary, cv_url: c.cv_url, talent_id: c.talent_id, llm_score: c.llm_score }])
-      );
-    }
-  }
-
   // talent_id → ovr_score 조회
-  const talentIds = Array.from(
-    new Set(
-      Object.values(candidateMap)
-        .filter((c) => c.talent_id)
-        .map((c) => c.talent_id!)
-    )
-  );
+  const talentIds = Array.from(new Set(candidates.filter((c) => c.talent_id).map((c) => c.talent_id)));
   let screeningScoreMap: Record<string, number> = {};
   if (talentIds.length > 0) {
     const { data: talents } = await supabase
@@ -60,38 +36,54 @@ export async function GET() {
     }
   }
 
+  // candidate_id → interview_session (최신 scored 우선)
+  const candidateIds = candidates.map((c) => c.id);
+  const { data: sessions } = await supabase
+    .from("interview_sessions")
+    .select("candidate_id, total_score, ai_summary, completed_at, applied_company, applied_position")
+    .in("candidate_id", candidateIds)
+    .order("created_at", { ascending: false });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sessionMap: Record<string, any> = {};
+  for (const s of sessions || []) {
+    if (!sessionMap[s.candidate_id]) {
+      sessionMap[s.candidate_id] = s;
+    }
+  }
+
   // 조합
-  const items = sessions.map((s) => {
-    const candidate = candidateMap[s.candidate_id] || null;
-    const talentId = candidate?.talent_id;
-    // talents.ovr_score 우선, 없으면 candidates.llm_score fallback
+  const items = candidates.map((c) => {
+    const session = sessionMap[c.id] || null;
+
+    // screening score: talents.ovr_score 우선, candidates.llm_score fallback
     let screeningScore: number | null = null;
-    if (talentId && screeningScoreMap[talentId] !== undefined) {
-      screeningScore = screeningScoreMap[talentId];
-    } else if (candidate?.llm_score !== null && candidate?.llm_score !== undefined) {
-      screeningScore = candidate.llm_score;
+    if (c.talent_id && screeningScoreMap[c.talent_id] !== undefined) {
+      screeningScore = screeningScoreMap[c.talent_id];
+    } else if (c.llm_score != null) {
+      screeningScore = c.llm_score;
     }
 
     let strengthsKo: string[] = [];
-    if (candidate?.llm_summary) {
+    if (c.llm_summary) {
       try {
-        const summary = JSON.parse(candidate.llm_summary);
+        const summary = JSON.parse(c.llm_summary);
         strengthsKo = summary.strengths_ko || summary.strengths_en || summary.strengths || [];
       } catch { /* ignore */ }
     }
 
     return {
-      id: s.id,
-      candidate_name: s.candidate_name || "",
-      applied_company: s.applied_company || "",
-      applied_position: s.applied_position || "",
-      yoe: candidate?.yoe || "",
+      id: c.id,
+      candidate_name: c.full_name || "",
+      applied_company: session?.applied_company || c.applied_company || "",
+      applied_position: session?.applied_position || c.applied_job || "",
+      yoe: c.yoe || "",
       screening_score: screeningScore,
       strengths_ko: strengthsKo,
-      ai_summary: s.ai_summary || "",
-      cv_url: candidate?.cv_url || "",
-      total_score: s.total_score,
-      completed_at: s.completed_at,
+      ai_summary: session?.ai_summary || "",
+      cv_url: c.cv_url || "",
+      total_score: session?.total_score || null,
+      completed_at: session?.completed_at || null,
     };
   });
 
