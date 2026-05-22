@@ -384,8 +384,8 @@ export default function InterviewsAdminPage() {
                       ) : <span className="text-gray-400">—</span>}
                     </td>
                     <td className="px-4 py-3 text-[12px] text-gray-600">{s.candidate_phone || <span className="text-gray-400">—</span>}</td>
-                    <td className="px-4 py-3 text-[12px] text-gray-600">{s.applied_company || <span className="text-gray-400">—</span>}</td>
-                    <td className="px-4 py-3 text-[12px] text-gray-600">{s.applied_position || <span className="text-gray-400">—</span>}</td>
+                    <td className="px-4 py-3 text-[12px] text-gray-600 max-w-[120px] truncate" title={s.applied_company || undefined}>{s.applied_company || <span className="text-gray-400">—</span>}</td>
+                    <td className="px-4 py-3 text-[12px] text-gray-600 max-w-[120px] truncate" title={s.applied_position || undefined}>{s.applied_position || <span className="text-gray-400">—</span>}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-1.5">
                         <span className={`text-[12px] px-2 py-1 rounded-full ${statusBadge(s.status)}`}>{statusLabel(s)}</span>

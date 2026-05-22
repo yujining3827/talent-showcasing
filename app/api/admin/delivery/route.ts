@@ -28,15 +28,15 @@ export async function GET() {
     new Set(sessions.filter((s) => s.candidate_id).map((s) => s.candidate_id))
   );
 
-  let candidateMap: Record<string, { yoe: string | null; llm_summary: string | null; cv_url: string | null; talent_id: string | null }> = {};
+  let candidateMap: Record<string, { yoe: string | null; llm_summary: string | null; cv_url: string | null; talent_id: string | null; llm_score: number | null }> = {};
   if (candidateIds.length > 0) {
     const { data: candidates } = await supabase
       .from("candidates")
-      .select("id, yoe, llm_summary, cv_url, talent_id")
+      .select("id, yoe, llm_summary, cv_url, talent_id, llm_score")
       .in("id", candidateIds);
     if (candidates) {
       candidateMap = Object.fromEntries(
-        candidates.map((c) => [c.id, { yoe: c.yoe, llm_summary: c.llm_summary, cv_url: c.cv_url, talent_id: c.talent_id }])
+        candidates.map((c) => [c.id, { yoe: c.yoe, llm_summary: c.llm_summary, cv_url: c.cv_url, talent_id: c.talent_id, llm_score: c.llm_score }])
       );
     }
   }
@@ -64,7 +64,13 @@ export async function GET() {
   const items = sessions.map((s) => {
     const candidate = candidateMap[s.candidate_id] || null;
     const talentId = candidate?.talent_id;
-    const screeningScore = talentId ? screeningScoreMap[talentId] ?? null : null;
+    // talents.ovr_score 우선, 없으면 candidates.llm_score fallback
+    let screeningScore: number | null = null;
+    if (talentId && screeningScoreMap[talentId] !== undefined) {
+      screeningScore = screeningScoreMap[talentId];
+    } else if (candidate?.llm_score !== null && candidate?.llm_score !== undefined) {
+      screeningScore = candidate.llm_score;
+    }
 
     let strengthsKo: string[] = [];
     if (candidate?.llm_summary) {
@@ -89,8 +95,5 @@ export async function GET() {
     };
   });
 
-  // 매칭점수(스크리닝 점수) 없는 항목 제외
-  const validItems = items.filter((i) => i.screening_score !== null);
-
-  return NextResponse.json({ success: true, items: validItems });
+  return NextResponse.json({ success: true, items });
 }
