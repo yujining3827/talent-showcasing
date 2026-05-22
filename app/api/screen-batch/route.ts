@@ -59,7 +59,7 @@ export async function POST() {
         const CONCURRENCY = 5;
 
         // 한 명을 스크리닝하는 함수
-        async function processOne(c: (typeof matchable)[0]) {
+        const processOne = async (c: (typeof matchable)[0]) => {
           const jobCode = matchJobCode(c.applied_job || "", allCodes)!;
           const jd = JD_MAP[jobCode];
           const jdText = buildJDText(jd);
