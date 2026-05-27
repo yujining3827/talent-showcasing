@@ -2,8 +2,8 @@ import { createClient } from '@supabase/supabase-js'
 import { supabase } from './supabase'
 import { Talent } from './types'
 
-// ISR/SSG 호환 클라이언트 (cache: 'no-store' 없음 → Next.js revalidate 사용)
-const supabaseISR = createClient(
+// 동적 페이지용 (no-store → 항상 최신 데이터)
+const supabaseDynamic = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
   {
@@ -14,8 +14,14 @@ const supabaseISR = createClient(
   }
 )
 
+// ISR/SSG 호환 클라이언트 (Next.js revalidate 사용)
+const supabaseISR = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
+
 export async function fetchTalents(): Promise<Talent[]> {
-  const { data, error } = await supabaseISR
+  const { data, error } = await supabaseDynamic
     .from('talents')
     .select('*')
     .eq('published', true)
