@@ -618,7 +618,7 @@ function CandidateSearchPanel({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const search = async (q: string) => {
     if (q.trim().length < 2) { setResults([]); return; }
