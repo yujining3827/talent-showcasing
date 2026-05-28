@@ -105,14 +105,14 @@ const EXIT_STEPS = [
 const ALL_STEPS = [...PIPELINE_STEPS, ...EXIT_STEPS];
 
 const STAGE_OPTIONS = [
-  { value: "new", label: "스크리닝 대기" },
-  { value: "passed", label: "스크리닝 합격" },
-  { value: "ai_interview_sent", label: "AI 인터뷰 발송" },
-  { value: "ai_interview_done", label: "AI 인터뷰 완료" },
-  { value: "ai_interview_passed", label: "AI 인터뷰 합격" },
-  { value: "final_passed", label: "최종 합격" },
-  { value: "screening_failed", label: "스크리닝 실패" },
-  { value: "rejected", label: "불합격" },
+  { value: "new", labelKey: "candidates.tab.pending" },
+  { value: "passed", labelKey: "candidates.tab.aiPassed" },
+  { value: "ai_interview_sent", labelKey: "candidates.tab.aiInterviewSent" },
+  { value: "ai_interview_done", labelKey: "candidates.tab.aiInterviewDone" },
+  { value: "ai_interview_passed", labelKey: "candidates.tab.aiInterviewPassed" },
+  { value: "final_passed", labelKey: "candidates.tab.finalPassed" },
+  { value: "screening_failed", labelKey: "candidates.tab.screeningFailed" },
+  { value: "rejected", labelKey: "candidates.tab.rejected" },
 ];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -637,7 +637,7 @@ export default function CandidatesPage() {
                   {STAGE_OPTIONS.map(opt => (
                     <button key={opt.value} onClick={() => bulkAction("change_status", opt.value)}
                       className="w-full text-left px-3.5 py-2 text-[13px] text-gray-700 hover:bg-gray-50 transition-colors">
-                      {opt.label}
+                      {t(opt.labelKey)}
                     </button>
                   ))}
                 </div>
@@ -1022,7 +1022,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
                         : "bg-gray-50 text-gray-600 hover:bg-gray-100"
                     }`}
                   >
-                    {opt.label}
+                    {t(opt.labelKey)}
                   </button>
                 ))}
               </div>
