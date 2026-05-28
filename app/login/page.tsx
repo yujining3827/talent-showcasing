@@ -41,15 +41,7 @@ export default function LoginPage() {
 
     loadSession();
 
-    // callback에서 hash로 전달된 토큰 정리 (세션 설정 후 URL에서 제거)
-    if (window.location.hash.includes('access_token')) {
-      // supabase가 hash를 감지한 후 정리
-      setTimeout(() => {
-        window.history.replaceState(null, '', window.location.pathname);
-      }, 100);
-    }
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         const u = session?.user ?? null;
         setUser(u);
