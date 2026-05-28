@@ -158,14 +158,6 @@ export default function AdminTalentsPage() {
           </p>
         </div>
         <div className="flex gap-2">
-          <button onClick={publishAll}
-            className="px-4 py-2.5 bg-[#3182F6] text-white rounded-xl text-[13px] hover:bg-[#2272EB] transition-colors">
-            {t("talents.publishAll")}
-          </button>
-          <button onClick={unpublishAll}
-            className="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-[13px] hover:border-gray-300 transition-colors">
-            {t("talents.unpublishAll")}
-          </button>
           <button onClick={() => { setBulkAction((v) => !v); setSelectedIds(new Set()); }}
             className={`px-4 py-2.5 rounded-xl text-[13px] transition-colors ${
               bulkAction
@@ -174,14 +166,24 @@ export default function AdminTalentsPage() {
             }`}>
             {bulkAction ? "선택 해제" : "선택 모드"}
           </button>
-          <button onClick={dedupTalents} disabled={dedupLoading}
-            className="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-[13px] hover:border-gray-300 transition-colors disabled:opacity-50">
-            {dedupLoading ? "정리 중..." : "중복 정리"}
-          </button>
-          <Link href="/admin/talents/new"
-            className="px-4 py-2.5 bg-gray-900 text-white rounded-xl text-[13px] hover:bg-gray-800 transition-colors">
-            {t("talents.addTalent")}
-          </Link>
+          <div className={`flex gap-2 ${bulkAction ? "opacity-40 pointer-events-none" : ""}`}>
+            <button onClick={publishAll}
+              className="px-4 py-2.5 bg-[#3182F6] text-white rounded-xl text-[13px] hover:bg-[#2272EB] transition-colors">
+              {t("talents.publishAll")}
+            </button>
+            <button onClick={unpublishAll}
+              className="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-[13px] hover:border-gray-300 transition-colors">
+              {t("talents.unpublishAll")}
+            </button>
+            <button onClick={dedupTalents} disabled={dedupLoading}
+              className="px-4 py-2.5 bg-white border border-gray-200 text-gray-700 rounded-xl text-[13px] hover:border-gray-300 transition-colors disabled:opacity-50">
+              {dedupLoading ? "정리 중..." : "중복 정리"}
+            </button>
+            <Link href="/admin/talents/new"
+              className="px-4 py-2.5 bg-gray-900 text-white rounded-xl text-[13px] hover:bg-gray-800 transition-colors">
+              {t("talents.addTalent")}
+            </Link>
+          </div>
         </div>
       </div>
 

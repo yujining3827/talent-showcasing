@@ -404,7 +404,7 @@ export default function CandidatesPage() {
             {bulkMode ? t("bulk.deselectAll") : t("bulk.selectMode")}
           </button>
         {isSuperAdmin && (
-          <>
+          <div className={`flex gap-2 ${bulkMode ? "opacity-40 pointer-events-none" : ""}`}>
             <button onClick={async () => {
                 if (!confirm(t("candidates.dedupConfirm"))) return;
                 setBusy(true); setMessage(t("candidates.dedupRunning"));
@@ -428,7 +428,7 @@ export default function CandidatesPage() {
               className="px-4 py-2 bg-gray-900 text-white text-[13px] rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50">
               {t("candidates.syncSheets")}
             </button>
-          </>
+          </div>
         )}
         </div>
       </div>

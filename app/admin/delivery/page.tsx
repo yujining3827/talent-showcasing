@@ -203,8 +203,8 @@ export default function DeliveryPage() {
             className={`px-4 py-2 rounded-xl text-[13px] transition-colors duration-100 ${bulkMode ? "bg-gray-900 text-white" : "bg-white border-[0.5px] border-gray-200 text-gray-700 hover:border-gray-300"}`}>
             {bulkMode ? t("bulk.deselectAll") : t("bulk.selectMode")}
           </button>
-          <button onClick={exportCsv}
-            className="flex items-center gap-1.5 border-[0.5px] border-gray-200 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-[13px] font-medium transition-colors duration-100">
+          <button onClick={exportCsv} disabled={bulkMode}
+            className={`flex items-center gap-1.5 border-[0.5px] border-gray-200 bg-white text-gray-700 px-4 py-2 rounded-xl text-[13px] font-medium transition-colors duration-100 ${bulkMode ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50"}`}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
