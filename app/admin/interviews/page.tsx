@@ -294,7 +294,7 @@ export default function InterviewsAdminPage() {
                 ? "bg-gray-900 text-white"
                 : "bg-white border-[0.5px] border-gray-200 text-gray-700 hover:border-gray-300"
             }`}>
-            {bulkMode ? "선택 해제" : "선택 모드"}
+            {bulkMode ? t("bulk.deselectAll") : t("bulk.selectMode")}
           </button>
           <button onClick={exportCsv}
             className="flex items-center gap-1.5 border-[0.5px] border-gray-200 bg-white hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-xl text-[13px] font-medium transition-colors duration-100">
@@ -500,9 +500,9 @@ export default function InterviewsAdminPage() {
               checked={selected.size === filtered.length}
               onChange={toggleSelectAll}
               className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
-            전체 선택
+            {t("bulk.selectAll")}
           </label>
-          <span className="text-[13px] text-gray-500">{selected.size}명 선택</span>
+          <span className="text-[13px] text-gray-500">{selected.size}{t("bulk.selected")}</span>
           <div className="flex gap-2 ml-auto">
             <button onClick={() => bulkDecision("pass")} disabled={bulkLoading}
               className="px-4 py-2 rounded-xl text-[13px] font-medium bg-[#1D9E75]/10 text-[#1D9E75] hover:bg-[#1D9E75]/20 transition-colors duration-100 disabled:opacity-50">

@@ -104,6 +104,17 @@ const EXIT_STEPS = [
 
 const ALL_STEPS = [...PIPELINE_STEPS, ...EXIT_STEPS];
 
+const STAGE_OPTIONS = [
+  { value: "new", label: "스크리닝 대기" },
+  { value: "passed", label: "스크리닝 합격" },
+  { value: "ai_interview_sent", label: "AI 인터뷰 발송" },
+  { value: "ai_interview_done", label: "AI 인터뷰 완료" },
+  { value: "ai_interview_passed", label: "AI 인터뷰 합격" },
+  { value: "final_passed", label: "최종 합격" },
+  { value: "screening_failed", label: "스크리닝 실패" },
+  { value: "rejected", label: "불합격" },
+];
+
 const STATUS_COLORS: Record<string, string> = {
   new: "#8B95A1",
   passed: "#3182F6",
@@ -162,6 +173,13 @@ export default function CandidatesPage() {
   const [showSendModal, setShowSendModal] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [allJDs, setAllJDs] = useState<Record<string, JobDescription>>(JD_MAP);
+  const [bulkMode, setBulkMode] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkLoading, setBulkLoading] = useState(false);
+  const [showBulkJD, setShowBulkJD] = useState(false);
+  const [showBulkStage, setShowBulkStage] = useState(false);
+  const bulkStageRef = useRef<HTMLDivElement>(null);
+  const bulkJDRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -309,24 +327,77 @@ export default function CandidatesPage() {
     .filter((c) => !search || c.full_name.toLowerCase().includes(search.toLowerCase()));
 
 
+  const toggleSelect = (id: string) => {
+    setSelected(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selected.size === filtered.length) setSelected(new Set());
+    else setSelected(new Set(filtered.map(c => c.id)));
+  };
+
+  const toggleBulkMode = () => {
+    setBulkMode(v => !v);
+    setSelected(new Set());
+    setShowBulkJD(false);
+    setShowBulkStage(false);
+  };
+
+  const bulkAction = async (action: string, value?: string) => {
+    if (selected.size === 0) return;
+    if (action === "delete" && !confirm(`${selected.size}${t("bulk.deleteConfirm")}`)) return;
+    setBulkLoading(true);
+    await fetch("/api/admin/candidates/bulk", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ids: Array.from(selected), action, value }),
+    });
+    setBulkLoading(false);
+    setSelected(new Set());
+    setShowBulkJD(false);
+    setShowBulkStage(false);
+    fetchCandidates();
+  };
+
+  // 벌크 드롭다운 외부 클릭 닫기
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (bulkStageRef.current && !bulkStageRef.current.contains(e.target as Node)) setShowBulkStage(false);
+      if (bulkJDRef.current && !bulkJDRef.current.contains(e.target as Node)) setShowBulkJD(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   if (loading) return <div className="flex items-center justify-center py-20"><p className="text-[14px] text-gray-500">{t("common.loading")}</p></div>;
 
   return (
     <div>
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-[22px] font-medium text-gray-900">{t("candidates.title")}</h1>
+        <div className="flex gap-2">
+          <button onClick={toggleBulkMode}
+            className={`px-4 py-2 rounded-xl text-[13px] transition-colors duration-100 ${
+              bulkMode ? "bg-gray-900 text-white" : "bg-white border border-gray-200 text-gray-700 hover:border-gray-300"
+            }`}>
+            {bulkMode ? t("bulk.deselectAll") : t("bulk.selectMode")}
+          </button>
         {isSuperAdmin && (
-          <div className="flex gap-2">
+          <>
             <button onClick={async () => {
-                if (!confirm("중복 후보자를 정리합니다. 진행하시겠습니까?")) return;
-                setBusy(true); setMessage("중복 정리 중...");
+                if (!confirm(t("candidates.dedupConfirm"))) return;
+                setBusy(true); setMessage(t("candidates.dedupRunning"));
                 const res = await fetch("/api/admin/dedup-candidates", { method: "POST" });
                 const json = await res.json();
-                setResult(`중복 그룹 ${json.duplicateGroups}개, ${json.deleted}명 삭제`);
+                setResult(`${t("candidates.dedupResult.groups")} ${json.duplicateGroups}, ${json.deleted}${t("candidates.dedupResult.deleted")}`);
                 setBusy(false); fetchCandidates();
               }} disabled={busy}
               className="px-4 py-2 bg-gray-600 text-white text-[13px] rounded-xl hover:bg-gray-700 transition-colors disabled:opacity-50">
-              중복 정리
+              {t("candidates.dedup")}
             </button>
             <button onClick={() => runAction("/api/generate-cards", t("candidates.generateCards"))} disabled={busy}
               className="px-4 py-2 bg-[#1D9E75] text-white text-[13px] rounded-xl hover:bg-[#178A64] transition-colors disabled:opacity-50">
@@ -340,8 +411,9 @@ export default function CandidatesPage() {
               className="px-4 py-2 bg-gray-900 text-white text-[13px] rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50">
               {t("candidates.syncSheets")}
             </button>
-          </div>
+          </>
         )}
+        </div>
       </div>
 
       {busy && (
@@ -496,10 +568,15 @@ export default function CandidatesPage() {
             {candidates.length === 0 ? t("candidates.noData") : t("candidates.noMatch")}
           </div>
         ) : (
-          <div className="divide-y divide-gray-100">
+          <div className={`divide-y divide-gray-100 ${bulkMode && selected.size > 0 ? "mb-16" : ""}`}>
             {filtered.map((c) => (
-              <div key={c.id} onClick={() => setSelectedCandidate(c)}
-                className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 cursor-pointer transition-colors">
+              <div key={c.id}
+                onClick={bulkMode ? () => toggleSelect(c.id) : () => setSelectedCandidate(c)}
+                className={`flex items-center gap-4 px-5 py-4 cursor-pointer transition-colors ${
+                  bulkMode && selected.has(c.id)
+                    ? "bg-[#E8F3FF] border-l-2 border-l-[#3182F6]"
+                    : "hover:bg-gray-50"
+                }`}>
                 <div className="w-[38px] h-[38px] rounded-full bg-[#E8F3FF] flex items-center justify-center flex-shrink-0">
                   <span className="text-[13px] font-medium text-[#3182F6]">{c.full_name.charAt(0).toUpperCase()}</span>
                 </div>
@@ -538,23 +615,71 @@ export default function CandidatesPage() {
         )}
       </div>
 
+      {/* 하단 고정 벌크 액션 바 */}
+      {bulkMode && selected.size > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 px-5 py-3 flex items-center gap-3">
+          <label className="flex items-center gap-2 text-[13px] text-gray-700 cursor-pointer">
+            <input type="checkbox" checked={selected.size === filtered.length} onChange={toggleSelectAll}
+              className="w-4 h-4 rounded border-gray-300 text-blue-500 focus:ring-blue-500" />
+            {t("bulk.selectAll")}
+          </label>
+          <span className="text-[13px] text-gray-500">{selected.size}{t("bulk.selected")}</span>
+          <div className="flex gap-2 ml-auto">
+            {/* 단계 변경 드롭다운 */}
+            <div className="relative" ref={bulkStageRef}>
+              <button onClick={() => { setShowBulkStage(v => !v); setShowBulkJD(false); }} disabled={bulkLoading}
+                className="px-4 py-2 rounded-xl text-[13px] font-medium bg-[#3182F6]/10 text-[#3182F6] hover:bg-[#3182F6]/20 transition-colors disabled:opacity-50">
+                {t("bulk.changeStage")}
+              </button>
+              {showBulkStage && (
+                <div className="absolute bottom-full left-0 mb-1.5 min-w-[180px] max-h-[280px] overflow-y-auto bg-white border border-gray-200/80 rounded-xl py-1 z-50"
+                  style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}>
+                  {STAGE_OPTIONS.map(opt => (
+                    <button key={opt.value} onClick={() => bulkAction("change_status", opt.value)}
+                      className="w-full text-left px-3.5 py-2 text-[13px] text-gray-700 hover:bg-gray-50 transition-colors">
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* JD 배정 드롭다운 */}
+            <div className="relative" ref={bulkJDRef}>
+              <button onClick={() => { setShowBulkJD(v => !v); setShowBulkStage(false); }} disabled={bulkLoading}
+                className="px-4 py-2 rounded-xl text-[13px] font-medium bg-[#1D9E75]/10 text-[#1D9E75] hover:bg-[#1D9E75]/20 transition-colors disabled:opacity-50">
+                {t("bulk.assignJD")}
+              </button>
+              {showBulkJD && (
+                <div className="absolute bottom-full right-0 mb-1.5 min-w-[300px] max-h-[280px] overflow-y-auto bg-white border border-gray-200/80 rounded-xl py-1 z-50"
+                  style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}>
+                  <button onClick={() => bulkAction("assign_jd", "")}
+                    className="w-full text-left px-3.5 py-2 text-[13px] text-gray-400 hover:bg-gray-50 transition-colors">
+                    {t("bulk.unassigned")}
+                  </button>
+                  {Object.entries(allJDs).map(([code, j]) => (
+                    <button key={code} onClick={() => bulkAction("assign_jd", `${code} - ${j.position}`)}
+                      className="w-full text-left px-3.5 py-2 text-[13px] text-gray-700 hover:bg-gray-50 transition-colors">
+                      {code} — {j.company} · {j.position}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            {/* 삭제 */}
+            <button onClick={() => bulkAction("delete")} disabled={bulkLoading}
+              className="px-4 py-2 rounded-xl text-[13px] font-medium bg-red-50 text-red-500 hover:bg-red-100 transition-colors disabled:opacity-50">
+              {t("common.delete")}
+            </button>
+          </div>
+        </div>
+      )}
+
       {selectedCandidate && (
         <CandidateDetailModal candidate={selectedCandidate} onClose={() => { setSelectedCandidate(null); fetchCandidates(); }} jdMap={allJDs} />
       )}
     </div>
   );
 }
-
-const STAGE_OPTIONS = [
-  { value: "new", label: "스크리닝 대기" },
-  { value: "passed", label: "스크리닝 합격" },
-  { value: "ai_interview_sent", label: "AI 인터뷰 발송" },
-  { value: "ai_interview_done", label: "AI 인터뷰 완료" },
-  { value: "ai_interview_passed", label: "AI 인터뷰 합격" },
-  { value: "final_passed", label: "최종 합격" },
-  { value: "screening_failed", label: "스크리닝 실패" },
-  { value: "rejected", label: "불합격" },
-];
 
 function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { candidate: Candidate; onClose: () => void; jdMap: Record<string, JobDescription> }) {
   const { t, lang } = useAdminI18n();
@@ -599,7 +724,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
   };
 
   const deleteCandidate = async () => {
-    if (!confirm(`${c.full_name}을(를) 삭제하시겠습니까? 연결된 인재 카드와 인터뷰 세션도 함께 삭제됩니다.`)) return;
+    if (!confirm(`${c.full_name}${t("bulk.deleteCandidateConfirm")}`)) return;
     setDeleting(true);
     try {
       const res = await fetch(`/api/admin/candidates/${c.id}`, { method: "DELETE" });
@@ -698,7 +823,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
           </div>
 
           <div>
-            <p className="text-[11px] text-gray-500 mb-3">JD 배정</p>
+            <p className="text-[11px] text-gray-500 mb-3">{t("bulk.assignJD")}</p>
             <JDDropdown value={currentJobCode} onChange={assignJD} disabled={assigningJD} jdMap={jdMap} />
           </div>
 
@@ -884,7 +1009,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
           {/* 단계 변경 + 삭제 */}
           <div className="pt-4 mt-2 border-t border-gray-100 space-y-3">
             <div>
-              <p className="text-[11px] text-gray-500 mb-2">단계 수동 변경</p>
+              <p className="text-[11px] text-gray-500 mb-2">{t("bulk.manualStageChange")}</p>
               <div className="flex flex-wrap gap-1.5">
                 {STAGE_OPTIONS.map((opt) => (
                   <button
@@ -908,7 +1033,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
               disabled={deleting}
               className="w-full py-2.5 text-[13px] text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors disabled:opacity-50"
             >
-              {deleting ? "삭제 중..." : "후보자 삭제"}
+              {deleting ? t("bulk.deleting") : t("bulk.deleteCandidate")}
             </button>
           </div>
         </div>
@@ -1138,10 +1263,11 @@ function SendInterviewModal({ count, sampleName, sampleCompany, onConfirm, onClo
 }
 
 function JDDropdown({ value, onChange, disabled, jdMap }: { value: string; onChange: (v: string) => void; disabled: boolean; jdMap: Record<string, JobDescription> }) {
+  const { t } = useAdminI18n();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const jd = value ? jdMap[value] : null;
-  const label = jd ? `${value} — ${jd.company} · ${jd.position}` : "미배정";
+  const label = jd ? `${value} — ${jd.company} · ${jd.position}` : t("bulk.unassigned");
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -1175,7 +1301,7 @@ function JDDropdown({ value, onChange, disabled, jdMap }: { value: string; onCha
               !value ? "text-[#3182F6] bg-[#E8F3FF]/50" : "text-gray-700 hover:bg-gray-50"
             }`}
           >
-            미배정
+            {t("bulk.unassigned")}
           </button>
           {Object.entries(jdMap).map(([code, j]) => (
             <button
