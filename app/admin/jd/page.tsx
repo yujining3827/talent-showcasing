@@ -782,10 +782,12 @@ function PostingForm({
   );
   const [status, setStatus] = useState(initial?.status || "active");
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async () => {
     if (!url.trim()) return;
     setSaving(true);
+    setError("");
 
     const payload = {
       jd_code: jdCode,
@@ -796,18 +798,27 @@ function PostingForm({
       updated_at: new Date().toISOString(),
     };
 
+    let result;
     if (initial) {
-      await supabase.from("jd_postings").update(payload).eq("id", initial.id);
+      result = await supabase.from("jd_postings").update(payload).eq("id", initial.id);
     } else {
-      await supabase.from("jd_postings").insert(payload);
+      result = await supabase.from("jd_postings").insert(payload);
     }
 
     setSaving(false);
+    if (result.error) {
+      setError(result.error.message);
+      console.error("jd_postings save error:", result.error);
+      return;
+    }
     onSave();
   };
 
   return (
     <div className="bg-gray-50 rounded-xl p-3 mb-2 space-y-2.5">
+      {error && (
+        <p className="text-[11px] text-[#E8590C] bg-[#FFF8F0] px-3 py-2 rounded-lg">{error}</p>
+      )}
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label className="text-[10px] text-gray-500 mb-0.5 block">{t("jd.posting.platform")}</label>
