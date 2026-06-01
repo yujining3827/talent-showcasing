@@ -105,6 +105,7 @@ const translations: Record<string, Record<AdminLang, string>> = {
 
   // 후보자 관리
   "candidates.title": { ko: "후보자 관리", en: "Candidate Management", vi: "Quản lý ứng viên" },
+  "candidates.addCandidate": { ko: "후보자 추가", en: "Add Candidate", vi: "Thêm ứng viên" },
   "candidates.syncSheets": { ko: "시트 동기화", en: "Sync Sheets", vi: "Đồng bộ Sheet" },
   "candidates.llmScreening": { ko: "LLM 스크리닝", en: "LLM Screening", vi: "Sàng lọc LLM" },
   "candidates.dedup": { ko: "중복 정리", en: "Dedup", vi: "Loại trùng" },

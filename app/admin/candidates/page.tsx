@@ -180,6 +180,7 @@ export default function CandidatesPage() {
   const [showBulkJD, setShowBulkJD] = useState(false);
   const [showBulkStage, setShowBulkStage] = useState(false);
   const [pendingBulk, setPendingBulk] = useState<{ action: string; value?: string; label: string } | null>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const bulkStageRef = useRef<HTMLDivElement>(null);
   const bulkJDRef = useRef<HTMLDivElement>(null);
 
@@ -409,6 +410,11 @@ export default function CandidatesPage() {
       <div className="flex items-center justify-between mb-5">
         <h1 className="text-[22px] font-medium text-gray-900">{t("candidates.title")}</h1>
         <div className="flex gap-2">
+          <button onClick={() => setShowCreateModal(true)}
+            disabled={bulkMode}
+            className={`px-4 py-2 rounded-xl text-[13px] transition-colors duration-100 bg-[#1D9E75] text-white hover:bg-[#178A64] ${bulkMode ? "opacity-40 pointer-events-none" : ""}`}>
+            + {t("candidates.addCandidate")}
+          </button>
           <button onClick={toggleBulkMode}
             className={`px-4 py-2 rounded-xl text-[13px] transition-colors duration-100 ${
               bulkMode ? "bg-gray-900 text-white" : "bg-white border border-gray-200 text-gray-700 hover:border-gray-300"
@@ -733,6 +739,166 @@ export default function CandidatesPage() {
       {selectedCandidate && (
         <CandidateDetailModal candidate={selectedCandidate} onClose={() => { setSelectedCandidate(null); fetchCandidates(); }} jdMap={allJDs} />
       )}
+
+      {showCreateModal && (
+        <CreateCandidateModal
+          jdMap={allJDs}
+          onClose={() => setShowCreateModal(false)}
+          onCreated={() => { setShowCreateModal(false); fetchCandidates(); }}
+        />
+      )}
+    </div>
+  );
+}
+
+function CreateCandidateModal({ jdMap, onClose, onCreated }: { jdMap: Record<string, JobDescription>; onClose: () => void; onCreated: () => void }) {
+  const { t, lang } = useAdminI18n();
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState({
+    full_name: "",
+    email: "",
+    phone: "",
+    city: "",
+    position: "",
+    yoe: "",
+    cv_url: "",
+    portfolio_url: "",
+    skills: "",
+    source: "manual",
+    applied_date: new Date().toISOString().split("T")[0],
+    applied_job: "",
+    applied_company: "",
+    pipeline_status: "new",
+  });
+
+  const set = (key: string, value: string) => setForm((prev) => ({ ...prev, [key]: value }));
+
+  const handleSubmit = async () => {
+    if (!form.full_name.trim()) {
+      setError(lang === "ko" ? "이름은 필수입니다" : "Name is required");
+      return;
+    }
+    setSaving(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/candidates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        setError(json.error || "Failed");
+        setSaving(false);
+        return;
+      }
+      onCreated();
+    } catch {
+      setError("Network error");
+      setSaving(false);
+    }
+  };
+
+  const fields: { key: string; label: string; type?: string; required?: boolean; placeholder?: string }[] = [
+    { key: "full_name", label: lang === "ko" ? "이름 *" : "Full Name *", required: true, placeholder: "Nguyen Van A" },
+    { key: "email", label: "Email", type: "email", placeholder: "email@example.com" },
+    { key: "phone", label: lang === "ko" ? "전화번호" : "Phone", placeholder: "+84..." },
+    { key: "city", label: lang === "ko" ? "도시" : "City", placeholder: "Ho Chi Minh" },
+    { key: "position", label: lang === "ko" ? "포지션" : "Position", placeholder: "Backend Developer" },
+    { key: "yoe", label: lang === "ko" ? "경력 (년)" : "YoE", placeholder: "3" },
+    { key: "skills", label: lang === "ko" ? "스킬" : "Skills", placeholder: "React, Node.js, Python" },
+    { key: "cv_url", label: "CV URL", type: "url", placeholder: "https://..." },
+    { key: "portfolio_url", label: "Portfolio URL", type: "url", placeholder: "https://..." },
+    { key: "applied_company", label: lang === "ko" ? "지원 회사" : "Applied Company", placeholder: "" },
+    { key: "applied_date", label: lang === "ko" ? "지원일" : "Applied Date", type: "date" },
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-end">
+      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
+      <div className="relative w-full max-w-[480px] h-full bg-white overflow-y-auto scrollbar-hide">
+        <div className="sticky top-0 bg-white z-10 px-6 py-4 border-b border-gray-100">
+          <div className="flex items-center justify-between">
+            <h2 className="text-[16px] font-medium text-gray-900">{t("candidates.addCandidate")}</h2>
+            <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7684" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div className="px-6 py-5 space-y-4">
+          {fields.map((f) => (
+            <div key={f.key}>
+              <label className="text-[12px] text-gray-500 mb-1.5 block">{f.label}</label>
+              <input
+                type={f.type || "text"}
+                value={form[f.key as keyof typeof form]}
+                onChange={(e) => set(f.key, e.target.value)}
+                placeholder={f.placeholder}
+                className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-gray-300"
+              />
+            </div>
+          ))}
+
+          <div>
+            <label className="text-[12px] text-gray-500 mb-1.5 block">{lang === "ko" ? "소스" : "Source"}</label>
+            <input
+              type="text"
+              value={form.source}
+              onChange={(e) => set("source", e.target.value)}
+              className="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-[13px] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:border-gray-300"
+            />
+          </div>
+
+          <div>
+            <label className="text-[12px] text-gray-500 mb-1.5 block">{t("bulk.assignJD")}</label>
+            <JDDropdown
+              value={form.applied_job?.match(/^([A-Z]+\d+)/)?.[1] || ""}
+              onChange={(code) => {
+                const jd = jdMap[code];
+                set("applied_job", code ? `${code} - ${jd?.position || ""}` : "");
+              }}
+              disabled={false}
+              jdMap={jdMap}
+            />
+          </div>
+
+          <div>
+            <label className="text-[12px] text-gray-500 mb-1.5 block">{lang === "ko" ? "초기 상태" : "Initial Status"}</label>
+            <div className="flex flex-wrap gap-1.5">
+              {STAGE_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => set("pipeline_status", opt.value)}
+                  className={`px-2.5 py-1.5 rounded-lg text-[12px] transition-colors ${
+                    form.pipeline_status === opt.value
+                      ? "bg-gray-900 text-white"
+                      : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  }`}
+                >
+                  {t(opt.labelKey)}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {error && <p className="text-[13px] text-red-500">{error}</p>}
+        </div>
+
+        <div className="sticky bottom-0 bg-white px-6 py-4 border-t border-gray-100 flex gap-2">
+          <button onClick={onClose}
+            className="flex-1 py-2.5 bg-white border border-gray-200 text-gray-700 text-[13px] rounded-xl hover:border-gray-300 transition-colors">
+            {lang === "ko" ? "취소" : "Cancel"}
+          </button>
+          <button onClick={handleSubmit} disabled={saving}
+            className="flex-1 py-2.5 bg-[#3182F6] text-white text-[13px] rounded-xl hover:bg-[#2272EB] transition-colors disabled:opacity-50">
+            {saving ? "..." : lang === "ko" ? "추가" : "Add"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
