@@ -257,6 +257,8 @@ export default function CandidatesPage() {
     setBusy(false); setProgress(0); setMessage("");
   };
 
+  const [sendProgress, setSendProgress] = useState({ current: 0, total: 0, sent: 0, failed: 0 });
+
   const sendAllInterviews = async (deadline: string) => {
     const targets = filtered.filter((c) => c.email);
     if (targets.length === 0) return;
@@ -264,21 +266,31 @@ export default function CandidatesPage() {
     setSendingAll(true);
     setShowSendModal(false);
     setResult(null);
-    try {
-      const res = await fetch("/api/admin/send-interview", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ candidateIds: targets.map((c) => c.id), deadline }),
-      });
-      const json = await res.json();
-      const msg = `AI 인터뷰 발송 완료\n\n성공: ${json.sent}명\n실패: ${json.failed}명\n전체: ${json.total}명`;
-      setResult(msg.replace(/\n/g, " · "));
-      alert(msg);
-      fetchCandidates();
-    } catch {
-      setResult("AI 인터뷰 발송 실패");
-      alert("AI 인터뷰 발송 실패");
+    setSendProgress({ current: 0, total: targets.length, sent: 0, failed: 0 });
+
+    let sent = 0;
+    let failed = 0;
+
+    for (let i = 0; i < targets.length; i++) {
+      try {
+        const res = await fetch("/api/admin/send-interview", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ candidateIds: [targets[i].id], deadline }),
+        });
+        const json = await res.json();
+        if (json.success && json.results?.[0]?.sent) sent++;
+        else failed++;
+      } catch {
+        failed++;
+      }
+      setSendProgress({ current: i + 1, total: targets.length, sent, failed });
     }
+
+    const msg = `AI 인터뷰 발송 완료\n\n성공: ${sent}명\n실패: ${failed}명\n전체: ${targets.length}명`;
+    setResult(msg.replace(/\n/g, " · "));
+    alert(msg);
+    fetchCandidates();
     setSendingAll(false);
   };
 
@@ -554,14 +566,30 @@ export default function CandidatesPage() {
       </div>
 
       {isSuperAdmin && activeTab === "ai_passed" && filtered.length > 0 && (
-        <div className="mb-3 flex items-center justify-between bg-blue-50 border border-blue-500/20 rounded-xl px-4 py-3">
-          <span className="text-[13px] text-blue-600">
-            {filtered.filter((c) => c.email).length}명에게 AI 인터뷰 코드를 일괄 발송할 수 있습니다
-          </span>
-          <button onClick={() => setShowSendModal(true)} disabled={sendingAll || busy}
-            className="px-4 py-2 bg-[#3182F6] text-white text-[13px] rounded-xl hover:bg-[#2272EB] transition-colors disabled:opacity-50">
-            {sendingAll ? "발송 중..." : `전체 발송 (${filtered.filter((c) => c.email).length}명)`}
-          </button>
+        <div className="mb-3 bg-blue-50 border border-blue-500/20 rounded-xl px-4 py-3">
+          <div className="flex items-center justify-between">
+            <span className="text-[13px] text-blue-600">
+              {filtered.filter((c) => c.email).length}명에게 AI 인터뷰 코드를 일괄 발송할 수 있습니다
+            </span>
+            <button onClick={() => setShowSendModal(true)} disabled={sendingAll || busy}
+              className="px-4 py-2 bg-[#3182F6] text-white text-[13px] rounded-xl hover:bg-[#2272EB] transition-colors disabled:opacity-50">
+              {sendingAll ? "발송 중..." : `전체 발송 (${filtered.filter((c) => c.email).length}명)`}
+            </button>
+          </div>
+          {sendingAll && sendProgress.total > 0 && (
+            <div className="mt-3">
+              <div className="flex items-center justify-between text-[12px] text-gray-600 mb-1.5">
+                <span>{sendProgress.current} / {sendProgress.total}명 처리 중...</span>
+                <span>성공 {sendProgress.sent} · 실패 {sendProgress.failed}</span>
+              </div>
+              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-[#3182F6] rounded-full transition-all duration-300"
+                  style={{ width: `${(sendProgress.current / sendProgress.total) * 100}%` }}
+                />
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -715,6 +743,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
   const [memo, setMemo] = useState(c.phone_interview_note || "");
   const [saving, setSaving] = useState(false);
   const [sendingInterview, setSendingInterview] = useState(false);
+  const [showIndividualSendModal, setShowIndividualSendModal] = useState(false);
   const [interviewSession, setInterviewSession] = useState<{ id: string; access_code: string; status: string; total_score: number | null } | null>(null);
   const [loadingSession, setLoadingSession] = useState(false);
   const [assigningJD, setAssigningJD] = useState(false);
@@ -786,14 +815,15 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
     }
   }, [c.id, c.pipeline_status]);
 
-  const sendAiInterview = async () => {
+  const sendAiInterview = async (deadline: string) => {
     if (!c.email) return;
     setSendingInterview(true);
+    setShowIndividualSendModal(false);
     try {
       const res = await fetch("/api/admin/send-interview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ candidateIds: [c.id] }),
+        body: JSON.stringify({ candidateIds: [c.id], deadline }),
       });
       const json = await res.json();
       const r = json.results?.[0];
@@ -1004,7 +1034,7 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
           <div className="space-y-3 pt-2">
             {c.pipeline_status === "passed" && (
               <div className="space-y-2">
-                <button onClick={sendAiInterview}
+                <button onClick={() => setShowIndividualSendModal(true)}
                   disabled={sendingInterview || !c.email}
                   className="w-full py-3 bg-[#3182F6] text-white text-[14px] rounded-xl hover:bg-[#2272EB] transition-colors disabled:opacity-50">
                   {sendingInterview ? t("aiInterview.sending") : t("aiInterview.send")}
@@ -1066,6 +1096,16 @@ function CandidateDetailModal({ candidate: initCandidate, onClose, jdMap }: { ca
           </div>
         </div>
       </div>
+
+      {showIndividualSendModal && (
+        <SendInterviewModal
+          count={1}
+          sampleName={c.full_name}
+          sampleCompany={c.applied_company || c.applied_job || "the position"}
+          onConfirm={sendAiInterview}
+          onClose={() => setShowIndividualSendModal(false)}
+        />
+      )}
     </div>
   );
 }
@@ -1120,8 +1160,8 @@ function SendInterviewModal({ count, sampleName, sampleCompany, onConfirm, onClo
         <div className="sticky top-0 bg-white z-10 px-6 py-5 border-b border-gray-100 rounded-t-2xl">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[16px] font-medium text-gray-900">AI 인터뷰 전체 발송</h3>
-              <p className="text-[13px] text-gray-500 mt-1">{count}명에게 발송합니다</p>
+              <h3 className="text-[16px] font-medium text-gray-900">AI 인터뷰 {count === 1 ? "발송" : "전체 발송"}</h3>
+              <p className="text-[13px] text-gray-500 mt-1">{count === 1 ? `${sampleName}에게 발송합니다` : `${count}명에게 발송합니다`}</p>
             </div>
             <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6B7684" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
