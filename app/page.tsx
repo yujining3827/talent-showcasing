@@ -388,7 +388,7 @@ export default function LandingPage() {
           <div className="relative inline-block">
             <div className="absolute inset-0 bg-white/65 blur-[50px] rounded-full scale-125" />
             <div className="relative">
-              <p className="text-[15px] md:text-[17px] text-gray-500 mb-4 animate-section">
+              <p className="text-[15px] md:text-[17px] text-gray-700 mb-4 animate-section">
                 베트남 IT 인재 채용에 에너지 쏟기 싫으시죠?
               </p>
               <h1 className="text-[32px] md:text-[52px] font-[600] text-gray-900 leading-[1.2] tracking-tight animate-section animate-delay-1">
