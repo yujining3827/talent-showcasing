@@ -36,6 +36,19 @@ export interface RawCandidate {
 type ColumnMap = Record<string, string>;
 
 const COLUMN_MAPS: Record<string, ColumnMap> = {
+  // FYI 자가등록 인재 (KTC 채용공고에 지원한 후보자). 헤더는 베트남어.
+  FYI: {
+    ID: "_id",
+    "Ngày nộp": "applied_date",
+    "Họ & Tên": "full_name",
+    Email: "email",
+    "Vị trí ứng tuyển": "position",
+    "Applied Job": "applied_job",
+    "Applied Company": "applied_company",
+    "Năm kinh nghiệm": "yoe",
+    "CV URL": "cv_url",
+    "Trạng thái": "_status",
+  },
   "landing-page": {
     "Họ & Tên": "full_name",
     Email: "email",
