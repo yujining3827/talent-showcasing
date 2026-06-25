@@ -50,7 +50,7 @@ export default function AdminUsersPage() {
     async function init() {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {
-        const p = await getUserProfile(session.user.id, true);
+        const p = await getUserProfile(session.user.id);
         if (p) setMyRole(p.role);
       }
       await loadUsers();
