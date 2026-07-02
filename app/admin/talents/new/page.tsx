@@ -15,6 +15,8 @@ export default function NewTalentPage() {
       name: data.name,
       photo_url: data.photo_url || null,
       resume_url: data.resume_url || null,
+      university: data.university || null,
+      graduation_year: data.graduation_year || null,
       role: data.role,
       years_exp: data.years_exp,
       location: data.location,

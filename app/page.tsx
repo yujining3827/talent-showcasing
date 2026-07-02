@@ -6,10 +6,13 @@ import { TalentCard } from "@/app/components/talent/TalentCard";
 import { TalentPreviewModal } from "@/app/components/talent/TalentPreviewModal";
 import { Header } from "@/app/components/Header";
 import type { Talent } from "@/lib/types";
+import { ProfileCard } from "@/app/components/showcase/ProfileCard";
+import type { ShowcaseTalent } from "@/app/api/showcase/route";
 
 const LANDING_TALENTS: Talent[] = [
   {
-    id: "landing-1", name: "Tran N.", role: "프론트엔드", years_exp: 3, location: "호치민",
+    id: "landing-1", name: "Tran Nguyen", role: "프론트엔드", years_exp: 3, location: "호치민",
+    university: "호치민 공과대학교 (HCMUT)", graduation_year: "2020",
     ovr_score: 89, ovr_grade: "S", top_skills: ["React", "TypeScript"], korean_level: 4,
     salary_min_vnd: 12000000, salary_max_vnd: 18000000, availability: "immediate",
     ktc_comment: "한국 기업 협업 경험 풍부. 의사소통 명료하고 일정 준수 우수.",
@@ -20,13 +23,14 @@ const LANDING_TALENTS: Talent[] = [
       { name: "Next.js", score: 80, type: "core" }, { name: "Tailwind CSS", score: 78, type: "sub" },
     ],
     career_history: [
-      { tier: "Tier 1 한국계 IT 기업", position: "시니어 프론트엔드", startDate: "2022.03", endDate: "current", current: true },
-      { tier: "Tier 2 베트남 스타트업", position: "프론트엔드 개발자", startDate: "2020.06", endDate: "2022.02", current: false },
+      { tier: "Momo", position: "시니어 프론트엔드", startDate: "2022.03", endDate: "current", current: true },
+      { tier: "Tiki", position: "프론트엔드 개발자", startDate: "2020.06", endDate: "2022.02", current: false },
     ],
     photo_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
   },
   {
-    id: "landing-2", name: "Hoang L.", role: "백엔드", years_exp: 4, location: "하노이",
+    id: "landing-2", name: "Hoang Le", role: "백엔드", years_exp: 4, location: "하노이",
+    university: "하노이 국립대학교 (VNU)", graduation_year: "2019",
     ovr_score: 85, ovr_grade: "S", top_skills: ["Java", "Spring Boot"], korean_level: 3,
     salary_min_vnd: 15000000, salary_max_vnd: 22000000, availability: "negotiable",
     ktc_comment: "대규모 트래픽 처리 경험 보유. 꼼꼼한 성격으로 코드 리뷰에 적극적.",
@@ -37,13 +41,14 @@ const LANDING_TALENTS: Talent[] = [
       { name: "MySQL", score: 82, type: "core" }, { name: "AWS", score: 75, type: "sub" },
     ],
     career_history: [
-      { tier: "Tier 1 한국계 IT 기업", position: "백엔드 리드", startDate: "2021.01", endDate: "current", current: true },
-      { tier: "Tier 1 글로벌 기업 베트남 지사", position: "시니어 백엔드", startDate: "2018.06", endDate: "2020.12", current: false },
+      { tier: "VNG", position: "백엔드 리드", startDate: "2021.01", endDate: "current", current: true },
+      { tier: "Samsung Vietnam", position: "시니어 백엔드", startDate: "2018.06", endDate: "2020.12", current: false },
     ],
     photo_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
   },
   {
-    id: "landing-3", name: "Minh T.", role: "UI/UX 디자이너", years_exp: 3, location: "호치민",
+    id: "landing-3", name: "Minh Tran", role: "UI/UX 디자이너", years_exp: 3, location: "호치민",
+    university: "FPT University", graduation_year: "2021",
     ovr_score: 87, ovr_grade: "S", top_skills: ["Figma", "Prototyping"], korean_level: 5,
     salary_min_vnd: 12000000, salary_max_vnd: 16000000, availability: "immediate",
     ktc_comment: "차분하고 논리적인 디자이너. 한국어 능통하여 커뮤니케이션 비용 매우 낮음.",
@@ -54,13 +59,14 @@ const LANDING_TALENTS: Talent[] = [
       { name: "Design System", score: 82, type: "core" }, { name: "HTML/CSS", score: 65, type: "sub" },
     ],
     career_history: [
-      { tier: "Tier 1 한국계 스타트업", position: "리드 디자이너", startDate: "2023.01", endDate: "current", current: true },
-      { tier: "Tier 2 베트남 에이전시", position: "UI/UX 디자이너", startDate: "2021.03", endDate: "2022.12", current: false },
+      { tier: "Zalo", position: "리드 디자이너", startDate: "2023.01", endDate: "current", current: true },
+      { tier: "Grab", position: "UI/UX 디자이너", startDate: "2021.03", endDate: "2022.12", current: false },
     ],
     photo_url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
   },
   {
-    id: "landing-4", name: "Duc P.", role: "풀스택", years_exp: 3, location: "다낭",
+    id: "landing-4", name: "Duc Pham", role: "풀스택", years_exp: 3, location: "다낭",
+    university: "다낭 공과대학교 (DUT)", graduation_year: "2020",
     ovr_score: 78, ovr_grade: "A", top_skills: ["Node.js", "React"], korean_level: 2,
     salary_min_vnd: 12000000, salary_max_vnd: 20000000, availability: "negotiable",
     ktc_comment: "프론트와 백엔드를 균형 있게 다루는 타입. 팀 협업에서 강점.",
@@ -71,8 +77,8 @@ const LANDING_TALENTS: Talent[] = [
       { name: "PostgreSQL", score: 75, type: "core" }, { name: "AWS", score: 65, type: "sub" },
     ],
     career_history: [
-      { tier: "Tier 2 한국계 중소기업", position: "풀스택 개발자", startDate: "2021.06", endDate: "current", current: true },
-      { tier: "Tier 2 베트남 스타트업", position: "웹 개발자", startDate: "2019.03", endDate: "2021.05", current: false },
+      { tier: "Axon Active", position: "풀스택 개발자", startDate: "2021.06", endDate: "current", current: true },
+      { tier: "KMS Technology", position: "웹 개발자", startDate: "2019.03", endDate: "2021.05", current: false },
     ],
     photo_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
   },
@@ -276,40 +282,56 @@ function CompareSection() {
   );
 }
 
-function PreviewSection({ onSelectTalent }: { onSelectTalent: (t: Talent) => void }) {
+function PreviewSection() {
   const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, 0.4);
+  const visible = useInView(ref, 0.15);
   const [showTitle, setShowTitle] = useState(false);
   const [showCards, setShowCards] = useState(false);
 
   useEffect(() => {
     if (!visible) return;
     const t1 = setTimeout(() => setShowTitle(true), 0);
-    const t2 = setTimeout(() => setShowCards(true), 500);
+    const t2 = setTimeout(() => setShowCards(true), 400);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [visible]);
 
+  // 엘리트(명문대/글로벌기업)+사진, 공개동의 인재 — 직무 구분 없이 쭉
+  const [talents, setTalents] = useState<ShowcaseTalent[]>([]);
+  useEffect(() => {
+    fetch("/api/showcase")
+      .then((r) => r.json())
+      .then((d) => { if (d.talents?.length) setTalents(d.talents); })
+      .catch(() => {});
+  }, []);
+
   return (
-    <section className="bg-white mt-20">
-      <div className="mx-auto max-w-[1080px] px-5 py-40" ref={ref}>
+    <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[56px] border-b-[0.5px] border-gray-200/60">
+      <div className="mx-auto max-w-[1080px] px-5 pt-20 pb-24" ref={ref}>
         <div className={`transition-all duration-700 ${showTitle ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          <p className="text-[28px] md:text-[34px] font-[600] text-gray-900 tracking-tight text-center mb-3">
-            이런 인재들이 <span className="text-blue-500">검증</span>되어 있어요
+          <p className="text-[13px] font-semibold tracking-wide text-center mb-3" style={{ color: "#2751E0" }}>검증된 상위 인재</p>
+          <p className="text-[28px] md:text-[36px] font-[700] tracking-tight text-center mb-3" style={{ color: "#16213E" }}>
+            명문대·글로벌 기업 출신, 지금 만날 수 있어요
           </p>
-          <p className="text-[17px] text-gray-500 text-center mb-14">
-            이력서 분석 · 전화 면접 · 능력치 평가가 완료된 인재만 등록됩니다
-          </p>
+          <p className="text-[16px] text-gray-500 text-center mb-14">이력서 공개에 동의한 인재만 엄선했습니다</p>
         </div>
-        <div className={`grid grid-cols-2 md:grid-cols-4 gap-[10px] max-w-[900px] mx-auto transition-all duration-700 ${showCards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          {LANDING_TALENTS.map((talent, i) => (
-            <div
-              key={talent.id}
-              onClick={() => onSelectTalent(talent)}
-              className={`cursor-pointer transition-transform duration-200 hover:scale-[1.02] hover:z-10 ${showCards && i === 0 ? "animate-nudge" : ""}`}
-            >
-              <TalentCard talent={talent} blurPhoto />
+
+        <div className={`transition-all duration-700 ${showCards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+          {talents.length === 0 ? (
+            <p className="text-center text-[14px] text-gray-400 py-10">인재를 불러오는 중…</p>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {talents.map((t) => (<ProfileCard key={t.id} t={t} />))}
             </div>
-          ))}
+          )}
+        </div>
+
+        {/* 채용은 AM이 — 리드젠 CTA */}
+        <div className="mt-16 rounded-3xl px-8 py-12 text-center" style={{ background: "#16213E" }}>
+          <p className="text-[22px] md:text-[26px] font-[700] text-white tracking-tight mb-2">마음에 드는 인재가 있으신가요?</p>
+          <p className="text-[15px] text-white/60 mb-7">담당 매니저가 인터뷰부터 계약까지 채용 전 과정을 직접 도와드립니다.</p>
+          <Link href="/login" className="inline-block px-7 py-3.5 rounded-xl text-[15px] font-medium text-white active:scale-[0.98] transition" style={{ background: "#2751E0" }}>
+            채용 상담 신청 →
+          </Link>
         </div>
       </div>
     </section>
@@ -344,11 +366,8 @@ function CtaSection() {
   );
 }
 
-const HERO_VIDEOS = ["/hero-1.mp4", "/hero-2.mp4", "/hero-3.mp4", "/hero-4.mp4"];
-
 export default function LandingPage() {
   const [selectedTalent, setSelectedTalent] = useState<Talent | null>(null);
-  const [heroVideo, setHeroVideo] = useState(0);
   const stepsRef = useRef<HTMLDivElement>(null);
   const stepsVisible = useInView(stepsRef, 0.3);
   const [stepTitleShow, setStepTitleShow] = useState(false);
@@ -369,45 +388,60 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white">
       <Header />
 
-      {/* 히어로 — 풀스크린 배경 이미지 */}
-      <section className="h-[calc(100vh-56px)] relative flex items-center justify-center overflow-hidden">
-        {/* 배경 영상 — 4개 순환 자동재생 */}
-        <video
-          key={heroVideo}
-          src={HERO_VIDEOS[heroVideo]}
-          autoPlay
-          muted
-          playsInline
-          onEnded={() => setHeroVideo((i) => (i + 1) % HERO_VIDEOS.length)}
-          className="absolute inset-0 w-full h-full object-cover scale-110"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/55 via-white/35 to-white/65" />
+      {/* 인재 쇼케이스 (메인) */}
+      <PreviewSection />
 
-        {/* 콘텐츠 — 텍스트 뒤에 은은한 백드롭 */}
-        <div className="relative z-10 text-center px-5">
-          <div className="relative inline-block">
-            <div className="absolute inset-0 bg-white/65 blur-[50px] rounded-full scale-125" />
-            <div className="relative">
-              <p className="text-[15px] md:text-[17px] text-gray-700 mb-4 animate-section">
-                베트남 IT 인재 채용에 에너지 쏟기 싫으시죠?
-              </p>
-              <h1 className="text-[32px] md:text-[52px] font-[600] text-gray-900 leading-[1.2] tracking-tight animate-section animate-delay-1">
-                이력서 분석부터 면접까지,<br />
-                <span className="text-blue-500"><span className="font-[700]">KTC Support</span>이 다 해놨습니다</span>
+      {/* 히어로 — toptal식 정적 히어로 */}
+      <section className="relative bg-white overflow-hidden border-b-[0.5px] border-gray-200/60">
+        <div className="absolute inset-0 -z-0 bg-[radial-gradient(55%_55%_at_75%_15%,rgba(39,81,224,0.07),transparent)]" />
+        <div className="relative mx-auto max-w-[1080px] px-5 pt-16 pb-20 md:pt-24 md:pb-28">
+          <div className="grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-8 items-center">
+            {/* 좌: 카피 */}
+            <div className="animate-section">
+              <span className="inline-flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full mb-5" style={{ backgroundColor: "#2751E012", color: "#2751E0" }}>
+                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#2751E0" }} />
+                동의 기반 공개 · 베트남 IT 인재
+              </span>
+              <h1 className="text-[34px] md:text-[50px] font-[700] leading-[1.15] tracking-tight" style={{ color: "#16213E" }}>
+                출신 대학부터 전 직장까지,<br />
+                <span style={{ color: "#2751E0" }}>투명하게 검증된</span> 인재
               </h1>
+              <p className="text-[16px] md:text-[18px] text-gray-500 leading-relaxed mt-5 max-w-[440px]">
+                이력서 뒤에 숨기지 않습니다. 상위 대학·전 직장·역량까지 공개에 동의한 베트남 IT 인재만 카드로 만나보세요.
+              </p>
+              <div className="flex items-center gap-3 mt-8">
+                <button
+                  onClick={() => document.getElementById("talent-preview")?.scrollIntoView({ behavior: "smooth" })}
+                  className="text-white px-6 py-3.5 rounded-xl text-[15px] font-medium active:scale-[0.98] transition"
+                  style={{ backgroundColor: "#2751E0" }}
+                >
+                  인재 둘러보기
+                </button>
+                <Link href="/login" className="px-6 py-3.5 rounded-xl text-[15px] font-medium border border-gray-200 text-gray-700 hover:border-gray-300 active:scale-[0.98] transition">
+                  무료로 시작하기
+                </Link>
+              </div>
+              <div className="flex items-center gap-8 mt-10">
+                {[["명문대 출신", "검증된 학력"], ["실명 경력", "Ex-기업 공개"], ["6대 역량", "정량 평가"]].map(([a, b]) => (
+                  <div key={a}>
+                    <p className="text-[15px] font-semibold" style={{ color: "#16213E" }}>{a}</p>
+                    <p className="text-[12px] text-gray-400 mt-0.5">{b}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 우: 카드 쇼케이스 */}
+            <div className="hidden md:flex flex-col gap-3 justify-center">
+              <div className="w-[290px] animate-section animate-delay-1 cursor-pointer" onClick={() => setSelectedTalent(LANDING_TALENTS[0])}>
+                <TalentCard talent={LANDING_TALENTS[0]} />
+              </div>
+              <div className="w-[290px] ml-10 animate-section animate-delay-2 cursor-pointer" onClick={() => setSelectedTalent(LANDING_TALENTS[1])}>
+                <TalentCard talent={LANDING_TALENTS[1]} />
+              </div>
             </div>
           </div>
         </div>
-
-        {/* 스크롤 화살표 */}
-        <button
-          onClick={() => window.scrollTo({ top: window.innerHeight, behavior: "smooth" })}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 w-10 h-10 rounded-full bg-white/80 border-[0.5px] border-gray-200/60 flex items-center justify-center hover:bg-white active:scale-[0.95] transition animate-bounce"
-        >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#6B7684" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M4 7l5 5 5-5" />
-          </svg>
-        </button>
       </section>
 
 
@@ -491,8 +525,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* 인재 미리보기 */}
-      <PreviewSection onSelectTalent={setSelectedTalent} />
 
       {/* 최종 CTA */}
       <CtaSection />
@@ -510,13 +542,7 @@ export default function LandingPage() {
             <p>주소: 서울 종로구 종로3길17, 광화문D타워 D1동 16층, 17층</p>
             <p>전화번호: 02-6203-3222 · ktc@likelion.net</p>
           </div>
-          <div className="mt-4 mb-2">
-            <Link href="/interview" className="inline-flex items-center gap-1 text-[11px] text-gray-400 hover:text-gray-600 border-[0.5px] border-gray-200 rounded-full px-3 py-1 transition-colors duration-100">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/></svg>
-              AI Interview (For Candidates)
-            </Link>
-          </div>
-          <p className="text-[11px] text-gray-400 mt-2">Copyright © 2022 멋쟁이사자처럼 All rights reserved.</p>
+          <p className="text-[11px] text-gray-400 mt-4">Copyright © 2022 멋쟁이사자처럼 All rights reserved.</p>
         </div>
       </footer>
 

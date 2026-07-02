@@ -14,8 +14,6 @@ const NAV_KEYS = [
   // KTC 채용 업무
   { href: "/admin/jd", labelKey: "nav.jd", icon: "jd", group: "ktc" },
   { href: "/admin/candidates", labelKey: "nav.candidates", icon: "candidates", group: "ktc" },
-  { href: "/admin/pool", labelKey: "nav.pool", icon: "pool", group: "ktc" },
-  { href: "/admin/interviews", labelKey: "nav.interviews", icon: "interviews", group: "ktc" },
   { href: "/admin/messages", labelKey: "nav.messages", icon: "messages", group: "ktc" },
   { href: "/admin/delivery", labelKey: "nav.delivery", icon: "delivery", group: "ktc" },
   // KTC Support 인재 열람

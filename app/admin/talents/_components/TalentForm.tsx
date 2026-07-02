@@ -9,6 +9,8 @@ export type TalentFormData = {
   name: string;
   photo_url?: string;
   resume_url?: string;
+  university?: string;
+  graduation_year?: string;
   role: string;
   years_exp: number;
   location: string;
@@ -29,6 +31,8 @@ export type TalentFormData = {
 
 const DEFAULT_DATA: TalentFormData = {
   name: "",
+  university: "",
+  graduation_year: "",
   role: "",
   years_exp: 1,
   location: "호치민",
@@ -565,6 +569,24 @@ export function TalentForm({
             />
           </div>
           <div>
+            <FieldLabel sub="카드 강조">출신 대학</FieldLabel>
+            <input
+              className={inputClass}
+              value={form.university || ""}
+              onChange={(e) => updateField("university", e.target.value)}
+              placeholder="호치민 공과대학교 (HCMUT)"
+            />
+          </div>
+          <div>
+            <FieldLabel sub="예: 2020">졸업 연도</FieldLabel>
+            <input
+              className={inputClass}
+              value={form.graduation_year || ""}
+              onChange={(e) => updateField("graduation_year", e.target.value)}
+              placeholder="2020"
+            />
+          </div>
+          <div>
             <FieldLabel sub="년">경력</FieldLabel>
             <input
               type="number"
@@ -794,12 +816,12 @@ export function TalentForm({
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <FieldLabel sub="예: 대기업, 스타트업">회사 티어</FieldLabel>
+                    <FieldLabel sub="실명 노출 · Ex-회사로 강조">회사명</FieldLabel>
                     <input
                       className={inputClass}
                       value={career.tier}
                       onChange={(e) => updateCareer(i, "tier", e.target.value)}
-                      placeholder="스타트업"
+                      placeholder="Momo"
                     />
                   </div>
                   <div>

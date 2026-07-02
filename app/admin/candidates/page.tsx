@@ -426,10 +426,6 @@ export default function CandidatesPage() {
               className="px-4 py-2 bg-[#1D9E75] text-white text-[13px] rounded-xl hover:bg-[#178A64] transition-colors disabled:opacity-50">
               {t("candidates.generateCards")}
             </button>
-            <button onClick={() => runAction("/api/screen-batch", t("candidates.llmScreening"))} disabled={busy}
-              className="px-4 py-2 bg-[#3182F6] text-white text-[13px] rounded-xl hover:bg-[#2272EB] transition-colors disabled:opacity-50">
-              {t("candidates.llmScreening")}
-            </button>
             <button onClick={() => runAction("/api/sync-sheets", t("candidates.syncSheets"))} disabled={busy}
               className="px-4 py-2 bg-gray-900 text-white text-[13px] rounded-xl hover:bg-gray-800 transition-colors disabled:opacity-50">
               {t("candidates.syncSheets")}

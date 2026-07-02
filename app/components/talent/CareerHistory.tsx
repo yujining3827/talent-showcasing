@@ -3,9 +3,7 @@ import { CareerEntry } from "@/lib/types";
 export function CareerHistory({ careers }: { careers: CareerEntry[] }) {
   return (
     <div className="bg-white border-[0.5px] border-gray-200/60 rounded-[20px] p-6 mb-3">
-      <p className="text-[12px] text-gray-500 mb-4">
-        경력 (회사명은 인터뷰 요청 시 공개)
-      </p>
+      <p className="text-[12px] text-gray-500 mb-4">경력</p>
       {careers.map((career, i) => (
         <div
           key={i}

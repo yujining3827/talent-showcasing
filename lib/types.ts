@@ -43,6 +43,16 @@ export interface Talent {
   tags: string[];
   photo_url?: string;
   resume_url?: string;
+  university?: string;      // 출신 대학 (동의 기반 노출, 카드 강조)
+  graduation_year?: string; // 졸업 연도
+}
+
+/** career_history 에서 가장 내세울 만한 '전 직장'을 고른다 (현직 제외, 없으면 현직). */
+export function pickExCompany(careers: CareerEntry[]): string | null {
+  if (!careers || careers.length === 0) return null;
+  const past = careers.find((c) => !c.current);
+  const pick = past || careers[0];
+  return pick?.tier?.trim() || null;
 }
 
 /** 실명 → 이니셜 변환 (예: "Tran Nguyen" → "T.N", "홍길동" → "홍") */

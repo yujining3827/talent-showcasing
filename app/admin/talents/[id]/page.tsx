@@ -32,6 +32,8 @@ export default function EditTalentPage() {
         name: data.name,
         photo_url: data.photo_url || undefined,
         resume_url: data.resume_url || undefined,
+        university: data.university || undefined,
+        graduation_year: data.graduation_year || undefined,
         role: data.role,
         years_exp: data.years_exp,
         location: data.location,

@@ -56,6 +56,15 @@ export function TalentPreviewModal({ talent, onClose }: { talent: Talent; onClos
             <div>
               <p className="text-[18px] font-medium text-gray-900 mb-1">{translateRole(talent.role)}</p>
               <p className="text-[14px] text-gray-500">{talent.years_exp > 0 ? `${talent.years_exp}년차` : "신입"} · {talent.location}</p>
+              {talent.university && (
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2751E0" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0">
+                    <path d="M22 10L12 5 2 10l10 5 10-5z" /><path d="M6 12v5c0 1 2.5 2.5 6 2.5s6-1.5 6-2.5v-5" />
+                  </svg>
+                  <span className="text-[13px] font-medium" style={{ color: "#16213E" }}>{talent.university}</span>
+                  {talent.graduation_year && <span className="text-[11px] text-gray-400">{talent.graduation_year}</span>}
+                </div>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-3">

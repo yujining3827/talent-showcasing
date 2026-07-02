@@ -138,6 +138,8 @@ export async function POST() {
               tags: strengthsKo.slice(0, 3),
               verification: ["서류 합격"],
               resume_url: c.cv_url || null,
+              university: c.university || null,
+              graduation_year: c.graduation_year || null,
               published: false,
             })
             .select("id")
