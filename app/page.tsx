@@ -1,151 +1,227 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { TalentCard } from "@/app/components/talent/TalentCard";
-import { TalentPreviewModal } from "@/app/components/talent/TalentPreviewModal";
-import { Header } from "@/app/components/Header";
-import type { Talent } from "@/lib/types";
+import { useEffect, useMemo, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
-import type { ShowcaseTalent } from "@/app/api/showcase/route";
 
-const LANDING_TALENTS: Talent[] = [
-  {
-    id: "landing-1", name: "Tran Nguyen", role: "프론트엔드", years_exp: 3, location: "호치민",
-    university: "호치민 공과대학교 (HCMUT)", graduation_year: "2020",
-    ovr_score: 89, ovr_grade: "S", top_skills: ["React", "TypeScript"], korean_level: 4,
-    salary_min_vnd: 12000000, salary_max_vnd: 18000000, availability: "immediate",
-    ktc_comment: "한국 기업 협업 경험 풍부. 의사소통 명료하고 일정 준수 우수.",
-    tags: ["한국어 비즈니스", "원격 가능", "한국 기업 경험"],
-    abilities: { technical: 88, english: 78, collaboration: 92, stability: 90, growth: 86 },
-    detailed_skills: [
-      { name: "React", score: 92, type: "core" }, { name: "TypeScript", score: 85, type: "core" },
-      { name: "Next.js", score: 80, type: "core" }, { name: "Tailwind CSS", score: 78, type: "sub" },
-    ],
-    career_history: [
-      { tier: "Momo", position: "시니어 프론트엔드", startDate: "2022.03", endDate: "current", current: true },
-      { tier: "Tiki", position: "프론트엔드 개발자", startDate: "2020.06", endDate: "2022.02", current: false },
-    ],
-    photo_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face",
-  },
-  {
-    id: "landing-2", name: "Hoang Le", role: "백엔드", years_exp: 4, location: "하노이",
-    university: "하노이 국립대학교 (VNU)", graduation_year: "2019",
-    ovr_score: 85, ovr_grade: "S", top_skills: ["Java", "Spring Boot"], korean_level: 3,
-    salary_min_vnd: 15000000, salary_max_vnd: 22000000, availability: "negotiable",
-    ktc_comment: "대규모 트래픽 처리 경험 보유. 꼼꼼한 성격으로 코드 리뷰에 적극적.",
-    tags: ["대규모 트래픽", "MSA 경험", "코드 리뷰 문화"],
-    abilities: { technical: 90, english: 82, collaboration: 78, stability: 88, growth: 80 },
-    detailed_skills: [
-      { name: "Java", score: 90, type: "core" }, { name: "Spring Boot", score: 88, type: "core" },
-      { name: "MySQL", score: 82, type: "core" }, { name: "AWS", score: 75, type: "sub" },
-    ],
-    career_history: [
-      { tier: "VNG", position: "백엔드 리드", startDate: "2021.01", endDate: "current", current: true },
-      { tier: "Samsung Vietnam", position: "시니어 백엔드", startDate: "2018.06", endDate: "2020.12", current: false },
-    ],
-    photo_url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&h=150&fit=crop&crop=face",
-  },
-  {
-    id: "landing-3", name: "Minh Tran", role: "UI/UX 디자이너", years_exp: 3, location: "호치민",
-    university: "FPT University", graduation_year: "2021",
-    ovr_score: 87, ovr_grade: "S", top_skills: ["Figma", "Prototyping"], korean_level: 5,
-    salary_min_vnd: 12000000, salary_max_vnd: 16000000, availability: "immediate",
-    ktc_comment: "차분하고 논리적인 디자이너. 한국어 능통하여 커뮤니케이션 비용 매우 낮음.",
-    tags: ["한국어 능통", "디자인 시스템", "스타트업 경험"],
-    abilities: { technical: 82, english: 70, collaboration: 90, stability: 85, growth: 88 },
-    detailed_skills: [
-      { name: "Figma", score: 95, type: "core" }, { name: "Prototyping", score: 88, type: "core" },
-      { name: "Design System", score: 82, type: "core" }, { name: "HTML/CSS", score: 65, type: "sub" },
-    ],
-    career_history: [
-      { tier: "Zalo", position: "리드 디자이너", startDate: "2023.01", endDate: "current", current: true },
-      { tier: "Grab", position: "UI/UX 디자이너", startDate: "2021.03", endDate: "2022.12", current: false },
-    ],
-    photo_url: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
-  },
-  {
-    id: "landing-4", name: "Duc Pham", role: "풀스택", years_exp: 3, location: "다낭",
-    university: "다낭 공과대학교 (DUT)", graduation_year: "2020",
-    ovr_score: 78, ovr_grade: "A", top_skills: ["Node.js", "React"], korean_level: 2,
-    salary_min_vnd: 12000000, salary_max_vnd: 20000000, availability: "negotiable",
-    ktc_comment: "프론트와 백엔드를 균형 있게 다루는 타입. 팀 협업에서 강점.",
-    tags: ["풀스택", "팀 플레이어", "원격 가능"],
-    abilities: { technical: 80, english: 78, collaboration: 82, stability: 75, growth: 76 },
-    detailed_skills: [
-      { name: "Node.js", score: 82, type: "core" }, { name: "React", score: 78, type: "core" },
-      { name: "PostgreSQL", score: 75, type: "core" }, { name: "AWS", score: 65, type: "sub" },
-    ],
-    career_history: [
-      { tier: "Axon Active", position: "풀스택 개발자", startDate: "2021.06", endDate: "current", current: true },
-      { tier: "KMS Technology", position: "웹 개발자", startDate: "2019.03", endDate: "2021.05", current: false },
-    ],
-    photo_url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face",
-  },
-];
+type ShowcaseTalent = {
+  id: string;
+  name: string;
+  role: string;
+  headline: string | null;
+  photo_url: string | null;
+  school: string | null;
+  schoolElite: boolean;
+  schoolTier: string | null;
+  company: string | null;
+  companyElite: boolean;
+  companyDomain: string | null;
+  yoeYears: number | null;
+  location: string | null;
+  skills: string[];
+};
 
-function useInView(ref: React.RefObject<HTMLElement | null>, threshold = 0.3) {
-  const [visible, setVisible] = useState(false);
-  useEffect(() => {
-    if (!ref.current) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { threshold }
+function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?: boolean }) {
+  const [failed, setFailed] = useState(false);
+  const src = talent.photo_url || null;
+
+  if (!src || failed) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-[#D8DEE8]">
+        <img src="/default-profile.png" alt="" className="h-[82%] w-[82%] object-contain" />
+      </div>
     );
-    obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, [ref, threshold]);
-  return visible;
-}
-
-function WhyVietnam() {
-  const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, 0.3);
-  const [showTitle, setShowTitle] = useState(false);
-  const [showItems, setShowItems] = useState([false, false, false, false, false]);
-
-  useEffect(() => {
-    if (!visible) return;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    timers.push(setTimeout(() => setShowTitle(true), 0));
-    for (let i = 0; i < 5; i++) {
-      timers.push(setTimeout(() => setShowItems((p) => { const n = [...p]; n[i] = true; return n; }), 600 + i * 200));
-    }
-    return () => timers.forEach(clearTimeout);
-  }, [visible]);
-
-  const items = [
-    { num: "50% 절감", desc: "한국 대비 인건비 절반", img: "/money.png" },
-    { num: "110만+ 명", desc: "매년 5만명 배출되는 IT 인력", img: "/work.png" },
-    { num: "시차 2시간", desc: "실시간 협업이 가능한 거리", img: "/time.png" },
-    { num: "한국어 가능", desc: "한국어 소통 가능 인재 보유", img: "/korean.png" },
-    { num: "높은 몰입도", desc: "성실하고 끈기 있는 업무 태도", img: "/fire.png" },
-  ];
+  }
 
   return (
-    <section className="bg-white">
-      <div className="mx-auto max-w-[1080px] px-5 py-40" ref={ref}>
-        <div className={`transition-all duration-700 ${showTitle ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          <p className="text-[28px] md:text-[34px] font-[600] text-gray-900 tracking-tight text-center mb-3">
-            왜 <span className="text-blue-500">베트남</span> IT 인재인가요?
+    <img
+      src={src}
+      alt=""
+      onError={() => setFailed(true)}
+      className="h-full w-full object-cover"
+      style={{ objectPosition: large ? "center 18%" : "center 22%" }}
+    />
+  );
+}
+
+function TalentPhotoPlaceholder({ large = false }: { large?: boolean }) {
+  return (
+    <div className="flex h-full w-full items-center justify-center bg-[#C9D1DE]">
+      <div className={`${large ? "h-56 w-56" : "h-16 w-16"} rounded-full border border-white/50 bg-white/35`} />
+    </div>
+  );
+}
+
+function VerifiedIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M12 2.75 14.4 5.2l3.42-.47.58 3.4 3.05 1.58-1.56 3.06 1.56 3.05-3.05 1.58-.58 3.4-3.42-.47L12 21.25 9.6 18.8l-3.42.47-.58-3.4-3.05-1.58 1.56-3.06-1.56-3.05L5.6 6.6l.58-3.4 3.42.47L12 2.75Z" fill="#087E62" />
+      <path d="m8.5 12.2 2.1 2.1 4.9-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function MiniMap() {
+  const dots = Array.from({ length: 120 }, (_, i) => {
+    const x = (i % 20) * 10 + 8;
+    const y = Math.floor(i / 20) * 10 + 8;
+    const visible = (i * 7) % 11 !== 0 && (x < 70 || x > 105 || y < 46) && !(x > 150 && y > 38);
+    return visible ? <circle key={i} cx={x} cy={y} r="1.8" fill="#CBD2DD" /> : null;
+  });
+
+  return (
+    <svg viewBox="0 0 210 72" className="h-[78px] w-full" aria-hidden="true">
+      {dots}
+      <circle cx="77" cy="34" r="6" fill="#124FE3" opacity="0.14" />
+      <circle cx="77" cy="34" r="3" fill="#124FE3" />
+    </svg>
+  );
+}
+
+function CredentialCard({ talent }: { talent: ShowcaseTalent }) {
+  return (
+    <div className="relative w-full max-w-[330px] bg-white p-7 shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)]">
+      <MiniMap />
+      <div className="mt-4">
+        <p className="text-[18px] font-semibold text-[#1147D9]">{talent.name}</p>
+        <div className="mt-2 flex items-center gap-1.5 text-[13px] font-semibold text-[#087E62]">
+          <VerifiedIcon />
+          Verified expert in {talent.role || "Technology"}
+        </div>
+        <p className="mt-2 text-[13px] text-[#566174]">{talent.headline || talent.role}</p>
+      </div>
+      <div className="mt-7">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#677084]">Previously at</p>
+        <p className="mt-1 truncate text-[31px] font-semibold tracking-tight text-[#1B2233]">{talent.company || "Global Tech"}</p>
+      </div>
+      <div className="absolute -bottom-7 left-0 h-7 w-7 bg-white [clip-path:polygon(0_0,100%_0,100%_100%)]" />
+    </div>
+  );
+}
+
+function TalentStripCard({ talent, active }: { talent: ShowcaseTalent; active: boolean }) {
+  return (
+    <div className={`grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border bg-white transition ${active ? "border-[#124FE3] shadow-[0_16px_45px_-30px_rgba(18,79,227,0.9)]" : "border-[#D8DEE8]"}`}>
+      <div className="h-[132px] bg-[#D8DEE8]">
+        <TalentPhoto talent={talent} />
+      </div>
+      <div className="min-w-0 p-4">
+        <p className="truncate text-[16px] font-semibold text-[#30394C]">{talent.name}</p>
+        <p className="mt-1 truncate text-[13px] text-[#59657A]">{talent.role}</p>
+        <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#778195]">Education</p>
+        <p className="mt-1 truncate text-[14px] font-semibold text-[#1B2233]">{talent.school || "Top university"}</p>
+      </div>
+    </div>
+  );
+}
+
+function Hero({ talents }: { talents: ShowcaseTalent[] }) {
+  const heroTalents = talents.slice(0, 4);
+  const featured = heroTalents[0] || null;
+
+  return (
+    <section className="relative isolate overflow-hidden bg-[#D9DEE8] text-[#192133]">
+      <div className="mx-auto flex h-[64px] max-w-[1180px] items-center justify-between px-5">
+        <Link href="/" className="flex items-center gap-2 text-[18px] font-semibold tracking-tight">
+          <img src="/logo.png" alt="KTC Support" className="h-7 w-7 rounded" />
+          KTC Talent
+        </Link>
+        <nav className="hidden items-center gap-7 text-[14px] font-medium text-[#3E485B]">
+          <Link href="/talents">Talent</Link>
+          <a href="#trust">Trust</a>
+          <a href="#talent-preview">Showcase</a>
+        </nav>
+        <Link href="/login" className="rounded-sm bg-[#0ACB87] px-5 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#08B979]">
+          Start hiring
+        </Link>
+      </div>
+
+      <div className="absolute left-1/2 top-0 z-10 hidden -translate-x-1/2 rounded-b-[34px] border border-[#AEB8CA] bg-[#D2D8E4]/80 px-2 py-1 shadow-[0_20px_45px_-25px_rgba(25,33,51,0.45)] md:flex">
+        <span className="px-5 py-3 text-[14px] font-semibold text-[#687287]">I&apos;m looking for</span>
+        <span className="rounded-[28px] border-2 border-[#124FE3] bg-white px-6 py-3 text-[14px] font-semibold text-[#124FE3] shadow-[0_12px_30px_-20px_rgba(18,79,227,0.75)]">Talent</span>
+        <span className="px-6 py-3 text-[14px] font-semibold text-[#293244]">Consulting & Services</span>
+      </div>
+
+      <div className="relative mx-auto grid min-h-[690px] max-w-[1180px] grid-cols-1 px-5 pb-0 pt-14 md:grid-cols-[0.95fr_0.75fr_0.58fr] md:items-center md:gap-7 md:pt-8">
+        <div className="z-10 max-w-[530px] pb-10 md:pb-24">
+          <p className="mb-5 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#5B667A]">Vetted global talent network</p>
+          <h1 className="text-[44px] font-semibold leading-[1.08] tracking-normal text-[#171E2D] md:text-[58px]">
+            Hire top talent with verified credentials
+          </h1>
+          <p className="mt-6 max-w-[560px] text-[18px] leading-[1.65] text-[#30394C]">
+            KTC showcases vetted Vietnamese professionals with verified university, company, interview, and portfolio signals so hiring teams can judge credibility in seconds.
           </p>
-          <p className="text-[17px] text-gray-500 text-center mb-14">
-            이미 글로벌 기업들이 선택한 이유가 있습니다
-          </p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <a href="#talent-preview" className="inline-flex h-14 items-center justify-center rounded-sm bg-[#0ACB87] px-9 text-[17px] font-semibold text-white transition hover:bg-[#08B979]">
+              View Talent
+            </a>
+            <Link href="/login" className="inline-flex h-14 items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-8 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60">
+              Request shortlist
+            </Link>
+          </div>
+          <div id="trust" className="mt-10 hidden grid-cols-3 gap-5 border-t border-[#BCC5D4] pt-6 sm:grid">
+            <div>
+              <p className="text-[22px] font-semibold text-[#171E2D]">Top school</p>
+              <p className="mt-1 text-[12px] text-[#59657A]">Verified education</p>
+            </div>
+            <div>
+              <p className="text-[22px] font-semibold text-[#171E2D]">Ex-company</p>
+              <p className="mt-1 text-[12px] text-[#59657A]">Career provenance</p>
+            </div>
+            <div>
+              <p className="text-[22px] font-semibold text-[#171E2D]">Interview</p>
+              <p className="mt-1 text-[12px] text-[#59657A]">Reviewed profile</p>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-5 max-w-[1080px] mx-auto">
-          {items.map((item, i) => (
-            <div
-              key={item.num}
-              className={`text-center px-5 py-7 rounded-2xl border-[1px] border-gray-200/30 bg-[#F7F8FA] transition-all duration-500 ${showItems[i] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-            >
-              <div className="w-28 h-28 mx-auto mb-3">
-                <img src={item.img} alt={item.num} className="w-full h-full object-contain" />
-              </div>
-              <p className="text-[22px] font-[600] text-gray-900 mb-1">{item.num}</p>
-              <p className="text-[13px] text-gray-500 leading-snug">{item.desc}</p>
+        <div className="pointer-events-none relative z-0 hidden h-full min-h-[610px] items-end justify-center md:flex">
+          <div className="absolute bottom-0 h-[540px] w-[430px] overflow-hidden">
+            {featured ? <TalentPhoto talent={featured} large /> : <TalentPhotoPlaceholder large />}
+            <div className="absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-[#D9DEE8] via-[#D9DEE8]/88 to-transparent" />
+          </div>
+        </div>
+
+        {featured && (
+          <div className="z-10 hidden justify-self-end md:block">
+            <CredentialCard talent={featured} />
+          </div>
+        )}
+
+        <div className="z-20 -mx-5 mt-6 overflow-hidden border-t border-[#C5CDDA] bg-[#D9DEE8]/90 py-5 md:col-span-3 md:mt-[-112px] md:border-t-0 md:bg-transparent md:py-0">
+          <div className="flex gap-4 overflow-x-auto px-5 pb-2 scrollbar-hide md:justify-center">
+            {heroTalents.length > 0
+              ? heroTalents.map((talent, index) => (
+                  <TalentStripCard key={talent.id} talent={talent} active={index === 0} />
+                ))
+              : Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border border-[#D8DEE8] bg-white">
+                    <div className="h-[132px] bg-[#D8DEE8]" />
+                    <div className="p-4">
+                      <div className="h-4 w-28 bg-[#E5E9F0]" />
+                      <div className="mt-3 h-3 w-20 bg-[#E5E9F0]" />
+                      <div className="mt-6 h-3 w-16 bg-[#E5E9F0]" />
+                      <div className="mt-2 h-4 w-36 bg-[#E5E9F0]" />
+                    </div>
+                  </div>
+                ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TrustLogos() {
+  const logos = ["Samsung", "FPT Software", "Grab", "VNG", "KPMG", "Vietnam National University"];
+  return (
+    <section className="border-b border-[#E6E9EF] bg-white">
+      <div className="mx-auto max-w-[1180px] px-5 py-12">
+        <p className="text-center text-[12px] font-semibold uppercase tracking-[0.18em] text-[#8A93A5]">Signals that hiring teams can trust</p>
+        <div className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-6">
+          {logos.map((logo) => (
+            <div key={logo} className="flex h-16 items-center justify-center border border-[#E8EBF1] bg-[#FAFBFC] px-3 text-center text-[14px] font-semibold text-[#3A4356]">
+              {logo}
             </div>
           ))}
         </div>
@@ -154,401 +230,59 @@ function WhyVietnam() {
   );
 }
 
-function SubHero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, 0.5);
-  const [show, setShow] = useState([false, false, false, false]);
-
-  useEffect(() => {
-    if (!visible) return;
-    const t = [
-      setTimeout(() => setShow((p) => [true, p[1], p[2], p[3]]), 0),
-      setTimeout(() => setShow((p) => [p[0], true, p[2], p[3]]), 300),
-      setTimeout(() => setShow((p) => [p[0], p[1], true, p[3]]), 600),
-      setTimeout(() => setShow((p) => [p[0], p[1], p[2], true]), 1000),
-    ];
-    return () => t.forEach(clearTimeout);
-  }, [visible]);
-
-  const lines = ["서류 검증", "전화 면접", "능력치 정량화"];
-
+function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
   return (
-    <section className="bg-white border-b-[0.5px] border-gray-200/60 mt-20">
-      <div className="mx-auto max-w-[1080px] px-5 py-48 text-center" ref={ref}>
-        <div className="mb-8">
-          {lines.map((text, i) => (
-            <p
-              key={text}
-              className={`text-[28px] md:text-[36px] font-[600] text-gray-900 leading-[1.4] tracking-tight transition-all duration-700 ${show[i] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                }`}
-            >
-              {text}
-            </p>
-          ))}
+    <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
+      <div className="mx-auto max-w-[1180px] px-5 py-24">
+        <div className="max-w-[680px]">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#124FE3]">Curated talent showcase</p>
+          <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">출신과 검증 정보가 먼저 보이는 인재 카드</h2>
+          <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">대학교, 이전 회사, 공개 동의, 사진 품질을 기준으로 신뢰할 수 있는 프로필을 우선 노출합니다.</p>
         </div>
-        <p
-          className={`text-[22px] md:text-[28px] text-gray-500 leading-relaxed transition-all duration-700 ${show[3] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-        >
-          <span className="text-gray-900 font-medium">모두 완료된 인재</span>만 보여드립니다.
-          <br />
-          카드 한 장으로 <span className="text-gray-900 font-medium">3초 만에</span> 판단하세요.
-        </p>
+        {talents.length > 0 ? (
+          <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-2">
+            {talents.slice(0, 6).map((talent) => (
+              <ProfileCard key={talent.id} t={talent} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-12 text-[15px] text-[#697386]">검증된 인재 데이터를 불러오는 중입니다.</p>
+        )}
       </div>
     </section>
   );
 }
-
-const COMPARE_ROWS = [
-  { label: "이력서 검토", old: "직접 읽고 판단", nw: "능력치 카드로 3초" },
-  { label: "인재 검증", old: "자체 검증 필요", nw: "KTC가 사전 평가 완료" },
-  { label: "면접", old: "직접 일정 조율", nw: "녹화 면접 제공 (필요 시)" },
-  { label: "채용 리드타임", old: "2~4주 소요", nw: "최소 1일" },
-  { label: "담당자 에너지", old: "서류→면접→협상 전부", nw: "카드 보고 클릭 한 번" },
-] as const;
-
-function CompareSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, 0.35);
-  const [showTitle, setShowTitle] = useState(false);
-  const [rowPhase, setRowPhase] = useState<number[]>([]);
-  // phase: 0=hidden, 1=old visible, 2=old faded + new appears
-
-  useEffect(() => {
-    if (!visible) return;
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    timers.push(setTimeout(() => setShowTitle(true), 0));
-
-    COMPARE_ROWS.forEach((_, i) => {
-      const base = 500 + i * 800;
-      timers.push(setTimeout(() => {
-        setRowPhase((p) => { const n = [...p]; n[i] = 1; return n; });
-      }, base));
-      timers.push(setTimeout(() => {
-        setRowPhase((p) => { const n = [...p]; n[i] = 2; return n; });
-      }, base + 400));
-    });
-    return () => timers.forEach(clearTimeout);
-  }, [visible]);
-
-  function getPhase(i: number) { return rowPhase[i] || 0; }
-
-  return (
-    <section className="bg-white border-b-[0.5px] border-gray-200/60 mt-40">
-      <div className="mx-auto max-w-[560px] px-5 py-32" ref={ref}>
-        <div className={`transition-all duration-700 ${showTitle ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          <p className="text-[28px] md:text-[34px] font-[600] text-gray-900 tracking-tight text-center mb-3">
-            기존 채용과 비교해보세요
-          </p>
-          <p className="text-[17px] text-gray-500 text-center mb-16">
-            같은 채용인데 <span className="text-blue-500 font-medium">에너지가 다릅니다</span>
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-7">
-          {COMPARE_ROWS.map((row, i) => {
-            const phase = getPhase(i);
-            return (
-              <div
-                key={row.label}
-                className={`transition-all duration-500 ${phase >= 1 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-              >
-                <p className="text-[15px] font-medium text-gray-900 mb-3">{row.label}</p>
-                <div className="flex items-center gap-4">
-                  {/* 기존 */}
-                  <div className={`flex-1 text-center rounded-xl px-4 py-4 border-[1.5px] border-gray-200 transition-all duration-500 ${phase >= 2 ? "opacity-40" : "bg-white"
-                    }`}>
-                    <p className="text-[15px] text-gray-700">{row.old}</p>
-                  </div>
-
-                  {/* 화살표 */}
-                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" className={`flex-shrink-0 transition-all duration-500 ${phase >= 2 ? "text-blue-500" : "text-gray-300"}`}>
-                    <path d="M6 14h16M16 8l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-
-                  {/* KTC Support */}
-                  <div className={`flex-1 text-center rounded-xl px-4 py-4 border-[2px] transition-all duration-500 ${phase >= 2 ? "border-blue-500 bg-blue-50/60 scale-[1.03]" : "border-gray-200 bg-white opacity-40"
-                    }`}>
-                    <p className={`text-[15px] font-[600] transition-all duration-500 ${phase >= 2 ? "text-blue-500" : "text-gray-300"
-                      }`}>{row.nw}</p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PreviewSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, 0.15);
-  const [showTitle, setShowTitle] = useState(false);
-  const [showCards, setShowCards] = useState(false);
-
-  useEffect(() => {
-    if (!visible) return;
-    const t1 = setTimeout(() => setShowTitle(true), 0);
-    const t2 = setTimeout(() => setShowCards(true), 400);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
-  }, [visible]);
-
-  // 엘리트(명문대/글로벌기업)+사진, 공개동의 인재 — 직무 구분 없이 쭉
+export default function LandingPage() {
   const [talents, setTalents] = useState<ShowcaseTalent[]>([]);
+
   useEffect(() => {
     fetch("/api/showcase")
-      .then((r) => r.json())
-      .then((d) => { if (d.talents?.length) setTalents(d.talents); })
-      .catch(() => {});
+      .then((response) => response.json())
+      .then((data) => {
+        if (Array.isArray(data.talents) && data.talents.length > 0) {
+          setTalents(data.talents);
+        }
+      })
+      .catch(() => setTalents([]));
   }, []);
 
-  return (
-    <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[56px] border-b-[0.5px] border-gray-200/60">
-      <div className="mx-auto max-w-[1080px] px-5 pt-20 pb-24" ref={ref}>
-        <div className={`transition-all duration-700 ${showTitle ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          <p className="text-[13px] font-semibold tracking-wide text-center mb-3" style={{ color: "#2751E0" }}>검증된 상위 인재</p>
-          <p className="text-[28px] md:text-[36px] font-[700] tracking-tight text-center mb-3" style={{ color: "#16213E" }}>
-            명문대·글로벌 기업 출신, 지금 만날 수 있어요
-          </p>
-          <p className="text-[16px] text-gray-500 text-center mb-14">이력서 공개에 동의한 인재만 엄선했습니다</p>
-        </div>
-
-        <div className={`transition-all duration-700 ${showCards ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          {talents.length === 0 ? (
-            <p className="text-center text-[14px] text-gray-400 py-10">인재를 불러오는 중…</p>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {talents.map((t) => (<ProfileCard key={t.id} t={t} />))}
-            </div>
-          )}
-        </div>
-
-        {/* 채용은 AM이 — 리드젠 CTA */}
-        <div className="mt-16 rounded-3xl px-8 py-12 text-center" style={{ background: "#16213E" }}>
-          <p className="text-[22px] md:text-[26px] font-[700] text-white tracking-tight mb-2">마음에 드는 인재가 있으신가요?</p>
-          <p className="text-[15px] text-white/60 mb-7">담당 매니저가 인터뷰부터 계약까지 채용 전 과정을 직접 도와드립니다.</p>
-          <Link href="/login" className="inline-block px-7 py-3.5 rounded-xl text-[15px] font-medium text-white active:scale-[0.98] transition" style={{ background: "#2751E0" }}>
-            채용 상담 신청 →
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function CtaSection() {
-  const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, 0.5);
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    if (visible) setShow(true);
-  }, [visible]);
-
-  return (
-    <section className="bg-white mt-20">
-      <div className="mx-auto max-w-[1080px] px-5 py-40 text-center" ref={ref}>
-        <div className={`transition-all duration-700 ${show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-          <p className="text-[28px] md:text-[34px] font-[600] text-gray-900 tracking-tight mb-3">
-            베트남 IT 인재 채용,<br className="md:hidden" /> <span className="text-blue-500">더 이상 에너지 쓰지 마세요</span>
-          </p>
-          <p className="text-[17px] text-gray-500 mb-8">
-            가입은 무료입니다 · 채용 확정 시에만 비용이 발생합니다
-          </p>
-          <Link href="/login" className="inline-block bg-blue-500 text-white px-8 py-4 rounded-xl text-[16px] font-medium hover:bg-blue-600 active:scale-[0.98] transition">
-            무료로 시작하기
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export default function LandingPage() {
-  const [selectedTalent, setSelectedTalent] = useState<Talent | null>(null);
-  const stepsRef = useRef<HTMLDivElement>(null);
-  const stepsVisible = useInView(stepsRef, 0.3);
-  const [stepTitleShow, setStepTitleShow] = useState(false);
-  const [stepShow, setStepShow] = useState([false, false, false]);
-
-  useEffect(() => {
-    if (!stepsVisible) return;
-    const t = [
-      setTimeout(() => setStepTitleShow(true), 0),
-      setTimeout(() => setStepShow((p) => [true, p[1], p[2]]), 700),
-      setTimeout(() => setStepShow((p) => [p[0], true, p[2]]), 1100),
-      setTimeout(() => setStepShow((p) => [p[0], p[1], true]), 1500),
-    ];
-    return () => t.forEach(clearTimeout);
-  }, [stepsVisible]);
+  const premiumTalents = useMemo(() => {
+    return [...talents].sort((a, b) => {
+      const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
+      const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
+      return bScore - aScore;
+    });
+  }, [talents]);
 
   return (
     <main className="min-h-screen bg-white">
-      <Header />
-
-      {/* 인재 쇼케이스 (메인) */}
-      <PreviewSection />
-
-      {/* 히어로 — toptal식 정적 히어로 */}
-      <section className="relative bg-white overflow-hidden border-b-[0.5px] border-gray-200/60">
-        <div className="absolute inset-0 -z-0 bg-[radial-gradient(55%_55%_at_75%_15%,rgba(39,81,224,0.07),transparent)]" />
-        <div className="relative mx-auto max-w-[1080px] px-5 pt-16 pb-20 md:pt-24 md:pb-28">
-          <div className="grid md:grid-cols-[1.05fr_0.95fr] gap-10 md:gap-8 items-center">
-            {/* 좌: 카피 */}
-            <div className="animate-section">
-              <span className="inline-flex items-center gap-1.5 text-[12.5px] font-medium px-3 py-1.5 rounded-full mb-5" style={{ backgroundColor: "#2751E012", color: "#2751E0" }}>
-                <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#2751E0" }} />
-                동의 기반 공개 · 베트남 IT 인재
-              </span>
-              <h1 className="text-[34px] md:text-[50px] font-[700] leading-[1.15] tracking-tight" style={{ color: "#16213E" }}>
-                출신 대학부터 전 직장까지,<br />
-                <span style={{ color: "#2751E0" }}>투명하게 검증된</span> 인재
-              </h1>
-              <p className="text-[16px] md:text-[18px] text-gray-500 leading-relaxed mt-5 max-w-[440px]">
-                이력서 뒤에 숨기지 않습니다. 상위 대학·전 직장·역량까지 공개에 동의한 베트남 IT 인재만 카드로 만나보세요.
-              </p>
-              <div className="flex items-center gap-3 mt-8">
-                <button
-                  onClick={() => document.getElementById("talent-preview")?.scrollIntoView({ behavior: "smooth" })}
-                  className="text-white px-6 py-3.5 rounded-xl text-[15px] font-medium active:scale-[0.98] transition"
-                  style={{ backgroundColor: "#2751E0" }}
-                >
-                  인재 둘러보기
-                </button>
-                <Link href="/login" className="px-6 py-3.5 rounded-xl text-[15px] font-medium border border-gray-200 text-gray-700 hover:border-gray-300 active:scale-[0.98] transition">
-                  무료로 시작하기
-                </Link>
-              </div>
-              <div className="flex items-center gap-8 mt-10">
-                {[["명문대 출신", "검증된 학력"], ["실명 경력", "Ex-기업 공개"], ["6대 역량", "정량 평가"]].map(([a, b]) => (
-                  <div key={a}>
-                    <p className="text-[15px] font-semibold" style={{ color: "#16213E" }}>{a}</p>
-                    <p className="text-[12px] text-gray-400 mt-0.5">{b}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* 우: 카드 쇼케이스 */}
-            <div className="hidden md:flex flex-col gap-3 justify-center">
-              <div className="w-[290px] animate-section animate-delay-1 cursor-pointer" onClick={() => setSelectedTalent(LANDING_TALENTS[0])}>
-                <TalentCard talent={LANDING_TALENTS[0]} />
-              </div>
-              <div className="w-[290px] ml-10 animate-section animate-delay-2 cursor-pointer" onClick={() => setSelectedTalent(LANDING_TALENTS[1])}>
-                <TalentCard talent={LANDING_TALENTS[1]} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* 왜 베트남인가 */}
-      <WhyVietnam />
-
-      {/* 서브 히어로 */}
-      <SubHero />
-
-      {/* 비교표 */}
-      <CompareSection />
-
-      {/* 이용 방법 3단계 */}
-      <section className="bg-white mt-20">
-        <div className="mx-auto max-w-[1080px] px-5 py-40" ref={stepsRef}>
-          <div className={`transition-all duration-700 ${stepTitleShow ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-            <p className="text-[28px] md:text-[34px] font-[600] text-gray-900 tracking-tight text-center mb-3">
-              귀사는 <span className="text-blue-500">고르기만</span> 하세요
-            </p>
-            <p className="text-[17px] text-gray-500 text-center mb-14">
-              나머지는 KTC가 전부 처리합니다
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {([
-              {
-                num: "1",
-                tag: "이미 완료됨",
-                color: "gray" as const,
-                title: "서류 검증 + 능력치 정량화",
-                desc: "KTC가 이력서 분석, 전화 면접을 거쳐 6대 역량을 점수화했습니다.",
-              },
-              {
-                num: "2",
-                tag: "귀사가 할 일",
-                color: "blue" as const,
-                title: "카드 비교 → 채용 or 면접",
-                desc: "면접 없이 바로 채용하거나, 녹화 면접을 먼저 확인할 수 있습니다.",
-              },
-              {
-                num: "3",
-                tag: "KTC가 처리",
-                color: "gray" as const,
-                title: "면접 조율 + 채용 완료",
-                desc: "영업일 1일 내 면접 세팅. 채용 확정 시 EOR 계약까지 원스톱.",
-              },
-            ] as const).map((step, i) => (
-              <div
-                key={step.num}
-                className={`rounded-2xl border-[1.5px] p-7 transition-all duration-500 ${stepShow[i] ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                  } ${step.color === "blue"
-                    ? "border-blue-500 bg-blue-50/30"
-                    : "border-gray-200 bg-white"
-                  }`}
-              >
-                <div className="flex items-center gap-3 mb-4">
-                  <span
-                    className={`w-9 h-9 rounded-full text-[14px] font-medium flex items-center justify-center ${step.color === "blue"
-                      ? "bg-blue-500 text-white"
-                      : "bg-gray-300 text-white"
-                      }`}
-                  >
-                    {step.num}
-                  </span>
-                  <span
-                    className={`text-[13px] font-medium ${step.color === "blue" ? "text-blue-500" : "text-gray-400"
-                      }`}
-                  >
-                    {step.tag}
-                  </span>
-                </div>
-                <p className="text-[18px] font-medium text-gray-900 mb-3">
-                  {step.title}
-                </p>
-                <p className="text-[15px] text-gray-500 leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-
-      {/* 최종 CTA */}
-      <CtaSection />
-
-      {/* 풋터 */}
-      <footer className="border-t-[0.5px] border-gray-200/60 px-5 py-10">
-        <div className="max-w-[1080px] mx-auto">
-          <div className="flex items-center gap-2 mb-4">
-            <img src="/logo.png" alt="KTC Support" width={20} height={20} className="rounded-[3px]" />
-            <span className="text-[14px] text-gray-700" style={{ fontFamily: "'Nunito', sans-serif", fontWeight: 700 }}>KTC Support</span>
-          </div>
-          <div className="text-[12px] text-gray-500 leading-[20px]">
-            <p>상호명: 멋쟁이사자처럼 · 대표: 나성영</p>
-            <p>사업자 번호: 264-88-01106 · 통신판매업 신고번호: 2022-서울종로-1534</p>
-            <p>주소: 서울 종로구 종로3길17, 광화문D타워 D1동 16층, 17층</p>
-            <p>전화번호: 02-6203-3222 · ktc@likelion.net</p>
-          </div>
-          <p className="text-[11px] text-gray-400 mt-4">Copyright © 2022 멋쟁이사자처럼 All rights reserved.</p>
-        </div>
-      </footer>
-
-      {selectedTalent && (
-        <TalentPreviewModal talent={selectedTalent} onClose={() => setSelectedTalent(null)} />
-      )}
+      <Hero talents={premiumTalents} />
+      <TrustLogos />
+      <TalentPreview talents={premiumTalents} />
     </main>
   );
 }
+
+
+
+

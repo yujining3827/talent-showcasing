@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { readFileSync } from "fs";
 import { join } from "path";
-import { isElite, isEliteSchool, isEliteCompany } from "@/lib/prestige";
+import { isEliteSchool, isEliteCompany } from "@/lib/prestige";
 
 // 비전 큐레이션 결과 (data/photo-verdicts.json)
 function loadVerdicts(): Record<string, { headshot?: boolean; quality?: number; good?: boolean }> {

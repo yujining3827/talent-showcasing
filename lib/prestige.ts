@@ -118,7 +118,7 @@ export function groupByRole(talents: Talent[]): RoleGroup[] {
     map.get(role)!.push(t);
   }
   const groups: RoleGroup[] = [];
-  for (const [role, list] of map) {
+  for (const [role, list] of Array.from(map.entries())) {
     list.sort((a, b) => b.ovr_score - a.ovr_score);
     groups.push({ role, talents: list });
   }
@@ -183,7 +183,7 @@ export function groupByNormalizedRole(talents: Talent[]): RoleGroup[] {
     map.get(role)!.push(t);
   }
   const groups: RoleGroup[] = [];
-  for (const [role, list] of map) {
+  for (const [role, list] of Array.from(map.entries())) {
     list.sort((a, b) => b.ovr_score - a.ovr_score);
     groups.push({ role, talents: list });
   }
