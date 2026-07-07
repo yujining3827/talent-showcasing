@@ -19,6 +19,8 @@ type ShowcaseTalent = {
   yoeYears: number | null;
   location: string | null;
   skills: string[];
+  // 어학/소통 능력 (예: "영어 업무 가능 · 한국어 초급", "TOEIC 850"). 데이터 없으면 "조사 중" 노출
+  language?: string | null;
 };
 
 const HERO_TALENTS: ShowcaseTalent[] = [
@@ -224,6 +226,13 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
             </InfoRow>
           )}
           <InfoRow label="학력">{talent.school || "확인 중"}</InfoRow>
+          <InfoRow label="어학 · 소통">
+            {talent.language ? (
+              talent.language
+            ) : (
+              <span className="font-medium italic text-[#9AA3B2]">조사 중</span>
+            )}
+          </InfoRow>
         </div>
       </div>
     </div>
@@ -584,6 +593,214 @@ function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
     </section>
   );
 }
+// ============================================================================
+//  직무별 포트폴리오 예시 섹션
+//  ⚠️ 내일 실제 소스 채울 곳 — 아래 items 배열만 교체하면 됨.
+//   - thumbnail: 이미지 URL (없으면 자동으로 플레이스홀더 표시)
+//   - link: 포트폴리오 원본 URL (behance/github/canva/notion 등)
+//   - 실데이터 후보: user_profiles.portfolio_url(34명), projects(186명)
+// ============================================================================
+type PortfolioItem = {
+  name: string; // 인재 이름 (또는 "익명 디자이너" 등)
+  title: string; // 대표 작업/프로젝트 제목
+  summary: string; // 한 줄 설명
+  tags: string[]; // 사용 툴/스택
+  thumbnail?: string | null; // 미리보기 이미지 URL
+  link?: string | null; // 포트폴리오 링크
+};
+
+type PortfolioSection = {
+  key: string;
+  label: string; // 한글 직무명
+  eyebrow: string; // 영문 라벨
+  desc: string; // 섹션 설명
+  accent: string; // 강조 색 (hex)
+  tint: string; // 썸네일 배경 틴트 (hex)
+  items: PortfolioItem[];
+};
+
+const PORTFOLIO_SECTIONS: PortfolioSection[] = [
+  {
+    key: "design",
+    label: "디자인",
+    eyebrow: "Design",
+    desc: "UI/UX, 브랜딩, 그래픽 등 실제 작업물을 통해 감도와 완성도를 바로 확인하세요.",
+    accent: "#D6336C",
+    tint: "#FCE7F0",
+    items: [
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "내일 실제 디자인 포트폴리오가 들어갈 자리입니다.", tags: ["Figma", "Behance"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "UI/UX · 브랜딩 작업물 예시", tags: ["UI/UX", "Branding"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "그래픽 · 비주얼 디자인 예시", tags: ["Graphic"], thumbnail: null, link: null },
+    ],
+  },
+  {
+    key: "marketing",
+    label: "마케팅",
+    eyebrow: "Marketing",
+    desc: "퍼포먼스·콘텐츠·그로스 등 실제 캠페인 성과와 산출물을 가볍게 살펴보세요.",
+    accent: "#E8590C",
+    tint: "#FFE8D9",
+    items: [
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "내일 실제 마케팅 포트폴리오가 들어갈 자리입니다.", tags: ["Performance", "Growth"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "콘텐츠 · SNS 운영 성과 예시", tags: ["Content", "SNS"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "캠페인 기획 · 데이터 분석 예시", tags: ["Campaign"], thumbnail: null, link: null },
+    ],
+  },
+  {
+    key: "developer",
+    label: "개발자",
+    eyebrow: "Developer",
+    desc: "프론트·백엔드·AI 등 실제 프로젝트와 코드베이스로 구현 역량을 확인하세요.",
+    accent: "#1971C2",
+    tint: "#DDEBFB",
+    items: [
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "내일 실제 개발 포트폴리오가 들어갈 자리입니다.", tags: ["React", "GitHub"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "백엔드 · API 프로젝트 예시", tags: ["Node.js", "API"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "AI/데이터 프로젝트 예시", tags: ["AI", "Data"], thumbnail: null, link: null },
+    ],
+  },
+  {
+    key: "pm",
+    label: "PM",
+    eyebrow: "Product Manager",
+    desc: "제품 기획·전략·실행까지, 실제 프로덕트를 어떻게 이끌었는지 확인하세요.",
+    accent: "#0CA678",
+    tint: "#D6F5EA",
+    items: [
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "내일 실제 PM 포트폴리오가 들어갈 자리입니다.", tags: ["Product", "Strategy"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "제품 기획 · 로드맵 예시", tags: ["Roadmap"], thumbnail: null, link: null },
+      { name: "예시 준비 중", title: "포트폴리오 예시 준비 중", summary: "그로스 · 지표 개선 사례 예시", tags: ["Growth", "Metrics"], thumbnail: null, link: null },
+    ],
+  },
+];
+
+function PortfolioThumb({ item, section }: { item: PortfolioItem; section: PortfolioSection }) {
+  const [failed, setFailed] = useState(false);
+  if (item.thumbnail && !failed) {
+    return (
+      <img
+        src={item.thumbnail}
+        alt={item.title}
+        onError={() => setFailed(true)}
+        className="h-full w-full object-cover"
+      />
+    );
+  }
+  // 이미지 없을 때: 직무 틴트 배경 + "예시 준비 중" 라벨
+  return (
+    <div className="flex h-full w-full flex-col items-center justify-center gap-2" style={{ backgroundColor: section.tint }}>
+      <span className="text-[13px] font-semibold uppercase tracking-[0.14em]" style={{ color: section.accent }}>
+        {section.eyebrow}
+      </span>
+      <span className="text-[12px] font-medium text-[#8A93A5]">예시 준비 중</span>
+    </div>
+  );
+}
+
+function PortfolioCard({ item, section }: { item: PortfolioItem; section: PortfolioSection }) {
+  const CardInner = (
+    <>
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F1F3F7]">
+        <PortfolioThumb item={item} section={section} />
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-center gap-2">
+          <span className="inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: section.tint, color: section.accent }}>
+            {section.label}
+          </span>
+          <span className="text-[12px] font-medium text-[#8A93A5]">{item.name}</span>
+        </div>
+        <p className="mt-2.5 text-[16px] font-semibold text-[#171E2D]">{item.title}</p>
+        <p className="mt-1 text-[13px] leading-[1.6] text-[#5B667A]">{item.summary}</p>
+        {item.tags?.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {item.tags.slice(0, 4).map((tag) => (
+              <span key={tag} className="rounded-md bg-[#EEF1F6] px-2 py-0.5 text-[11px] font-medium text-[#3A4356]">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        {item.link && (
+          <span className="mt-4 inline-flex items-center gap-1 text-[13px] font-semibold" style={{ color: section.accent }}>
+            포트폴리오 보기
+            <span aria-hidden>→</span>
+          </span>
+        )}
+      </div>
+    </>
+  );
+
+  const cardClass =
+    "group flex flex-col overflow-hidden rounded-xl border border-[#E4E8EF] bg-white transition-shadow hover:shadow-[0_20px_50px_-30px_rgba(10,18,32,0.45)]";
+
+  if (item.link) {
+    return (
+      <a href={item.link} target="_blank" rel="noopener noreferrer" className={cardClass}>
+        {CardInner}
+      </a>
+    );
+  }
+  return <div className={cardClass}>{CardInner}</div>;
+}
+
+function PortfolioShowcase() {
+  const [activeKey, setActiveKey] = useState(PORTFOLIO_SECTIONS[0].key);
+  const active = PORTFOLIO_SECTIONS.find((s) => s.key === activeKey) || PORTFOLIO_SECTIONS[0];
+
+  return (
+    <section id="portfolio" className="bg-white scroll-mt-[64px]">
+      <div className="mx-auto max-w-[1360px] px-5 py-24">
+        <div className="max-w-[680px]">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#124FE3]">Portfolio by role</p>
+          <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">직무별 실제 포트폴리오 예시</h2>
+          <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">
+            디자인 · 마케팅 · 개발 · PM, 원하는 직무를 선택해 실제 작업물을 가볍게 확인하세요.
+          </p>
+        </div>
+
+        {/* 직무 칩 (탭) */}
+        <div className="mt-10 flex flex-wrap gap-2.5">
+          {PORTFOLIO_SECTIONS.map((section) => {
+            const on = section.key === activeKey;
+            return (
+              <button
+                key={section.key}
+                type="button"
+                onClick={() => setActiveKey(section.key)}
+                aria-pressed={on}
+                className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[14px] font-semibold transition-colors"
+                style={
+                  on
+                    ? { backgroundColor: section.accent, borderColor: section.accent, color: "#fff" }
+                    : { backgroundColor: "#fff", borderColor: "#E0E4EC", color: "#3A4356" }
+                }
+              >
+                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: on ? "#fff" : section.accent }} aria-hidden />
+                {section.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* 선택된 직무 */}
+        <div className="mt-10">
+          <div className="flex items-baseline gap-3 border-b border-[#E6E9EF] pb-3">
+            <h3 className="text-[22px] font-semibold text-[#171E2D]">{active.label}</h3>
+            <span className="text-[13px] font-medium uppercase tracking-[0.12em] text-[#8A93A5]">{active.eyebrow}</span>
+          </div>
+          <p className="mt-3 max-w-[720px] text-[14px] leading-[1.6] text-[#5B667A]">{active.desc}</p>
+          <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {active.items.map((item, i) => (
+              <PortfolioCard key={`${active.key}-${i}`} item={item} section={active} />
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
   const [talents, setTalents] = useState<ShowcaseTalent[]>([]);
   const [total, setTotal] = useState(0);
@@ -628,6 +845,7 @@ export default function LandingPage() {
       <Hero talents={heroTalents} total={total} eliteSchoolShare={eliteSchoolShare} />
       <TrustLogos />
       {featured && <CandidateStory talent={featured} />}
+      <PortfolioShowcase />
       <TalentPreview talents={premiumTalents} />
       <ContactCTA />
     </main>
