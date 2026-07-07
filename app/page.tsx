@@ -331,14 +331,19 @@ function Hero({
         <div className="z-10 max-w-[640px]">
           <div className="mb-5 inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-[13px] font-semibold text-[#087E62]">
             <VerifiedIcon />
-            검증된 베트남 개발자
+            세상에 없던 안심매칭
           </div>
-          <h1 className="text-[40px] font-semibold leading-[1.15] tracking-normal text-[#171E2D] md:text-[52px]">
-            실력을 검증한<br />베트남 개발자,<br />합리적으로 지금 채용하세요
+          <h1 className="text-[40px] font-bold leading-[1.15] tracking-normal text-[#171E2D] md:text-[52px]">
+            채용비는 반값,<br />검증 기준은 그대로. <br />안심하고 채용하세요.
           </h1>
-          <p className="mt-6 max-w-[640px] text-[18px] leading-[1.65] text-[#30394C]">
-            학력이나 회사 이름이 아니라 경력, 실무 프로젝트, 보유 기술까지 KTC가 직접 검증한 프로필만 보여드립니다. 몇 초 만에 후보자의 실력을 확인하세요.
+          <p className="mt-6 max-w-[640px] text-[24px] leading-[1.65] text-[#30394C]">
+            국내 최다 보유 베트남 인재 반값 안심 매칭 
           </p>
+          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 text-[16px] font-medium text-[#124FE3]">
+            <span>#반값채용</span>
+            <span>#국내최다보유</span>
+            <span>#검증완료</span>
+          </div>
           <div className="mt-8 grid grid-cols-3 gap-5 border-t border-[#BCC5D4] pt-6">
             <StatBlock value={total > 0 ? `${total}명+` : "다수"} label="검증 완료된 인재 풀" />
             <StatBlock value="2주" label="후보 전달까지 소요 기간" />
@@ -346,10 +351,10 @@ function Hero({
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a href="#talent-preview" className="inline-flex h-14 items-center justify-center rounded-sm bg-[#124FE3] px-9 text-[17px] font-semibold text-white transition hover:bg-[#0F3FBB]">
-              후보 보기
+              가격 알아보기
             </a>
             <Link href="/login" className="inline-flex h-14 items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-8 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60">
-              상담 요청
+              포트폴리오 미리보기
             </Link>
           </div>
         </div>
