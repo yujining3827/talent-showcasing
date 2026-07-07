@@ -84,9 +84,19 @@ export function ProfileCard({ t }: { t: ShowcaseTalent }) {
           )}
         </div>
 
+        {t.skills?.length > 0 && (
+          <div className="flex flex-wrap gap-1 mt-2.5">
+            {t.skills.slice(0, 3).map((skill) => (
+              <span key={skill} className="rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-600">
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
+
         <div className="flex items-center gap-1.5 mt-3.5 text-[11px]">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={GREEN} strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
-          <span style={{ color: GREEN }} className="font-medium">공개 동의</span>
+          <span style={{ color: GREEN }} className="font-medium">검증 완료</span>
           {t.location && <span className="ml-auto text-gray-400 truncate max-w-[50%]">{t.location}</span>}
         </div>
       </div>
