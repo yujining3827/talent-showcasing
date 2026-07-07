@@ -21,6 +21,121 @@ type ShowcaseTalent = {
   skills: string[];
 };
 
+const HERO_TALENTS: ShowcaseTalent[] = [
+  {
+    id: "hero-1",
+    name: "Trần Minh Hưng",
+    role: "QA Engineer",
+    headline: "삼성 출신 시니어 QA 엔지니어",
+    photo_url: null,
+    school: null,
+    schoolElite: false,
+    schoolTier: null,
+    company: "Samsung",
+    companyElite: true,
+    companyDomain: "samsung.com",
+    yoeYears: 5,
+    location: "Ho Chi Minh City",
+    skills: ["Manual Testing", "Functional Testing", "Test Case Design", "Agile"],
+  },
+  {
+    id: "hero-2",
+    name: "Embedded Software Developer",
+    role: "Embedded Software Developer",
+    headline: "FPT Software 출신 임베디드 개발자",
+    photo_url: null,
+    school: null,
+    schoolElite: false,
+    schoolTier: null,
+    company: "FPT Software",
+    companyElite: true,
+    companyDomain: "fpt-software.com",
+    yoeYears: 1,
+    location: null,
+    skills: ["C++", "C#", "Swift", "Arduino"],
+  },
+  {
+    id: "hero-3",
+    name: "UX/UI Designer",
+    role: "UX/UI Designer",
+    headline: "VNG 출신 시니어 UX/UI 디자이너",
+    photo_url: null,
+    school: null,
+    schoolElite: false,
+    schoolTier: null,
+    company: "VNG",
+    companyElite: true,
+    companyDomain: "vng.com.vn",
+    yoeYears: 8,
+    location: null,
+    skills: ["User Research", "Design Systems", "Team Leadership"],
+  },
+  {
+    id: "hero-4",
+    name: "AI/ML Engineer",
+    role: "AI/ML Engineer",
+    headline: "컴퓨터 비전·NLP 전문 AI 엔지니어",
+    photo_url: null,
+    school: "University of Science, VNU-HCM",
+    schoolElite: true,
+    schoolTier: "top",
+    company: null,
+    companyElite: false,
+    companyDomain: null,
+    yoeYears: null,
+    location: null,
+    skills: ["Computer Vision", "NLP", "RAG", "Gemini API", "Elasticsearch"],
+  },
+  {
+    id: "hero-5",
+    name: "Full-stack Developer",
+    role: "Full-stack Developer",
+    headline: "핀테크/SaaS 풀스택 개발자",
+    photo_url: null,
+    school: "University of Science, VNU-HCM",
+    schoolElite: true,
+    schoolTier: "top",
+    company: null,
+    companyElite: false,
+    companyDomain: null,
+    yoeYears: null,
+    location: null,
+    skills: ["Node.js", "NestJS", "React", "Microservices"],
+  },
+  {
+    id: "hero-6",
+    name: "Front End Developer",
+    role: "Front End Developer",
+    headline: "React·Vue 프론트엔드 엔지니어",
+    photo_url: null,
+    school: "Ho Chi Minh University of Technology",
+    schoolElite: true,
+    schoolTier: "top",
+    company: null,
+    companyElite: false,
+    companyDomain: null,
+    yoeYears: 3,
+    location: null,
+    skills: ["React", "Vue", "Remix", "Pinia/Jotai"],
+  },
+  {
+    id: "hero-7",
+    name: "Full-Stack Engineer",
+    role: "Full-Stack Engineer",
+    headline: "Next.js 기반 풀스택 엔지니어",
+    photo_url: null,
+    school: "University of Engineering and Technology (VNU), Hanoi",
+    schoolElite: true,
+    schoolTier: "top",
+    company: null,
+    companyElite: false,
+    companyDomain: null,
+    yoeYears: 3,
+    location: null,
+    skills: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
+  },
+];
+
 function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?: boolean }) {
   const [failed, setFailed] = useState(false);
   const src = talent.photo_url || null;
@@ -493,6 +608,14 @@ export default function LandingPage() {
     });
   }, [talents]);
 
+  const heroTalents = useMemo(() => {
+    return [...HERO_TALENTS].sort((a, b) => {
+      const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
+      const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
+      return bScore - aScore;
+    });
+  }, []);
+
   const eliteSchoolShare = useMemo(() => {
     if (talents.length === 0) return null;
     return Math.round((talents.filter((t) => t.schoolElite).length / talents.length) * 100);
@@ -502,7 +625,7 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Hero talents={premiumTalents} total={total} eliteSchoolShare={eliteSchoolShare} />
+      <Hero talents={heroTalents} total={total} eliteSchoolShare={eliteSchoolShare} />
       <TrustLogos />
       {featured && <CandidateStory talent={featured} />}
       <TalentPreview talents={premiumTalents} />
