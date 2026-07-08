@@ -4,12 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { HERO_TALENTS } from "@/lib/heroTalents";
+import { TALENT_DETAILS } from "@/lib/talentDetails";
+import ContactCTA from "@/app/components/ContactCTA";
 
 /* ============================================================================
- *  인재 상세 페이지 (구조 스켈레톤)
- *  - /api/showcase 에서 id로 인재를 찾아 표시
- *  - 좌: 프로필 이미지 / 우: 메인 카드에서 보이던 데이터(이름·직무·경력·어학·기술·학력)
- *  - TODO(추후): 포트폴리오/경력 타임라인/프로젝트 등 하단 상세 콘텐츠 추가
+ *  인재 상세 페이지
+ *  - 상단: 프로필 이미지 + 요약(직무·경력·어학·기술·학력·주소·GitHub) + CTA
+ *  - CTA 아래: lib/talentDetails.ts 이력 뷰(소개·경력·기술·학력·자격증·성과), CTA와 좌측 정렬
  * ========================================================================== */
 type ShowcaseTalent = {
   id: string;
@@ -36,6 +37,15 @@ function InfoRow({ label, accent, children }: { label: string; accent?: boolean;
   );
 }
 
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mb-5 flex items-center gap-3">
+      <span className="h-4 w-1 rounded-full bg-[#E8590C]" />
+      <h2 className="text-[20px] font-bold text-[#171E2D]">{children}</h2>
+    </div>
+  );
+}
+
 export default function TalentDetailPage() {
   const params = useParams();
   const id = String(params?.id ?? "");
@@ -43,16 +53,16 @@ export default function TalentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [imgFailed, setImgFailed] = useState(false);
 
+  const detail = TALENT_DETAILS[id];
+
   useEffect(() => {
     if (!id) return;
-    // 1) 히어로 하드코딩 인재 먼저 조회
     const hero = HERO_TALENTS.find((t) => t.id === id);
     if (hero) {
       setTalent(hero);
       setLoading(false);
       return;
     }
-    // 2) 없으면 /api/showcase 에서 조회
     fetch("/api/showcase")
       .then((r) => r.json())
       .then((d) => {
@@ -77,7 +87,7 @@ export default function TalentDetailPage() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-[1360px] px-5 py-12">
+      <div className="mx-auto max-w-[1360px] px-5 pt-12 pb-24">
         <Link href="/" className="mb-6 inline-flex items-center text-[14px] font-medium text-[#59657A] transition hover:text-[#E8590C]">
           ← 인재 목록으로
         </Link>
@@ -104,58 +114,190 @@ export default function TalentDetailPage() {
                     <img src="/default-profile.png" alt="" className="h-[70%] w-[70%] object-contain" />
                   </div>
                 )}
-                <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#E8590C]">
-                  검증됨
+                <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-md bg-white/95 px-2.5 py-1.5 text-[11px] font-semibold text-[#171E2D] shadow-[0_2px_8px_-2px_rgba(10,18,32,0.25)]">
+                  <span className="h-2 w-2 rounded-full bg-[#1DAA6E]" />
+                  바로 고용가능
                 </div>
               </div>
               {talent.location && <p className="mt-3 text-center text-[13px] text-[#697386]">{talent.location}</p>}
             </div>
 
-            {/* 우: 데이터 */}
-            <div className="max-w-[600px]">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">
-                {talent.role || "테크 전문가"}
-              </p>
-              <h1 className="mt-2 text-[32px] font-bold leading-[1.2] text-[#171E2D]">{talent.name}</h1>
-              <p className="mt-2 text-[16px] leading-[1.6] text-[#5B667A]">
-                {talent.headline || `검증된 ${talent.role || "테크"} 전문가`}
-              </p>
+            {/* 우: 요약 + CTA + 이력 */}
+            <div>
+              {/* 요약 */}
+              <div className="max-w-[600px]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">{talent.role || "테크 전문가"}</p>
+                <h1 className="mt-2 text-[32px] font-bold leading-[1.2] text-[#171E2D]">{talent.name}</h1>
+                <p className="mt-2 text-[16px] leading-[1.6] text-[#5B667A]">
+                  {detail?.titleLine || talent.headline || `검증된 ${talent.role || "테크"} 전문가`}
+                </p>
 
-              <div className="mt-8 flex flex-col gap-6">
-                <InfoRow label="경력" accent>
-                  {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
-                  {talent.company ? ` · ${talent.company}` : ""}
-                </InfoRow>
-                <InfoRow label="어학 · 소통" accent>
-                  {talent.language ? talent.language : <span className="font-medium italic text-[#9AA3B2]">조사 중</span>}
-                </InfoRow>
-                {talent.skills?.length > 0 && (
-                  <div className="flex items-start justify-between gap-4 px-4">
-                    <span className="shrink-0 pt-0.5 text-[13px] font-semibold text-[#9AA3B2]">기술</span>
-                    <div className="flex flex-wrap justify-end gap-1.5">
-                      {talent.skills.map((skill) => (
-                        <span key={skill} className="rounded-full bg-[#F1F3F7] px-2.5 py-1 text-[12px] font-medium text-[#5B667A]">
-                          {skill}
-                        </span>
-                      ))}
+                <div className="mt-8 flex flex-col gap-6">
+                  <InfoRow label="경력" accent>
+                    {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
+                    {talent.company ? ` · ${talent.company}` : ""}
+                  </InfoRow>
+                  <InfoRow label="어학 · 소통" accent>
+                    {talent.language ? talent.language : <span className="font-medium italic text-[#9AA3B2]">조사 중</span>}
+                  </InfoRow>
+                  {talent.skills?.length > 0 && (
+                    <div className="flex items-start justify-between gap-4 px-4">
+                      <span className="shrink-0 pt-0.5 text-[13px] font-semibold text-[#9AA3B2]">기술</span>
+                      <div className="flex flex-wrap justify-end gap-1.5">
+                        {talent.skills.map((skill) => (
+                          <span key={skill} className="rounded-full bg-[#F1F3F7] px-2.5 py-1 text-[12px] font-medium text-[#5B667A]">
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
-                <InfoRow label="학력">{talent.school || "확인 중"}</InfoRow>
+                  )}
+                  <InfoRow label="학력">{talent.school || "확인 중"}</InfoRow>
+                  {/* 주소 · GitHub (개인정보 최소 노출) */}
+                  {detail?.basic?.map((b) => (
+                    <InfoRow key={b.label} label={b.label}>
+                      {b.href ? (
+                        <a href={b.href} target="_blank" rel="noopener noreferrer" className="text-[#E8590C] hover:underline">
+                          {b.value}
+                        </a>
+                      ) : (
+                        b.value
+                      )}
+                    </InfoRow>
+                  ))}
+                </div>
               </div>
 
+              {/* CTA */}
               <Link
                 href="/pricing"
                 className="mt-10 inline-flex h-14 items-center justify-center rounded-sm bg-[#E8590C] px-10 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A]"
               >
                 이 인재 고용 문의하기
               </Link>
+
+              {/* CTA 아래: 이력 상세 (CTA와 좌측 정렬) */}
+              {detail && (
+                <div className="mt-14 max-w-[820px] border-t border-[#EEF1F5] pt-12">
+                  <div className="flex flex-col gap-14">
+                    {/* 소개 */}
+                    {detail.objective && (
+                      <section>
+                        <SectionTitle>소개</SectionTitle>
+                        <p className="text-[15.5px] leading-[1.85] text-[#3A4356]">{detail.objective}</p>
+                      </section>
+                    )}
+
+                    {/* 경력 */}
+                    {detail.experience && detail.experience.length > 0 && (
+                      <section>
+                        <SectionTitle>경력</SectionTitle>
+                        <div className="flex flex-col gap-5">
+                          {detail.experience.map((exp, i) => (
+                            <div key={i} className="rounded-xl border border-[#EEF1F5] p-6 shadow-[0_10px_30px_-26px_rgba(10,18,32,0.4)]">
+                              <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+                                <p className="text-[17px] font-bold text-[#171E2D]">{exp.company}</p>
+                                <span className="text-[13px] font-medium text-[#8A93A5]">{exp.period}</span>
+                              </div>
+                              <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
+                                {exp.role && <span className="rounded-full bg-[#FFF1E8] px-2.5 py-0.5 font-semibold text-[#E8590C]">{exp.role}</span>}
+                                {exp.project && <span className="text-[#5B667A]">프로젝트: {exp.project}</span>}
+                                {exp.customer && <span className="text-[#9AA3B2]">· 고객: {exp.customer}</span>}
+                              </div>
+                              {exp.summary && <p className="mt-3 text-[14px] leading-[1.7] text-[#5B667A]">{exp.summary}</p>}
+                              {exp.tasks && exp.tasks.length > 0 && (
+                                <ul className="mt-3 flex flex-col gap-1.5">
+                                  {exp.tasks.map((task, j) => (
+                                    <li key={j} className="flex gap-2 text-[14px] leading-[1.65] text-[#3A4356]">
+                                      <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
+                                      {task}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* 기술 */}
+                    {detail.skillGroups && detail.skillGroups.length > 0 && (
+                      <section>
+                        <SectionTitle>기술</SectionTitle>
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                          {detail.skillGroups.map((g) => (
+                            <div key={g.title} className="rounded-xl border border-[#EEF1F5] p-5">
+                              <p className="text-[14px] font-bold text-[#171E2D]">{g.title}</p>
+                              <ul className="mt-2.5 flex flex-col gap-1.5">
+                                {g.items.map((item, k) => (
+                                  <li key={k} className="text-[13.5px] leading-[1.6] text-[#5B667A]">{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* 학력 */}
+                    {detail.education && detail.education.length > 0 && (
+                      <section>
+                        <SectionTitle>학력</SectionTitle>
+                        <div className="flex flex-col gap-3">
+                          {detail.education.map((edu, i) => (
+                            <div key={i} className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between">
+                              <div>
+                                <p className="text-[16px] font-semibold text-[#171E2D]">{edu.school}</p>
+                                <p className="text-[13.5px] text-[#5B667A]">{edu.major}</p>
+                              </div>
+                              <span className="text-[13px] font-medium text-[#8A93A5]">{edu.period}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* 자격증 & 성과 */}
+                    {((detail.certifications && detail.certifications.length > 0) || (detail.achievements && detail.achievements.length > 0)) && (
+                      <section className="grid grid-cols-1 gap-10 sm:grid-cols-2">
+                        {detail.certifications && detail.certifications.length > 0 && (
+                          <div>
+                            <SectionTitle>자격증</SectionTitle>
+                            <ul className="flex flex-col gap-2">
+                              {detail.certifications.map((c, i) => (
+                                <li key={i} className="flex gap-2 text-[14.5px] text-[#3A4356]">
+                                  <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
+                                  {c}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                        {detail.achievements && detail.achievements.length > 0 && (
+                          <div>
+                            <SectionTitle>성과</SectionTitle>
+                            <ul className="flex flex-col gap-2">
+                              {detail.achievements.map((a, i) => (
+                                <li key={i} className="flex gap-2 text-[14.5px] text-[#3A4356]">
+                                  <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
+                                  {a}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </section>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
-
-        {/* TODO(추후): 하단 상세 콘텐츠 (포트폴리오 / 경력 타임라인 / 프로젝트 등) */}
       </div>
+
+      <ContactCTA />
     </main>
   );
 }

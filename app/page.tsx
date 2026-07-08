@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
+import ContactCTA from "@/app/components/ContactCTA";
 import { HERO_TALENTS } from "@/lib/heroTalents";
 
 type ShowcaseTalent = {
@@ -359,26 +360,6 @@ function Hero({
         <div className="z-20 mt-4 md:col-span-2 md:mt-8">
           <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} onSelect={setSelectedId} />
         </div>
-      </div>
-    </section>
-  );
-}
-
-function ContactCTA() {
-  return (
-    <section className="bg-[#E8590C]">
-      <div className="mx-auto flex max-w-[1360px] flex-col items-start gap-6 px-5 py-20 md:flex-row md:items-center md:justify-between">
-        <div>
-          <h2 className="text-[28px] font-semibold leading-[1.3] text-white md:text-[36px]">
-            마음에 드는 인재를 찾으셨나요?<br />지금 상담을 요청하세요.
-          </h2>
-          <p className="mt-3 max-w-[520px] text-[16px] leading-[1.6] text-white/80">
-            검증된 후보 프로필을 확인하고, 2주 안에 실제 후보자를 제안받아 보세요.
-          </p>
-        </div>
-        <Link href="/login" className="inline-flex h-14 flex-shrink-0 items-center justify-center rounded-sm bg-white px-9 text-[16px] font-semibold text-[#E8590C] transition hover:bg-white/90">
-          상담 요청하기
-        </Link>
       </div>
     </section>
   );
