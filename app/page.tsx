@@ -130,7 +130,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Victor Hoang",
     role: "Full-Stack Engineer",
     headline: "한국 기업 프로젝트 경험 보유 풀스택 엔지니어",
-    photo_url: "/hero3.png",
+    photo_url: "/HERO%20PROFILE.png",
     school: "University of Engineering and Technology (VNU), Hanoi",
     schoolElite: true,
     schoolTier: "top",
@@ -445,20 +445,19 @@ function Hero({
             <VerifiedIcon color="#E8590C" />
             세상에 없던 안심매칭
           </div>
-          <h1 className="text-[50px] font-bold leading-[1.15] tracking-normal text-[#171E2D] md:text-[52px]">
-            채용비는 반값,<br />검증 기준은 그대로. <br />안심하고 채용하세요.
+          <h1 className="text-[55px] font-bold leading-[1.3] tracking-normal text-[#171E2D] md:text-[52px]">
+            인건비 50%<br />역량은 그대로.<br />최상위 글로벌 인재 구독
           </h1>
           <p className="mt-6 max-w-[640px] text-[24px] leading-[1.65] text-[#30394C]">
             국내 최다 보유 베트남 인재 안심 매칭 
           </p>
           <div className="mt-8 grid grid-cols-3 gap-5 border-t border-[#BCC5D4] pt-6">
-            <StatBlock value="50%↓" label="국내 대비 최대 채용비 절감" accent />
-            <StatBlock value="800+" label="검증된 베트남 인재 풀" />
-            <StatBlock value="93%" label="명문대 출신 인재" />
+            <StatBlock value="2만+" label="검증된 베트남 인재 풀" accent />
+            <StatBlock value="91%" label="명문대 출신 인재"  />
           </div>
           <div className="mt-11 flex flex-col gap-3 sm:flex-row">
             <Link href="/pricing" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm bg-[#E8590C] px-11 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A]">
-              가격 알아보기
+              1분만에 인재 추천받기
             </Link>
             <a href="#portfolio" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-11 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60">
               포트폴리오 미리보기
@@ -617,8 +616,8 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       <Hero talents={heroTalents} eliteSchoolShare={eliteSchoolShare} />
-      <FeaturedTalentCarousel />
       <TrustLogos />
+      <FeaturedTalentCarousel />
       {featured && <CandidateStory talent={featured} />}
       <TalentPreview talents={premiumTalents} />
       <ContactCTA />

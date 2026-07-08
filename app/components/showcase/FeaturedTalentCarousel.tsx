@@ -131,7 +131,7 @@ export default function FeaturedTalentCarousel({
   eyebrow = "Featured talent",
   title = "직무별 포트폴리오 미리보기",
   description = "실제 인재들의 대표 작업물을 직무별로 넘겨보며 가볍게 확인하세요.",
-  autoplayDelay = 4000,
+  autoplayDelay = 2500,
 }: FeaturedTalentCarouselProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: "start", dragFree: false, containScroll: "trimSnaps" },
