@@ -205,7 +205,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
         <p className="mt-2 text-[19px] font-semibold text-[#171E2D]">{talent.headline || `검증된 ${talent.role || "테크"} 전문가`}</p>
         <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
         {/* 강조: 경력 · 어학 */}
-        <div className="mt-5 flex flex-col gap-3">
+        <div className="mt-6 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-4 rounded-lg bg-[#FFF6EF] px-4 py-3">
             <p className="shrink-0 text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#C74E0A]">경력</p>
             <p className="text-right text-[15px] font-bold leading-[1.35] text-[#171E2D]">
@@ -221,7 +221,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
           </div>
         </div>
         {/* 보조: 기술 · 학력 */}
-        <div className="mt-5 flex flex-col gap-2.5">
+        <div className="mt-9 flex flex-col gap-2.5">
           {talent.skills?.length > 0 && (
             <div className="flex items-start justify-between gap-4 px-4">
               <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">기술</span>
