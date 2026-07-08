@@ -419,10 +419,8 @@ function TalentStrip({
 
 function Hero({
   talents,
-  eliteSchoolShare,
 }: {
   talents: ShowcaseTalent[];
-  eliteSchoolShare: number | null;
 }) {
   const heroTalents = talents.slice(0, 10);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -455,9 +453,9 @@ function Hero({
             <StatBlock value="2만+" label="검증된 베트남 인재 풀" accent />
             <StatBlock value="91%" label="명문대 출신 인재"  />
           </div>
-          <div className="mt-11 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-11 flex flex-col gap-5 sm:flex-row">
             <Link href="/pricing" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm bg-[#E8590C] px-11 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A]">
-              1분만에 인재 추천받기
+              바로 인재 추천받기
             </Link>
             <a href="#portfolio" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-11 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60">
               포트폴리오 미리보기
@@ -471,8 +469,6 @@ function Hero({
           <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} onSelect={setSelectedId} />
         </div>
       </div>
-
-      <VerificationProofBanner eliteSchoolShare={eliteSchoolShare} />
     </section>
   );
 }
@@ -536,15 +532,31 @@ function ContactCTA() {
 }
 
 function TrustLogos() {
-  const logos = ["Samsung", "FPT Software", "Grab", "VNG", "KPMG", "Vietnam National University"];
+  // ⚠️ 로고 이미지: public/에 파일 넣고 src 채우면 이미지로, null이면 텍스트로 표시
+  const logos: { name: string; src: string | null }[] = [
+    { name: "Samsung", src: "/samsung.svg" },
+    { name: "FPT Software", src: "/FPT%20Software.webp" },
+    { name: "Grab", src: "/Grab.png" },
+    { name: "Google", src: "/google.png" },
+    { name: "VNG", src: "/VNG.webp" },
+    { name: "KPMG", src: "/KPMG.webp" },
+  ];
   return (
     <section className="border-b border-[#E6E9EF] bg-white">
-      <div className="mx-auto max-w-[1360px] px-5 py-12">
-        <p className="text-center text-[12px] font-semibold uppercase tracking-[0.18em] text-[#8A93A5]">Signals that hiring teams can trust</p>
-        <div className="mt-7 grid grid-cols-2 gap-3 md:grid-cols-6">
-          {logos.map((logo) => (
-            <div key={logo} className="flex h-16 items-center justify-center border border-[#E8EBF1] bg-[#FAFBFC] px-3 text-center text-[14px] font-semibold text-[#3A4356]">
-              {logo}
+      <div className="pt-10 pb-20">
+        {/* 무한 마퀴: 동일 트랙 2개를 나란히 두고 각자 -100% 이동 → 끊김 없이 이어짐 */}
+        <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="animate-marquee flex shrink-0 items-center" aria-hidden={dup === 1}>
+              {logos.map((logo) => (
+                <div key={logo.name} className="flex shrink-0 items-center pr-24">
+                  {logo.src ? (
+                    <img src={logo.src} alt={logo.name} className="h-16 w-auto object-contain" />
+                  ) : (
+                    <span className="whitespace-nowrap text-[19px] font-semibold text-[#3A4356]">{logo.name}</span>
+                  )}
+                </div>
+              ))}
             </div>
           ))}
         </div>
@@ -615,8 +627,9 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Hero talents={heroTalents} eliteSchoolShare={eliteSchoolShare} />
+      <Hero talents={heroTalents} />
       <TrustLogos />
+      <VerificationProofBanner eliteSchoolShare={eliteSchoolShare} />
       <FeaturedTalentCarousel />
       {featured && <CandidateStory talent={featured} />}
       <TalentPreview talents={premiumTalents} />

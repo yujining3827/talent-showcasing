@@ -268,3 +268,16 @@ body {
   animation-delay: 1s;
 }
 
+
+/* 로고 무한 마퀴 (우측으로 흐르는 무한 슬라이드) */
+@keyframes marqueeRight {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.animate-marquee {
+  animation: marqueeRight 20s linear infinite;
+  width: max-content;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee { animation: none; }
+}
