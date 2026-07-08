@@ -9,15 +9,24 @@ import { useState } from "react";
  *  - TODO(추후): handleSubmit 안에서 Supabase 저장 + JD 있으면 추천 메일 발송 연동.
  * ========================================================================== */
 
+type JdType = "text" | "url" | "file";
+
 type PricingForm = {
   name: string;
   company: string;
   contact: string;
   role: string;
-  jd: string;
+  jd: string; // 텍스트 JD
+  jdUrl: string; // URL JD
 };
 
-const EMPTY_FORM: PricingForm = { name: "", company: "", contact: "", role: "", jd: "" };
+const EMPTY_FORM: PricingForm = { name: "", company: "", contact: "", role: "", jd: "", jdUrl: "" };
+
+const JD_TABS: { key: JdType; label: string }[] = [
+  { key: "text", label: "텍스트" },
+  { key: "url", label: "URL" },
+  { key: "file", label: "PDF 첨부" },
+];
 
 function Field({
   label,
@@ -47,13 +56,27 @@ const inputClass =
 
 export default function PricingPage() {
   const [form, setForm] = useState<PricingForm>(EMPTY_FORM);
+  const [jdType, setJdType] = useState<JdType>("text");
+  const [jdFile, setJdFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
 
   const update = (key: keyof PricingForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
 
+  const hasJd =
+    (jdType === "text" && !!form.jd.trim()) ||
+    (jdType === "url" && !!form.jdUrl.trim()) ||
+    (jdType === "file" && !!jdFile);
+
   const canSubmit = form.name.trim() && form.company.trim() && form.contact.trim() && form.role.trim() && !submitting;
+
+  function resetForm() {
+    setForm(EMPTY_FORM);
+    setJdType("text");
+    setJdFile(null);
+    setDone(false);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -90,11 +113,17 @@ export default function PricingPage() {
             채용비 반값,<br />검증된 인재를 만나보세요
           </h1>
           <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
-            간단한 정보만 남겨주시면 담당자가 빠르게 연락드립니다. 찾으시는 인재의 JD까지 남겨주시면, 조건에 맞는
+            간단한 정보만 남겨주시면 담당자가 빠르게 연락드립니다. <br />찾으시는 인재의 JD까지 남겨주시면,<br /> 조건에 맞는
             <span className="font-semibold text-[#E8590C]"> 맞춤 추천 인재</span>를 메일로 보내드려요.
           </p>
           <ul className="mt-8 space-y-3">
-            {["국내 대비 최대 50% 절감된 채용 비용", "800+ 검증된 베트남 IT 인재 풀", "2주 내 맞춤 후보 전달"].map((t) => (
+            {[
+              "개발·마케팅·디자인·영업·CS 전 직군 채용",
+              "채용 부담 없는 월 구독형 요금",
+              "하루 8시간·주 40시간 풀타임 단독 고용",
+              "고학력·유사 경력의 검증된 인재",
+              "평균 3주 내 채용 완료",
+            ].map((t) => (
               <li key={t} className="flex items-start gap-2.5 text-[15px] text-[#3A4356]">
                 <span className="mt-[3px] flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E8590C] text-[10px] font-bold text-white">✓</span>
                 {t}
@@ -111,14 +140,11 @@ export default function PricingPage() {
               <h2 className="mt-5 text-[22px] font-bold text-[#171E2D]">제출이 완료되었어요</h2>
               <p className="mt-2 text-[15px] leading-[1.6] text-[#5B667A]">
                 담당자가 빠르게 연락드리겠습니다.<br />
-                {form.jd.trim() ? "남겨주신 JD 기반 추천 인재도 메일로 보내드릴게요." : "감사합니다."}
+                {hasJd ? "남겨주신 JD 기반 추천 인재도 메일로 보내드릴게요." : "감사합니다."}
               </p>
               <button
                 type="button"
-                onClick={() => {
-                  setForm(EMPTY_FORM);
-                  setDone(false);
-                }}
+                onClick={resetForm}
                 className="mt-7 rounded-md border border-[#E1E5EC] px-5 py-2.5 text-[14px] font-semibold text-[#3A4356] transition hover:border-[#E8590C] hover:text-[#E8590C]"
               >
                 새로 작성하기
@@ -140,14 +166,67 @@ export default function PricingPage() {
               <Field label="관심 직무" required hint="예: 백엔드 2명, 프론트엔드 1명">
                 <input className={inputClass} value={form.role} onChange={update("role")} placeholder="찾으시는 직무와 인원을 적어주세요" />
               </Field>
-              <Field label="인재 JD" hint="선택 · 작성해주시면 조건에 맞는 추천 인재를 메일로 보내드려요">
-                <textarea
-                  className={`${inputClass} min-h-[120px] resize-y`}
-                  value={form.jd}
-                  onChange={update("jd")}
-                  placeholder="주요 업무, 필요 기술스택, 경력 요건 등을 자유롭게 적어주세요"
-                />
-              </Field>
+              <div>
+                <div className="flex items-baseline justify-between">
+                  <span className="text-[13px] font-semibold text-[#3A4356]">인재 JD</span>
+                  <span className="text-[12px] text-[#8A93A5]">선택 · 남겨주시면 추천 인재를 메일로 보내드려요</span>
+                </div>
+
+                {/* 입력 방식 탭: 텍스트 / URL / PDF */}
+                <div className="mt-2 flex gap-1 rounded-lg bg-[#F4F6F9] p-1">
+                  {JD_TABS.map((tab) => {
+                    const on = jdType === tab.key;
+                    return (
+                      <button
+                        key={tab.key}
+                        type="button"
+                        onClick={() => setJdType(tab.key)}
+                        aria-pressed={on}
+                        className={`flex-1 rounded-md py-2 text-[13px] font-semibold transition ${
+                          on ? "bg-white text-[#E8590C] shadow-[0_1px_4px_-1px_rgba(10,18,32,0.2)]" : "text-[#8A93A5] hover:text-[#3A4356]"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* 방식별 입력 */}
+                <div className="mt-3">
+                  {jdType === "text" && (
+                    <textarea
+                      className={`${inputClass} min-h-[120px] resize-y`}
+                      value={form.jd}
+                      onChange={update("jd")}
+                      placeholder="주요 업무, 필요 기술스택, 경력 요건 등을 자유롭게 적어주세요"
+                    />
+                  )}
+                  {jdType === "url" && (
+                    <input
+                      type="url"
+                      className={inputClass}
+                      value={form.jdUrl}
+                      onChange={update("jdUrl")}
+                      placeholder="https://notion.so/... 채용공고 · JD 링크"
+                    />
+                  )}
+                  {jdType === "file" && (
+                    <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed border-[#D6DBE3] bg-[#FAFBFC] px-4 py-7 text-center transition hover:border-[#E8590C] hover:bg-[#FFF8F3]">
+                      <span className="text-[13px] font-semibold text-[#3A4356]">
+                        {jdFile ? jdFile.name : "PDF 파일 선택"}
+                      </span>
+                      <span className="text-[12px] text-[#AEB6C4]">{jdFile ? "다른 파일로 변경하려면 클릭" : "PDF · 최대 10MB"}</span>
+                      <input
+                        type="file"
+                        accept="application/pdf,.pdf"
+                        className="hidden"
+                        onChange={(e) => setJdFile(e.target.files?.[0] ?? null)}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
 
               <button
                 type="submit"

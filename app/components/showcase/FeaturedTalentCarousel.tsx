@@ -10,15 +10,24 @@ import Autoplay from "embla-carousel-autoplay";
  *   - image: 대표 이미지 경로 (null 이면 Placeholder UI 표시)
  *   - role:  직무 (카드 하단 큰 텍스트)
  *   - skills: 핵심 기술스택 칩
+ *   - link:  포트폴리오 링크 (있으면 카드 클릭 시 새 탭으로 열림)
  * ========================================================================== */
 export type FeaturedTalent = {
   id: string;
   role: string;
   skills: string[];
   image?: string | null;
+  link?: string | null;
 };
 
 export const FEATURED_TALENTS: FeaturedTalent[] = [
+  {
+    id: "ft-cth",
+    role: "Senior UX/UI Designer",
+    skills: ["Figma", "Illustrator", "Photoshop", "After Effects"],
+    image: "/portfolio.png",
+    link: "https://www.figma.com/proto/qFUpJXy9VQx44VuGtJ6OO6/CAO-THANH-HUNG-PORTFOLIO?page-id=0%3A1&node-id=928-154820&starting-point-node-id=903%3A2",
+  },
   { id: "ft-1", role: "Senior Backend Engineer", skills: ["Spring Boot", "AWS", "Kubernetes"], image: null },
   { id: "ft-2", role: "Frontend Engineer", skills: ["React", "TypeScript", "Next.js"], image: null },
   { id: "ft-3", role: "Product Designer", skills: ["Figma", "Design System", "UX Research"], image: null },
@@ -29,8 +38,11 @@ export const FEATURED_TALENTS: FeaturedTalent[] = [
 
 /* ---- 개별 카드 ---- */
 function TalentCard({ talent }: { talent: FeaturedTalent }) {
-  return (
-    <article className="group relative aspect-[4/3] overflow-hidden rounded-xl bg-[#EEF1F6] shadow-[0_12px_40px_-28px_rgba(10,18,32,0.5)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-30px_rgba(232,89,12,0.45)]">
+  const cardClass =
+    "group relative block aspect-[4/3] overflow-hidden rounded-xl bg-[#EEF1F6] shadow-[0_12px_40px_-28px_rgba(10,18,32,0.5)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-30px_rgba(232,89,12,0.45)]";
+
+  const inner = (
+    <>
       {/* 대표 이미지 / Placeholder */}
       {talent.image ? (
         <img
@@ -42,6 +54,15 @@ function TalentCard({ talent }: { talent: FeaturedTalent }) {
         <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#F1F3F7] to-[#DDE3EC] transition-transform duration-500 ease-out group-hover:scale-[1.06]">
           <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#AEB6C4]">Placeholder</span>
         </div>
+      )}
+
+      {/* 링크 있으면 우상단 외부링크 표시 */}
+      {talent.link && (
+        <span className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-[#E8590C] shadow-sm transition group-hover:bg-[#E8590C] group-hover:text-white">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </span>
       )}
 
       {/* 하단 그라디언트 오버레이 */}
@@ -61,8 +82,17 @@ function TalentCard({ talent }: { talent: FeaturedTalent }) {
           ))}
         </div>
       </div>
-    </article>
+    </>
   );
+
+  if (talent.link) {
+    return (
+      <a href={talent.link} target="_blank" rel="noopener noreferrer" className={cardClass} aria-label={`${talent.role} 포트폴리오 보기`}>
+        {inner}
+      </a>
+    );
+  }
+  return <article className={cardClass}>{inner}</article>;
 }
 
 /* ---- 좌우 화살표 ---- */

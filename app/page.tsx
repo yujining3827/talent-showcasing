@@ -30,7 +30,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Trần Minh Hưng",
     role: "QA Engineer",
     headline: "삼성 출신 시니어 QA 엔지니어",
-    photo_url: "/HERO%20PROFILE.png",
+    photo_url: "/hero3.png",
     school: "Ho Chi Minh University of Technology",
     schoolElite: true,
     schoolTier: "top",
@@ -47,7 +47,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Vo Huynh Yen Nhi",
     role: "Embedded Software Developer",
     headline: "FPT Software 출신 임베디드 개발자",
-    photo_url: null,
+    photo_url: "/hero2.png",
     school: "Ho Chi Minh City University of Technology and Education",
     schoolElite: false,
     schoolTier: null,
@@ -64,7 +64,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Cao Thanh Hung",
     role: "UX/UI Designer",
     headline: "VNG 출신 시니어 UX/UI 디자이너",
-    photo_url: null,
+    photo_url: "/hero4.png",
     school: "Can Tho University",
     schoolElite: false,
     schoolTier: null,
@@ -80,7 +80,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Phạm Gia Tuấn Khải",
     role: "AI/ML Engineer",
     headline: "컴퓨터 비전·NLP 전문 AI 엔지니어",
-    photo_url: null,
+    photo_url: "/HERO%20PROFILE.png",
     school: "University of Science, VNU-HCM",
     schoolElite: true,
     schoolTier: "top",
@@ -97,7 +97,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Tong Tat Thanh",
     role: "Full-stack Developer",
     headline: "헬스케어·핀테크 백엔드 엔지니어",
-    photo_url: null,
+    photo_url: "/HERO%20PROFILE.png",
     school: "University of Science, VNU-HCM",
     schoolElite: true,
     schoolTier: "top",
@@ -113,7 +113,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Võ Minh Toàn",
     role: "Front End Developer",
     headline: "React·Vue 프론트엔드 엔지니어",
-    photo_url: null,
+    photo_url: "/hero3.png",
     school: "Ho Chi Minh University of Technology",
     schoolElite: true,
     schoolTier: "top",
@@ -130,7 +130,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     name: "Victor Hoang",
     role: "Full-Stack Engineer",
     headline: "한국 기업 프로젝트 경험 보유 풀스택 엔지니어",
-    photo_url: null,
+    photo_url: "/hero3.png",
     school: "University of Engineering and Technology (VNU), Hanoi",
     schoolElite: true,
     schoolTier: "top",
@@ -206,7 +206,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
         <p className="mt-2 text-[19px] font-semibold text-[#171E2D]">{talent.headline || `검증된 ${talent.role || "테크"} 전문가`}</p>
         <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
         {/* 경력·어학(강조·주황 값) / 기술·학력(보조·회색) — 간격/패딩 균일 */}
-        <div className="mt-6 flex flex-col gap-3.5">
+        <div className="mt-8 flex flex-col gap-6">
           <div className="flex items-start justify-between gap-4 px-4">
             <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">경력</span>
             <span className="text-right text-[15px] font-bold leading-[1.4] text-[#E8590C]">
@@ -454,9 +454,9 @@ function Hero({
           <div className="mt-8 grid grid-cols-3 gap-5 border-t border-[#BCC5D4] pt-6">
             <StatBlock value="50%↓" label="국내 대비 최대 채용비 절감" accent />
             <StatBlock value="800+" label="검증된 베트남 인재 풀" />
-            <StatBlock value={eliteSchoolShare != null ? `${eliteSchoolShare}%` : "상위권"} label="명문대 출신 인재" />
+            <StatBlock value="93%" label="명문대 출신 인재" />
           </div>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-11 flex flex-col gap-3 sm:flex-row">
             <Link href="/pricing" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm bg-[#E8590C] px-11 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A]">
               가격 알아보기
             </Link>
@@ -468,7 +468,7 @@ function Hero({
 
         {featured ? <FeaturedCandidatePanel talent={featured} /> : <div className="hidden md:block" />}
 
-        <div className="z-20 md:col-span-2">
+        <div className="z-20 mt-4 md:col-span-2 md:mt-8">
           <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} onSelect={setSelectedId} />
         </div>
       </div>
