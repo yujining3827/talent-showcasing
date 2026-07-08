@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import FloatingChatbotButton from "./components/FloatingChatbotButton";
 
 export const metadata: Metadata = {
   title: "KTC Support - 베트남 IT 인재 마켓플레이스",
@@ -25,7 +26,10 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        {children}
+        <FloatingChatbotButton />
+      </body>
     </html>
   );
 }
