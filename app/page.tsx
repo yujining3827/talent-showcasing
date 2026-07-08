@@ -188,8 +188,8 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
     <div className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)] sm:flex-row">
       <div className="relative h-[300px] w-full sm:h-auto sm:w-[42%]">
         <TalentPhoto talent={talent} large />
-        <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#087E62]">
-          <VerifiedIcon />
+        <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#E8590C]">
+          <VerifiedIcon color="#E8590C" />
           검증됨
         </div>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-10">
@@ -204,24 +204,21 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">이달의 검증 인재</p>
         <p className="mt-2 text-[19px] font-semibold text-[#171E2D]">{talent.headline || `검증된 ${talent.role || "테크"} 전문가`}</p>
         <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
-        {/* 강조: 경력 · 어학 */}
-        <div className="mt-6 flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-4 rounded-lg bg-[#FFF6EF] px-4 py-3">
-            <p className="shrink-0 text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#C74E0A]">경력</p>
-            <p className="text-right text-[15px] font-bold leading-[1.35] text-[#171E2D]">
+        {/* 경력·어학(강조·주황 값) / 기술·학력(보조·회색) — 간격/패딩 균일 */}
+        <div className="mt-6 flex flex-col gap-3.5">
+          <div className="flex items-start justify-between gap-4 px-4">
+            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">경력</span>
+            <span className="text-right text-[15px] font-bold leading-[1.4] text-[#E8590C]">
               {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
               {talent.company ? ` · ${talent.company}` : ""}
-            </p>
+            </span>
           </div>
-          <div className="flex items-center justify-between gap-4 rounded-lg bg-[#FFF6EF] px-4 py-3">
-            <p className="shrink-0 text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#C74E0A]">어학 · 소통</p>
-            <p className="text-right text-[15px] font-bold leading-[1.35] text-[#171E2D]">
-              {talent.language ? talent.language : <span className="font-medium italic text-[#B79E90]">조사 중</span>}
-            </p>
+          <div className="flex items-start justify-between gap-4 px-4">
+            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">어학 · 소통</span>
+            <span className="text-right text-[15px] font-bold leading-[1.4] text-[#E8590C]">
+              {talent.language ? talent.language : <span className="font-medium italic text-[#9AA3B2]">조사 중</span>}
+            </span>
           </div>
-        </div>
-        {/* 보조: 기술 · 학력 */}
-        <div className="mt-9 flex flex-col gap-2.5">
           {talent.skills?.length > 0 && (
             <div className="flex items-start justify-between gap-4 px-4">
               <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">기술</span>
@@ -325,7 +322,7 @@ function TalentStripCard({ talent, selected, onSelect }: { talent: ShowcaseTalen
       <div className="min-w-0 p-4">
         <p className="truncate text-[16px] font-semibold text-[#30394C]">{talent.name}</p>
         <p className="mt-1 flex items-center gap-1 text-[13px] text-[#59657A]">
-          <VerifiedIcon />
+          <VerifiedIcon color="#E8590C" />
           <span className="min-w-0 truncate">{talent.role}</span>
         </p>
         <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#778195]">경력</p>
