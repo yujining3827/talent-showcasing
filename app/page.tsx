@@ -39,6 +39,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     yoeYears: 5,
     location: "Ho Chi Minh City",
     skills: ["Manual Testing", "API Testing", "Test Case Design", "Agile/Scrum"],
+    language: "IELTS 7.0 · TOEIC 825",
   },
   {
     id: "hero-2",
@@ -55,6 +56,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     yoeYears: 5,
     location: "Nha Trang",
     skills: ["C++", "C#", "Swift", "Arduino"],
+    language: "IELTS 7.0 · TOPIK Level 1",
   },
   {
     id: "hero-3",
@@ -87,6 +89,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     yoeYears: 1,
     location: "Ho Chi Minh City",
     skills: ["Computer Vision", "NLP", "RAG", "Gemini API", "Elasticsearch"],
+    language: "IELTS 8.0",
   },
   {
     id: "hero-5",
@@ -119,6 +122,7 @@ const HERO_TALENTS: ShowcaseTalent[] = [
     yoeYears: 3,
     location: "Ho Chi Minh City",
     skills: ["React", "Vue", "Remix", "Pinia/Jotai"],
+    language: "TOEIC 775",
   },
   {
     id: "hero-7",
@@ -161,36 +165,27 @@ function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?
   );
 }
 
-function VerifiedIcon() {
+function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   return (
     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2.75 14.4 5.2l3.42-.47.58 3.4 3.05 1.58-1.56 3.06 1.56 3.05-3.05 1.58-.58 3.4-3.42-.47L12 21.25 9.6 18.8l-3.42.47-.58-3.4-3.05-1.58 1.56-3.06-1.56-3.05L5.6 6.6l.58-3.4 3.42.47L12 2.75Z" fill="#087E62" />
+      <path d="M12 2.75 14.4 5.2l3.42-.47.58 3.4 3.05 1.58-1.56 3.06 1.56 3.05-3.05 1.58-.58 3.4-3.42-.47L12 21.25 9.6 18.8l-3.42.47-.58-3.4-3.05-1.58 1.56-3.06-1.56-3.05L5.6 6.6l.58-3.4 3.42.47L12 2.75Z" fill={color} />
       <path d="m8.5 12.2 2.1 2.1 4.9-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
 
-function StatBlock({ value, label }: { value: string; label: string }) {
+function StatBlock({ value, label, accent = false }: { value: string; label: string; accent?: boolean }) {
   return (
     <div>
-      <p className="text-[26px] font-semibold text-[#171E2D]">{value}</p>
+      <p className={`text-[28px] font-bold ${accent ? "text-[#E8590C]" : "text-[#171E2D]"}`}>{value}</p>
       <p className="mt-1 text-[12px] text-[#59657A]">{label}</p>
-    </div>
-  );
-}
-
-function InfoRow({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-md border border-[#E4E8EF] bg-[#F7F8FB] p-4">
-      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#8A93A5]">{label}</p>
-      <div className="mt-1.5 text-[15px] font-semibold text-[#1B2233]">{children}</div>
     </div>
   );
 }
 
 function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
   return (
-    <div className="z-10 flex flex-col overflow-hidden bg-white shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)] sm:flex-row">
+    <div className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)] sm:flex-row">
       <div className="relative h-[300px] w-full sm:h-auto sm:w-[42%]">
         <TalentPhoto talent={talent} large />
         <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#087E62]">
@@ -206,33 +201,43 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
         </div>
       </div>
       <div className="flex-1 p-6">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#124FE3]">이달의 검증 인재</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">이달의 검증 인재</p>
         <p className="mt-2 text-[19px] font-semibold text-[#171E2D]">{talent.headline || `검증된 ${talent.role || "테크"} 전문가`}</p>
         <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
+        {/* 강조: 경력 · 어학 */}
         <div className="mt-5 flex flex-col gap-3">
-          <InfoRow label="경력">
-            {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
-            {talent.company ? ` · ${talent.company}` : ""}
-          </InfoRow>
+          <div className="flex items-center justify-between gap-4 rounded-lg bg-[#FFF6EF] px-4 py-3">
+            <p className="shrink-0 text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#C74E0A]">경력</p>
+            <p className="text-right text-[15px] font-bold leading-[1.35] text-[#171E2D]">
+              {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
+              {talent.company ? ` · ${talent.company}` : ""}
+            </p>
+          </div>
+          <div className="flex items-center justify-between gap-4 rounded-lg bg-[#FFF6EF] px-4 py-3">
+            <p className="shrink-0 text-[12px] font-extrabold uppercase tracking-[0.08em] text-[#C74E0A]">어학 · 소통</p>
+            <p className="text-right text-[15px] font-bold leading-[1.35] text-[#171E2D]">
+              {talent.language ? talent.language : <span className="font-medium italic text-[#B79E90]">조사 중</span>}
+            </p>
+          </div>
+        </div>
+        {/* 보조: 기술 · 학력 */}
+        <div className="mt-5 flex flex-col gap-2.5">
           {talent.skills?.length > 0 && (
-            <InfoRow label="기술">
-              <div className="flex flex-wrap gap-1.5">
+            <div className="flex items-start justify-between gap-4 px-4">
+              <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">기술</span>
+              <div className="flex flex-wrap justify-end gap-1.5">
                 {talent.skills.slice(0, 4).map((skill) => (
-                  <span key={skill} className="rounded-full bg-[#EEF1F6] px-2.5 py-1 text-[12px] font-medium text-[#3A4356]">
+                  <span key={skill} className="rounded-full bg-[#F1F3F7] px-2.5 py-0.5 text-[12px] font-medium text-[#5B667A]">
                     {skill}
                   </span>
                 ))}
               </div>
-            </InfoRow>
+            </div>
           )}
-          <InfoRow label="학력">{talent.school || "확인 중"}</InfoRow>
-          <InfoRow label="어학 · 소통">
-            {talent.language ? (
-              talent.language
-            ) : (
-              <span className="font-medium italic text-[#9AA3B2]">조사 중</span>
-            )}
-          </InfoRow>
+          <div className="flex items-start justify-between gap-4 px-4">
+            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">학력</span>
+            <span className="text-right text-[13px] leading-[1.5] text-[#5B667A]">{talent.school || "확인 중"}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -276,27 +281,27 @@ const CAMPUS_PROOF = [
 
 function VerificationProofBanner({ eliteSchoolShare }: { eliteSchoolShare: number | null }) {
   return (
-    <div className="bg-[#171E2D] px-5 py-10">
+    <div className="border-y border-[#F2DFD1] bg-[#FFF6EF] px-5 py-10">
       <div className="mx-auto flex max-w-[1360px] flex-col gap-6">
         <div>
-          <p className="text-[22px] font-semibold text-white">상위 대학 출신을 먼저 봅니다.</p>
+          <p className="text-[22px] font-semibold text-[#171E2D]">상위 대학 출신을 먼저 봅니다.</p>
           {eliteSchoolShare !== null && (
-            <p className="mt-1 text-[13px] text-white/60">
-              현재 노출 중인 인재 풀의 <span className="font-semibold text-white">{eliteSchoolShare}%</span>가 상위권 대학 출신입니다.
+            <p className="mt-1 text-[13px] text-[#5B667A]">
+              현재 노출 중인 인재 풀의 <span className="font-semibold text-[#E8590C]">{eliteSchoolShare}%</span>가 상위권 대학 출신입니다.
             </p>
           )}
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {CAMPUS_PROOF.map((campus) => (
-            <div key={campus.short} className="rounded-md border border-white/10 bg-white/5 p-4">
-              <p className="text-[11px] text-white/45">
+            <div key={campus.short} className="rounded-md border border-[#EFE0D3] bg-white p-4 shadow-[0_10px_30px_-24px_rgba(10,18,32,0.4)]">
+              <p className="text-[11px] text-[#8A93A5]">
                 {campus.tag} · {campus.location}
               </p>
-              <p className="mt-2 text-[19px] font-bold text-white">{campus.short}</p>
-              <p className="mt-0.5 text-[12px] text-white/70">{campus.full}</p>
-              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8FE3C4]">{campus.pool}</p>
-              <p className="mt-1 text-[12.5px] leading-[1.55] text-white/70">{campus.desc}</p>
-              <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/35">Campus proof</p>
+              <p className="mt-2 text-[19px] font-bold text-[#171E2D]">{campus.short}</p>
+              <p className="mt-0.5 text-[12px] text-[#5B667A]">{campus.full}</p>
+              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#E8590C]">{campus.pool}</p>
+              <p className="mt-1 text-[12.5px] leading-[1.55] text-[#5B667A]">{campus.desc}</p>
+              <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#B0B8C4]">Campus proof</p>
             </div>
           ))}
         </div>
@@ -310,8 +315,8 @@ function TalentStripCard({ talent, selected, onSelect }: { talent: ShowcaseTalen
     <button
       type="button"
       onClick={onSelect}
-      className={`grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border bg-white p-0 text-left transition hover:border-[#124FE3] hover:shadow-[0_16px_45px_-30px_rgba(18,79,227,0.9)] ${
-        selected ? "border-[#124FE3] shadow-[0_16px_45px_-30px_rgba(18,79,227,0.9)]" : "border-[#D8DEE8]"
+      className={`grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border bg-white p-0 text-left transition hover:border-[#E8590C] hover:shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)] ${
+        selected ? "border-[#E8590C] shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)]" : "border-[#D8DEE8]"
       }`}
     >
       <div className="min-h-[132px] bg-[#D8DEE8]">
@@ -327,7 +332,6 @@ function TalentStripCard({ talent, selected, onSelect }: { talent: ShowcaseTalen
         <p className="mt-1 truncate text-[14px] font-semibold text-[#1B2233]">
           {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
           {talent.company ? ` · ${talent.company}` : ""}
-          {talent.school ? ` · ${talent.school}` : ""}
         </p>
       </div>
     </button>
@@ -377,7 +381,7 @@ function TalentStrip({
         type="button"
         aria-label="이전 인재 보기"
         onClick={() => scroll("left")}
-        className="absolute left-0 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] transition duration-200 hover:bg-white hover:text-[#124FE3] group-hover:opacity-100 md:flex"
+        className="absolute left-0 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] transition duration-200 hover:bg-white hover:text-[#E8590C] group-hover:opacity-100 md:flex"
       >
         <ChevronIcon direction="left" />
       </button>
@@ -407,7 +411,7 @@ function TalentStrip({
         type="button"
         aria-label="다음 인재 보기"
         onClick={() => scroll("right")}
-        className="absolute right-0 top-1/2 z-30 hidden -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] transition duration-200 hover:bg-white hover:text-[#124FE3] group-hover:opacity-100 md:flex"
+        className="absolute right-0 top-1/2 z-30 hidden -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] transition duration-200 hover:bg-white hover:text-[#E8590C] group-hover:opacity-100 md:flex"
       >
         <ChevronIcon direction="right" />
       </button>
@@ -417,11 +421,9 @@ function TalentStrip({
 
 function Hero({
   talents,
-  total,
   eliteSchoolShare,
 }: {
   talents: ShowcaseTalent[];
-  total: number;
   eliteSchoolShare: number | null;
 }) {
   const heroTalents = talents.slice(0, 10);
@@ -429,57 +431,40 @@ function Hero({
   const featured = heroTalents.find((t) => t.id === selectedId) || heroTalents[0] || null;
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#D9DEE8] text-[#192133]">
-      <div className="mx-auto flex h-[64px] max-w-[1360px] items-center justify-between px-5">
-        <Link href="/" className="flex items-center gap-2 text-[18px] font-semibold tracking-tight">
-          <img src="/logo.png" alt="KTC Support" className="h-7 w-7 rounded" />
-          KTC Talent
+    <section className="relative isolate overflow-hidden bg-white text-[#192133]">
+      <div className="mx-auto flex h-[84px] max-w-[1360px] items-center justify-between px-5">
+        <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
+          <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-12 w-auto" />
         </Link>
-        <nav className="hidden items-center gap-7 text-[14px] font-medium text-[#3E485B]">
-          <Link href="/talents">Talent</Link>
-          <a href="#trust">Trust</a>
-          <a href="#talent-preview">Showcase</a>
-        </nav>
-        <Link href="/login" className="rounded-sm bg-[#124FE3] px-5 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#0F3FBB]">
+        <Link href="/login" className="rounded-sm bg-[#E8590C] px-7 py-3.5 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A]">
           Start hiring
         </Link>
       </div>
 
-      <div className="absolute left-1/2 top-0 z-10 hidden -translate-x-1/2 rounded-b-[34px] border border-[#AEB8CA] bg-[#D2D8E4]/80 px-2 py-1 shadow-[0_20px_45px_-25px_rgba(25,33,51,0.45)] md:flex">
-        <span className="px-5 py-3 text-[14px] font-semibold text-[#687287]">I&apos;m looking for</span>
-        <span className="rounded-[28px] border-2 border-[#124FE3] bg-white px-6 py-3 text-[14px] font-semibold text-[#124FE3] shadow-[0_12px_30px_-20px_rgba(18,79,227,0.75)]">Talent</span>
-        <span className="px-6 py-3 text-[14px] font-semibold text-[#293244]">Consulting & Services</span>
-      </div>
-
-      <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-10 px-5 pb-16 pt-20 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-24">
+      <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-10 px-5 pb-16 pt-8 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-12">
         <div className="z-10 max-w-[640px]">
-          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full bg-white/70 px-3 py-1.5 text-[13px] font-semibold text-[#087E62]">
-            <VerifiedIcon />
+          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#FAD9C6] bg-[#FFF1E8] px-3 py-1.5 text-[13px] font-semibold text-[#E8590C]">
+            <VerifiedIcon color="#E8590C" />
             세상에 없던 안심매칭
           </div>
-          <h1 className="text-[40px] font-bold leading-[1.15] tracking-normal text-[#171E2D] md:text-[52px]">
+          <h1 className="text-[50px] font-bold leading-[1.15] tracking-normal text-[#171E2D] md:text-[52px]">
             채용비는 반값,<br />검증 기준은 그대로. <br />안심하고 채용하세요.
           </h1>
           <p className="mt-6 max-w-[640px] text-[24px] leading-[1.65] text-[#30394C]">
-            국내 최다 보유 베트남 인재 반값 안심 매칭 
+            국내 최다 보유 베트남 인재 안심 매칭 
           </p>
-          <div className="mt-4 flex flex-wrap gap-x-3 gap-y-1.5 text-[16px] font-medium text-[#124FE3]">
-            <span>#반값채용</span>
-            <span>#국내최다보유</span>
-            <span>#검증완료</span>
-          </div>
           <div className="mt-8 grid grid-cols-3 gap-5 border-t border-[#BCC5D4] pt-6">
-            <StatBlock value={total > 0 ? `${total}명+` : "다수"} label="검증 완료된 인재 풀" />
-            <StatBlock value="2주" label="후보 전달까지 소요 기간" />
-            <StatBlock value="6단계" label="이력·경력·기술 검증 절차" />
+            <StatBlock value="50%↓" label="국내 대비 최대 채용비 절감" accent />
+            <StatBlock value="800+" label="검증된 베트남 인재 풀" />
+            <StatBlock value={eliteSchoolShare != null ? `${eliteSchoolShare}%` : "상위권"} label="명문대 출신 인재" />
           </div>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#talent-preview" className="inline-flex h-14 items-center justify-center rounded-sm bg-[#124FE3] px-9 text-[17px] font-semibold text-white transition hover:bg-[#0F3FBB]">
+            <Link href="/login" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm bg-[#E8590C] px-11 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A]">
               가격 알아보기
-            </a>
-            <Link href="/login" className="inline-flex h-14 items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-8 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60">
-              포트폴리오 미리보기
             </Link>
+            <a href="#portfolio" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-11 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60">
+              포트폴리오 미리보기
+            </a>
           </div>
         </div>
 
@@ -509,7 +494,7 @@ function CandidateStory({ talent }: { talent: ShowcaseTalent }) {
           <TalentPhoto talent={talent} large />
         </div>
         <div>
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#124FE3]">Why hire {talent.name}</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Why hire {talent.name}</p>
           <h2 className="mt-3 text-[30px] font-semibold leading-[1.25] tracking-normal text-[#171E2D] md:text-[38px]">
             {talent.headline || `${talent.yoeYears ? `${talent.yoeYears}년차 ` : ""}${talent.role} 전문가`}
           </h2>
@@ -524,7 +509,7 @@ function CandidateStory({ talent }: { talent: ShowcaseTalent }) {
               </div>
             ))}
           </div>
-          <a href="#talent-preview" className="mt-8 inline-flex h-12 items-center justify-center rounded-sm bg-[#124FE3] px-7 text-[15px] font-semibold text-white transition hover:bg-[#0F3FBB]">
+          <a href="#talent-preview" className="mt-8 inline-flex h-12 items-center justify-center rounded-sm bg-[#E8590C] px-7 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
             {talent.name} 프로필 자세히 보기
           </a>
         </div>
@@ -535,7 +520,7 @@ function CandidateStory({ talent }: { talent: ShowcaseTalent }) {
 
 function ContactCTA() {
   return (
-    <section className="bg-[#124FE3]">
+    <section className="bg-[#E8590C]">
       <div className="mx-auto flex max-w-[1360px] flex-col items-start gap-6 px-5 py-20 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-[28px] font-semibold leading-[1.3] text-white md:text-[36px]">
@@ -545,7 +530,7 @@ function ContactCTA() {
             검증된 후보 프로필을 확인하고, 2주 안에 실제 후보자를 제안받아 보세요.
           </p>
         </div>
-        <Link href="/login" className="inline-flex h-14 flex-shrink-0 items-center justify-center rounded-sm bg-white px-9 text-[16px] font-semibold text-[#124FE3] transition hover:bg-white/90">
+        <Link href="/login" className="inline-flex h-14 flex-shrink-0 items-center justify-center rounded-sm bg-white px-9 text-[16px] font-semibold text-[#E8590C] transition hover:bg-white/90">
           상담 요청하기
         </Link>
       </div>
@@ -576,7 +561,7 @@ function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
     <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
       <div className="mx-auto max-w-[1360px] px-5 py-24">
         <div className="max-w-[680px]">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#124FE3]">Curated talent showcase</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Curated talent showcase</p>
           <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">출신과 검증 정보가 먼저 보이는 인재 카드</h2>
           <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">대학교, 이전 회사, 공개 동의, 사진 품질을 기준으로 신뢰할 수 있는 프로필을 우선 노출합니다.</p>
         </div>
@@ -752,7 +737,7 @@ function PortfolioShowcase() {
     <section id="portfolio" className="bg-white scroll-mt-[64px]">
       <div className="mx-auto max-w-[1360px] px-5 py-24">
         <div className="max-w-[680px]">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#124FE3]">Portfolio by role</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Portfolio by role</p>
           <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">직무별 실제 포트폴리오 예시</h2>
           <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">
             디자인 · 마케팅 · 개발 · PM, 원하는 직무를 선택해 실제 작업물을 가볍게 확인하세요.
@@ -803,7 +788,6 @@ function PortfolioShowcase() {
 
 export default function LandingPage() {
   const [talents, setTalents] = useState<ShowcaseTalent[]>([]);
-  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     fetch("/api/showcase")
@@ -811,7 +795,6 @@ export default function LandingPage() {
       .then((data) => {
         if (Array.isArray(data.talents) && data.talents.length > 0) {
           setTalents(data.talents);
-          setTotal(typeof data.total === "number" ? data.total : data.talents.length);
         }
       })
       .catch(() => setTalents([]));
@@ -842,10 +825,10 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-white">
-      <Hero talents={heroTalents} total={total} eliteSchoolShare={eliteSchoolShare} />
+      <Hero talents={heroTalents} eliteSchoolShare={eliteSchoolShare} />
+      <PortfolioShowcase />
       <TrustLogos />
       {featured && <CandidateStory talent={featured} />}
-      <PortfolioShowcase />
       <TalentPreview talents={premiumTalents} />
       <ContactCTA />
     </main>
