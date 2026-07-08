@@ -99,15 +99,15 @@ export default function PricingPage() {
           <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
             <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-9 w-auto" />
           </Link>
-          <Link href="/" className="text-[14px] font-medium text-[#59657A] transition hover:text-[#E8590C]">
-            ← 홈으로
-          </Link>
         </div>
       </header>
 
       <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-12 px-5 py-16 md:grid-cols-[0.9fr_1.1fr] md:py-24">
         {/* 좌: 소개 */}
         <div className="md:pt-6">
+          <Link href="/" className="mb-4 inline-flex items-center text-[14px] font-medium text-[#59657A] transition hover:text-[#E8590C]">
+            ← 홈으로
+          </Link>
           <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Get started</p>
           <h1 className="mt-3 text-[32px] font-bold leading-[1.25] text-[#171E2D] md:text-[40px]">
             채용비 반값,<br />검증된 인재를 만나보세요

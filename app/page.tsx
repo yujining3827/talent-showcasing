@@ -417,6 +417,21 @@ function TalentStrip({
   );
 }
 
+function SiteHeader() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-[#EEF1F5] bg-white/90 backdrop-blur">
+      <div className="mx-auto flex h-[72px] max-w-[1360px] items-center justify-between px-5">
+        <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
+          <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-10 w-auto" />
+        </Link>
+        <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
+          바로 고용하기
+        </Link>
+      </div>
+    </header>
+  );
+}
+
 function Hero({
   talents,
 }: {
@@ -428,15 +443,6 @@ function Hero({
 
   return (
     <section className="relative isolate overflow-hidden bg-white text-[#192133]">
-      <div className="mx-auto flex h-[84px] max-w-[1360px] items-center justify-between px-5">
-        <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
-          <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-12 w-auto" />
-        </Link>
-        <Link href="/login" className="rounded-sm bg-[#E8590C] px-7 py-3.5 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A]">
-          Start hiring
-        </Link>
-      </div>
-
       <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-10 px-5 pb-16 pt-8 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-12">
         <div className="z-10 max-w-[640px]">
           <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#FAD9C6] bg-[#FFF1E8] px-3 py-1.5 text-[13px] font-semibold text-[#E8590C]">
@@ -627,6 +633,7 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-white">
+      <SiteHeader />
       <Hero talents={heroTalents} />
       <TrustLogos />
       <VerificationProofBanner eliteSchoolShare={eliteSchoolShare} />
