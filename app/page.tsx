@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
+import { HERO_TALENTS } from "@/lib/heroTalents";
 
 type ShowcaseTalent = {
   id: string;
@@ -23,125 +24,6 @@ type ShowcaseTalent = {
   // 어학/소통 능력 (예: "영어 업무 가능 · 한국어 초급", "TOEIC 850"). 데이터 없으면 "조사 중" 노출
   language?: string | null;
 };
-
-const HERO_TALENTS: ShowcaseTalent[] = [
-  {
-    id: "hero-1",
-    name: "Trần Minh Hưng",
-    role: "QA Engineer",
-    headline: "삼성 출신 시니어 QA 엔지니어",
-    photo_url: "/hero3.png",
-    school: "Ho Chi Minh University of Technology",
-    schoolElite: true,
-    schoolTier: "top",
-    company: "Samsung",
-    companyElite: true,
-    companyDomain: "samsung.com",
-    yoeYears: 5,
-    location: "Ho Chi Minh City",
-    skills: ["Manual Testing", "API Testing", "Test Case Design", "Agile/Scrum"],
-    language: "IELTS 7.0 · TOEIC 825",
-  },
-  {
-    id: "hero-2",
-    name: "Vo Huynh Yen Nhi",
-    role: "Embedded Software Developer",
-    headline: "FPT Software 출신 임베디드 개발자",
-    photo_url: "/hero2.png",
-    school: "Ho Chi Minh City University of Technology and Education",
-    schoolElite: false,
-    schoolTier: null,
-    company: "FPT Software",
-    companyElite: true,
-    companyDomain: "fpt-software.com",
-    yoeYears: 5,
-    location: "Nha Trang",
-    skills: ["C++", "C#", "Swift", "Arduino"],
-    language: "IELTS 7.0 · TOPIK Level 1",
-  },
-  {
-    id: "hero-3",
-    name: "Cao Thanh Hung",
-    role: "UX/UI Designer",
-    headline: "VNG 출신 시니어 UX/UI 디자이너",
-    photo_url: "/hero4.png",
-    school: "Can Tho University",
-    schoolElite: false,
-    schoolTier: null,
-    company: "VNG",
-    companyElite: true,
-    companyDomain: "vng.com.vn",
-    yoeYears: 8,
-    location: "Ho Chi Minh City",
-    skills: ["User Research", "Design Systems", "Team Leadership"],
-  },
-  {
-    id: "hero-4",
-    name: "Phạm Gia Tuấn Khải",
-    role: "AI/ML Engineer",
-    headline: "컴퓨터 비전·NLP 전문 AI 엔지니어",
-    photo_url: "/HERO%20PROFILE.png",
-    school: "University of Science, VNU-HCM",
-    schoolElite: true,
-    schoolTier: "top",
-    company: "Aniday",
-    companyElite: false,
-    companyDomain: null,
-    yoeYears: 1,
-    location: "Ho Chi Minh City",
-    skills: ["Computer Vision", "NLP", "RAG", "Gemini API", "Elasticsearch"],
-    language: "IELTS 8.0",
-  },
-  {
-    id: "hero-5",
-    name: "Tong Tat Thanh",
-    role: "Full-stack Developer",
-    headline: "헬스케어·핀테크 백엔드 엔지니어",
-    photo_url: "/HERO%20PROFILE.png",
-    school: "University of Science, VNU-HCM",
-    schoolElite: true,
-    schoolTier: "top",
-    company: "Fullerton Health Vietnam",
-    companyElite: false,
-    companyDomain: null,
-    yoeYears: 4,
-    location: "Ho Chi Minh City",
-    skills: ["Node.js", "NestJS", "MySQL", "Redis", "Microservices"],
-  },
-  {
-    id: "hero-6",
-    name: "Võ Minh Toàn",
-    role: "Front End Developer",
-    headline: "React·Vue 프론트엔드 엔지니어",
-    photo_url: "/hero3.png",
-    school: "Ho Chi Minh University of Technology",
-    schoolElite: true,
-    schoolTier: "top",
-    company: "Moatable Inc.",
-    companyElite: false,
-    companyDomain: null,
-    yoeYears: 3,
-    location: "Ho Chi Minh City",
-    skills: ["React", "Vue", "Remix", "Pinia/Jotai"],
-    language: "TOEIC 775",
-  },
-  {
-    id: "hero-7",
-    name: "Victor Hoang",
-    role: "Full-Stack Engineer",
-    headline: "한국 기업 프로젝트 경험 보유 풀스택 엔지니어",
-    photo_url: "/HERO%20PROFILE.png",
-    school: "University of Engineering and Technology (VNU), Hanoi",
-    schoolElite: true,
-    schoolTier: "top",
-    company: "SotaTek",
-    companyElite: true,
-    companyDomain: null,
-    yoeYears: 3,
-    location: "Hanoi",
-    skills: ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
-  },
-];
 
 function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?: boolean }) {
   const [failed, setFailed] = useState(false);
@@ -186,7 +68,10 @@ function StatBlock({ value, label, accent = false }: { value: string; label: str
 
 function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
   return (
-    <div className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)] sm:flex-row">
+    <Link
+      href={`/showcase/${talent.id}`}
+      className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)] transition-shadow duration-300 hover:shadow-[0_30px_80px_-38px_rgba(232,89,12,0.4)] sm:flex-row"
+    >
       <div className="relative h-[300px] w-full sm:h-auto sm:w-[42%]">
         <TalentPhoto talent={talent} large />
         <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#E8590C]">
@@ -238,7 +123,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -479,44 +364,6 @@ function Hero({
   );
 }
 
-function CandidateStory({ talent }: { talent: ShowcaseTalent }) {
-  const journey = [
-    talent.school ? { label: "학력", value: talent.school } : null,
-    talent.company ? { label: "경력", value: `${talent.company}${talent.yoeYears ? ` · ${talent.yoeYears}년차` : ""}` } : null,
-    talent.skills?.length ? { label: "기술", value: talent.skills.slice(0, 5).join(", ") } : null,
-  ].filter(Boolean) as { label: string; value: string }[];
-
-  return (
-    <section className="bg-white">
-      <div className="mx-auto grid max-w-[1360px] grid-cols-1 gap-10 px-5 py-24 md:grid-cols-[0.85fr_1fr] md:items-center">
-        <div className="relative h-[420px] w-full overflow-hidden bg-[#D8DEE8]">
-          <TalentPhoto talent={talent} large />
-        </div>
-        <div>
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Why hire {talent.name}</p>
-          <h2 className="mt-3 text-[30px] font-semibold leading-[1.25] tracking-normal text-[#171E2D] md:text-[38px]">
-            {talent.headline || `${talent.yoeYears ? `${talent.yoeYears}년차 ` : ""}${talent.role} 전문가`}
-          </h2>
-          <p className="mt-4 text-[16px] leading-[1.75] text-[#5B667A]">
-            {talent.company ? `${talent.company}에서의 실무 경험과 ` : ""}검증된 기술 스택을 바탕으로, 합류 즉시 기여할 수 있는 후보입니다. 이력서 한 장이 아니라 커리어 여정 전체를 확인하세요.
-          </p>
-          <div className="mt-8 flex flex-col gap-4 border-t border-[#E6E9EF] pt-6">
-            {journey.map((step) => (
-              <div key={step.label} className="flex gap-4">
-                <span className="w-16 flex-shrink-0 text-[12px] font-semibold uppercase tracking-[0.1em] text-[#8A93A5]">{step.label}</span>
-                <span className="text-[15px] font-medium text-[#1B2233]">{step.value}</span>
-              </div>
-            ))}
-          </div>
-          <a href="#talent-preview" className="mt-8 inline-flex h-12 items-center justify-center rounded-sm bg-[#E8590C] px-7 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
-            {talent.name} 프로필 자세히 보기
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ContactCTA() {
   return (
     <section className="bg-[#E8590C]">
@@ -629,7 +476,6 @@ export default function LandingPage() {
     return Math.round((talents.filter((t) => t.schoolElite).length / talents.length) * 100);
   }, [talents]);
 
-  const featured = premiumTalents[0] || null;
 
   return (
     <main className="min-h-screen bg-white">
@@ -638,7 +484,6 @@ export default function LandingPage() {
       <TrustLogos />
       <VerificationProofBanner eliteSchoolShare={eliteSchoolShare} />
       <FeaturedTalentCarousel />
-      {featured && <CandidateStory talent={featured} />}
       <TalentPreview talents={premiumTalents} />
       <ContactCTA />
     </main>

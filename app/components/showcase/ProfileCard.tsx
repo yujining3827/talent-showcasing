@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { ShowcaseTalent } from "@/app/api/showcase/route";
 
 const NAVY = "#16213E";
@@ -56,7 +57,7 @@ export function ProfileCard({ t }: { t: ShowcaseTalent }) {
   const company = t.company ? cleanCompany(t.company) : null;
 
   return (
-    <div className="group flex bg-white rounded-2xl border border-gray-200 overflow-hidden transition-all duration-150 hover:border-gray-300 hover:shadow-[0_14px_36px_-16px_rgba(22,33,62,0.32)]">
+    <Link href={`/showcase/${t.id}`} className="group flex bg-white rounded-2xl border border-gray-200 overflow-hidden transition-all duration-150 hover:border-gray-300 hover:shadow-[0_14px_36px_-16px_rgba(22,33,62,0.32)]">
       <Avatar src={t.photo_url} name={t.name} />
 
       <div className="flex-1 min-w-0 p-4 flex flex-col">
@@ -100,6 +101,6 @@ export function ProfileCard({ t }: { t: ShowcaseTalent }) {
           {t.location && <span className="ml-auto text-gray-400 truncate max-w-[50%]">{t.location}</span>}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
