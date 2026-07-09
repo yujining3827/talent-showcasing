@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { EMPTY_FORM, type JdType, type PricingForm } from "@/app/components/pricing/types";
+import { EMPTY_FORM, type PricingForm } from "@/app/components/pricing/types";
 import ProgressBar from "@/app/components/pricing/ProgressBar";
 import StepOne from "@/app/components/pricing/StepOne";
 import StepTwo from "@/app/components/pricing/StepTwo";
@@ -15,7 +15,6 @@ import StepTwo from "@/app/components/pricing/StepTwo";
 export default function PricingPage() {
   const [form, setForm] = useState<PricingForm>(EMPTY_FORM);
   const [step, setStep] = useState(1);
-  const [jdType, setJdType] = useState<JdType>("text");
   const [jdFile, setJdFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -25,11 +24,10 @@ export default function PricingPage() {
   // Step1 필수: 관심 직무(1개+) / Step2 필수: 성함·기업명·연락처
   const canNext = form.roles.length > 0;
   const canSubmit = !!(form.name.trim() && form.company.trim() && form.contact.trim());
-  const hasJd = (jdType === "text" && !!form.jd.trim()) || (jdType === "url" && !!form.jdUrl.trim()) || (jdType === "file" && !!jdFile);
+  const hasJd = !!form.jdUrl.trim() || !!jdFile;
 
   function resetForm() {
     setForm(EMPTY_FORM);
-    setJdType("text");
     setJdFile(null);
     setStep(1);
     setDone(false);
@@ -124,8 +122,6 @@ export default function PricingPage() {
                   <StepTwo
                     form={form}
                     patch={patch}
-                    jdType={jdType}
-                    setJdType={setJdType}
                     jdFile={jdFile}
                     setJdFile={setJdFile}
                     onPrev={() => setStep(1)}
