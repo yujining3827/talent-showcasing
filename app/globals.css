@@ -288,3 +288,10 @@ body {
   to { opacity: 1; transform: translateX(0); }
 }
 .animate-step-in { animation: stepIn 250ms ease-out; }
+
+/* 후기 대표 카드 자동 전환 페이드 */
+@keyframes testimonialFade {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-testimonial { animation: testimonialFade 450ms ease-out; }

@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import ContactCTA from "@/app/components/ContactCTA";
+import Testimonials from "@/app/components/Testimonials";
 import { HERO_TALENTS } from "@/lib/heroTalents";
 
 type ShowcaseTalent = {
@@ -377,7 +378,7 @@ function TrustLogos() {
   ];
   return (
     <section className="border-b border-[#E6E9EF] bg-white">
-      <div className="pt-10 pb-20">
+      <div className="pt-14 pb-16">
         {/* 무한 마퀴: 동일 트랙 2개를 나란히 두고 각자 -100% 이동 → 끊김 없이 이어짐 */}
         <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
           {[0, 1].map((dup) => (
@@ -394,6 +395,10 @@ function TrustLogos() {
             </div>
           ))}
         </div>
+        {/* 섹션 의미 안내 — 인재들의 이전 소속 (옅게) */}
+        <p className="mt-9 px-5 text-center text-[13px] font-medium text-[#B4BBC7]">
+          이런 기업에서 일했던 인재를 제안합니다
+        </p>
       </div>
     </section>
   );
@@ -466,6 +471,7 @@ export default function LandingPage() {
       <VerificationProofBanner eliteSchoolShare={eliteSchoolShare} />
       <FeaturedTalentCarousel />
       <TalentPreview talents={premiumTalents} />
+      <Testimonials />
       <ContactCTA />
     </main>
   );

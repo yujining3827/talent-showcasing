@@ -12,7 +12,7 @@ export type PricingForm = {
   workType: string; // 근무 형태 (단일)
   duration: string; // 근무 기간 (단일)
   startTime: string; // 채용 시점 (단일)
-  industry: string[]; // 기업 업종 (복수)
+  industry: string; // 기업 업종 (드롭다운 단일)
   jd: string; // 텍스트 JD
   jdUrl: string; // URL JD
 };
@@ -25,7 +25,7 @@ export const EMPTY_FORM: PricingForm = {
   workType: "",
   duration: "",
   startTime: "",
-  industry: [],
+  industry: "",
   jd: "",
   jdUrl: "",
 };
