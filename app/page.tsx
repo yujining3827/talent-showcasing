@@ -403,7 +403,7 @@ function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
   return (
     <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
       <div className="mx-auto max-w-[1360px] px-5 py-24">
-        <div className="max-w-[680px]">
+        <div className="max-w-[720px]">
           <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Curated talent showcase</p>
           <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">출신과 검증 정보가 먼저 보이는 인재 카드</h2>
           <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">대학교, 이전 회사, 공개 동의, 사진 품질을 기준으로 신뢰할 수 있는 프로필을 우선 노출합니다.</p>
