@@ -24,7 +24,6 @@ export default function PricingPage() {
   // Step1 필수: 관심 직무(1개+) / Step2 필수: 성함·기업명·연락처
   const canNext = form.roles.length > 0;
   const canSubmit = !!(form.name.trim() && form.company.trim() && form.contact.trim());
-  const hasJd = !!form.jdUrl.trim() || !!jdFile;
 
   function resetForm() {
     setForm(EMPTY_FORM);
@@ -46,6 +45,45 @@ export default function PricingPage() {
     await new Promise((r) => setTimeout(r, 500));
     setSubmitting(false);
     setDone(true);
+  }
+
+  // 제출 완료 — 헤더만 있는 전체 화면
+  if (done) {
+    return (
+      <main className="flex min-h-screen flex-col bg-white text-[#171E2D]">
+        <header className="border-b border-[#EEF1F5]">
+          <div className="mx-auto flex h-[72px] max-w-[1100px] items-center justify-between px-5">
+            <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
+              <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-9 w-auto" />
+            </Link>
+          </div>
+        </header>
+        <div className="flex flex-1 flex-col items-center justify-center px-5 py-20 text-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#FFF1E8] text-[36px] text-[#E8590C]">✓</div>
+          <h1 className="mt-7 text-[30px] font-bold text-[#171E2D] md:text-[36px]">제출이 완료되었어요</h1>
+          <p className="mt-3 max-w-[460px] text-[16px] leading-[1.7] text-[#5B667A]">
+            제출해주신 내용을 꼼꼼히 검토해,
+            <br />
+            딱 맞는 인재를 곧 제안드릴게요.
+          </p>
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/"
+              className="inline-flex h-12 items-center justify-center rounded-md bg-[#E8590C] px-7 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]"
+            >
+              홈으로 돌아가기
+            </Link>
+            <button
+              type="button"
+              onClick={resetForm}
+              className="inline-flex h-12 items-center justify-center rounded-md border border-[#E1E5EC] px-7 text-[15px] font-semibold text-[#3A4356] transition hover:border-[#E8590C] hover:text-[#E8590C]"
+            >
+              새로 작성하기
+            </button>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -95,25 +133,7 @@ export default function PricingPage() {
 
         {/* 우: 스텝 폼 카드 */}
         <div className="rounded-2xl border border-[#EEF1F5] bg-white p-7 shadow-[0_24px_70px_-42px_rgba(10,18,32,0.5)] md:p-8">
-          {done ? (
-            <div className="flex min-h-[480px] flex-col items-center justify-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF1E8] text-[28px] text-[#E8590C]">✓</div>
-              <h2 className="mt-5 text-[22px] font-bold text-[#171E2D]">제출이 완료되었어요</h2>
-              <p className="mt-2 text-[15px] leading-[1.6] text-[#5B667A]">
-                담당자가 빠르게 연락드리겠습니다.
-                <br />
-                {hasJd ? "남겨주신 JD 기반 추천 인재도 메일로 보내드릴게요." : "감사합니다."}
-              </p>
-              <button
-                type="button"
-                onClick={resetForm}
-                className="mt-7 rounded-md border border-[#E1E5EC] px-5 py-2.5 text-[14px] font-semibold text-[#3A4356] transition hover:border-[#E8590C] hover:text-[#E8590C]"
-              >
-                새로 작성하기
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit} className="flex flex-col">
+          <form onSubmit={handleSubmit} className="flex flex-col">
               {/* 스텝 콘텐츠 (전환 애니메이션) */}
               <div key={step} className="animate-step-in">
                 {step === 1 ? (
@@ -136,7 +156,6 @@ export default function PricingPage() {
                 <ProgressBar step={step} total={2} />
               </div>
             </form>
-          )}
         </div>
       </div>
     </main>
