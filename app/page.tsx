@@ -396,7 +396,7 @@ function TrustLogos() {
           ))}
         </div>
         {/* 섹션 의미 안내 — 인재들의 이전 소속 (옅게) */}
-        <p className="mt-9 px-5 text-center text-[13px] font-medium text-[#B4BBC7]">
+        <p className="mt-12 px-5 text-center text-[13px] font-medium text-[#B4BBC7]">
           이런 기업에서 일했던 인재를 제안합니다
         </p>
       </div>
