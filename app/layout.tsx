@@ -3,8 +3,8 @@ import "./globals.css";
 import FloatingChatbotButton from "./components/FloatingChatbotButton";
 
 export const metadata: Metadata = {
-  title: "KTC Support - 베트남 IT 인재 마켓플레이스",
-  description: "한국 중소기업을 위한 베트남 IT 인재 마켓플레이스",
+  title: "공고마감 by LIKELION",
+  description: "검증된 IT 인재를 채용비 50%로. 상위 대학·전 직장 출신 인재를 빠르게 만나보세요.",
 };
 
 export default function RootLayout({
@@ -15,7 +15,6 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet" />
