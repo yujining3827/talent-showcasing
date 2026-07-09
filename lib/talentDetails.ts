@@ -21,6 +21,7 @@ export type TalentDetail = {
   experience?: ExperienceItem[];
   certifications?: string[];
   achievements?: string[];
+  resumeUrl?: string; // 실제 이력서 원본(구글 드라이브 등) 링크
 };
 
 export const TALENT_DETAILS: Record<string, TalentDetail> = {
@@ -41,31 +42,20 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
       {
         title: "소프트웨어 테스팅",
         items: [
-          "테스트 계획 · 분석/설계 · 케이스 리뷰 · 환경 구축 · 실행 · 버그 리포트/추적 · 리포팅",
-          "수동 · 블랙박스 · 회귀 · 스모크 · UI/UX · API · DB(SQL & NoSQL) · 경험 기반 테스트",
-          "기능 · 비기능(보안 · 성능 · 호환성 · 사용성 · 접근성) 테스트",
-          "통합 · SIT · 시스템 · 모바일 · 웹 테스트",
-          "애자일 · 스크럼 · 칸반",
+          "기능 · 비기능(보안·성능·호환성·사용성) 테스트",
+          "수동 · 회귀 · 스모크 · 통합 · 시스템 · API · DB · UI/UX",
+          "모바일 · 웹 · 애자일/스크럼/칸반",
         ],
       },
       {
         title: "소프트 스킬",
-        items: [
-          "팀 커뮤니케이션 · 경청 · 팀워크",
-          "스프린트/기능/제품 데모 · 발표",
-          "신규 멤버 온보딩 가이드",
-          "디테일 · 창의성 · 적응력 · 지속 학습",
-        ],
+        items: ["팀 커뮤니케이션 · 협업 · 발표/데모", "신규 멤버 온보딩 · 지속 학습"],
       },
       {
         title: "테스팅 툴",
         items: [
-          "태스크/버그: Jira · Trello · Redmine · Azure DevOps · Taiga",
-          "테스트 케이스: TestRail · Zephyr",
-          "문서 관리: Confluence · SharePoint",
-          "수동 테스트: Postman · Swagger · JMeter · BrowserStack · Lighthouse",
-          "자동화: Selenium/Appium(기초) · AI 툴",
-          "설계/시연: Miro · 커뮤니케이션: Teams · Slack · Skype · Google Meet",
+          "Jira · TestRail · Zephyr · Confluence",
+          "Postman · JMeter · BrowserStack · Selenium/Appium · Miro",
         ],
       },
       { title: "언어", items: ["영어 (업무 가능)", "프랑스어 (기초)"] },
@@ -123,5 +113,6 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
       "2021년 3분기 우수사원 — Opswat",
       "SQA 최우수 퍼포먼스 Top 10 (2022 · 2023) — 삼성 호치민 연구소(SHRC)",
     ],
+    resumeUrl: "https://drive.google.com/file/d/1k17dithvtgosK2JfyLoLxD0gcWXmctzl/view",
   },
 };

@@ -16,7 +16,7 @@ export default function ContactCTA() {
           </p>
         </div>
         <Link
-          href="/chatbot"
+          href="/pricing"
           className="inline-flex h-14 flex-shrink-0 items-center justify-center rounded-sm bg-[#E8590C] px-9 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A]"
         >
           상담 요청하기

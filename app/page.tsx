@@ -311,7 +311,7 @@ function SiteHeader() {
           <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-10 w-auto" />
         </Link>
         <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
-          바로 고용하기
+          바로 채용하기
         </Link>
       </div>
     </header>

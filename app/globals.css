@@ -281,3 +281,10 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee { animation: none; }
 }
+
+/* Pricing 2-step 위저드 스텝 전환 */
+@keyframes stepIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.animate-step-in { animation: stepIn 250ms ease-out; }

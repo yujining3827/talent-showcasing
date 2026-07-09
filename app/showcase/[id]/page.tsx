@@ -4,8 +4,10 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { HERO_TALENTS } from "@/lib/heroTalents";
-import { TALENT_DETAILS } from "@/lib/talentDetails";
+import { TALENT_DETAILS, type TalentDetail } from "@/lib/talentDetails";
 import ContactCTA from "@/app/components/ContactCTA";
+// 오프라인 생성(뷰티파이닝) 결과 — 실제 인재의 한글 이력/사진
+import GENERATED from "@/data/talent-details.generated.json";
 
 /* ============================================================================
  *  인재 상세 페이지
@@ -53,7 +55,9 @@ export default function TalentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [imgFailed, setImgFailed] = useState(false);
 
-  const detail = TALENT_DETAILS[id];
+  const gen = (GENERATED as unknown as Record<string, { detail?: TalentDetail; resumeUrl?: string | null; photo?: string }>)[id];
+  const detail: TalentDetail | undefined = TALENT_DETAILS[id] ?? gen?.detail;
+  const genPhoto = gen?.photo; // 뷰티파이닝된 사진(있으면 우선)
 
   useEffect(() => {
     if (!id) return;
@@ -82,7 +86,7 @@ export default function TalentDetailPage() {
             <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-9 w-auto" />
           </Link>
           <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
-            바로 고용하기
+            바로 채용하기
           </Link>
         </div>
       </header>
@@ -101,9 +105,9 @@ export default function TalentDetailPage() {
             {/* 좌: 프로필 이미지 */}
             <div>
               <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#EEF1F6]">
-                {talent.photo_url && !imgFailed ? (
+                {(genPhoto || talent.photo_url) && !imgFailed ? (
                   <img
-                    src={talent.photo_url}
+                    src={genPhoto || talent.photo_url || ""}
                     alt={talent.name}
                     onError={() => setImgFailed(true)}
                     className="h-full w-full object-cover"
@@ -116,7 +120,7 @@ export default function TalentDetailPage() {
                 )}
                 <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-md bg-white/95 px-2.5 py-1.5 text-[11px] font-semibold text-[#171E2D] shadow-[0_2px_8px_-2px_rgba(10,18,32,0.25)]">
                   <span className="h-2 w-2 rounded-full bg-[#1DAA6E]" />
-                  바로 고용가능
+                  바로 채용가능
                 </div>
               </div>
               {talent.location && <p className="mt-3 text-center text-[13px] text-[#697386]">{talent.location}</p>}
@@ -173,7 +177,7 @@ export default function TalentDetailPage() {
                 href="/pricing"
                 className="mt-10 inline-flex h-14 items-center justify-center rounded-sm bg-[#E8590C] px-10 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A]"
               >
-                이 인재 고용 문의하기
+                이 인재 채용 문의하기
               </Link>
 
               {/* CTA 아래: 이력 상세 (CTA와 좌측 정렬) */}
@@ -185,6 +189,54 @@ export default function TalentDetailPage() {
                       <section>
                         <SectionTitle>소개</SectionTitle>
                         <p className="text-[15.5px] leading-[1.85] text-[#3A4356]">{detail.objective}</p>
+                      </section>
+                    )}
+
+                    {/* 학력 */}
+                    {detail.education && detail.education.length > 0 && (
+                      <section>
+                        <SectionTitle>학력</SectionTitle>
+                        <div className="flex flex-col gap-3">
+                          {detail.education.map((edu, i) => (
+                            <div key={i} className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between">
+                              <div>
+                                <p className="text-[16px] font-semibold text-[#171E2D]">{edu.school}</p>
+                                <p className="text-[13.5px] text-[#5B667A]">{edu.major}</p>
+                              </div>
+                              <span className="text-[13px] font-medium text-[#8A93A5]">{edu.period}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+                    )}
+
+                    {/* 자격증 */}
+                    {detail.certifications && detail.certifications.length > 0 && (
+                      <section>
+                        <SectionTitle>자격증</SectionTitle>
+                        <ul className="flex flex-col gap-2">
+                          {detail.certifications.map((c, i) => (
+                            <li key={i} className="flex gap-2 text-[14.5px] text-[#3A4356]">
+                              <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
+                              {c}
+                            </li>
+                          ))}
+                        </ul>
+                      </section>
+                    )}
+
+                    {/* 수상내역 */}
+                    {detail.achievements && detail.achievements.length > 0 && (
+                      <section>
+                        <SectionTitle>수상내역</SectionTitle>
+                        <ul className="flex flex-col gap-2">
+                          {detail.achievements.map((a, i) => (
+                            <li key={i} className="flex gap-2 text-[14.5px] text-[#3A4356]">
+                              <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
+                              {a}
+                            </li>
+                          ))}
+                        </ul>
                       </section>
                     )}
 
@@ -229,9 +281,12 @@ export default function TalentDetailPage() {
                           {detail.skillGroups.map((g) => (
                             <div key={g.title} className="rounded-xl border border-[#EEF1F5] p-5">
                               <p className="text-[14px] font-bold text-[#171E2D]">{g.title}</p>
-                              <ul className="mt-2.5 flex flex-col gap-1.5">
+                              <ul className="mt-3 flex flex-col gap-2">
                                 {g.items.map((item, k) => (
-                                  <li key={k} className="text-[13.5px] leading-[1.6] text-[#5B667A]">{item}</li>
+                                  <li key={k} className="flex gap-2 text-[13.5px] leading-[1.6] text-[#5B667A]">
+                                    <span className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
+                                    {item}
+                                  </li>
                                 ))}
                               </ul>
                             </div>
@@ -240,54 +295,19 @@ export default function TalentDetailPage() {
                       </section>
                     )}
 
-                    {/* 학력 */}
-                    {detail.education && detail.education.length > 0 && (
-                      <section>
-                        <SectionTitle>학력</SectionTitle>
-                        <div className="flex flex-col gap-3">
-                          {detail.education.map((edu, i) => (
-                            <div key={i} className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:justify-between">
-                              <div>
-                                <p className="text-[16px] font-semibold text-[#171E2D]">{edu.school}</p>
-                                <p className="text-[13.5px] text-[#5B667A]">{edu.major}</p>
-                              </div>
-                              <span className="text-[13px] font-medium text-[#8A93A5]">{edu.period}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-                    )}
-
-                    {/* 자격증 & 성과 */}
-                    {((detail.certifications && detail.certifications.length > 0) || (detail.achievements && detail.achievements.length > 0)) && (
-                      <section className="grid grid-cols-1 gap-10 sm:grid-cols-2">
-                        {detail.certifications && detail.certifications.length > 0 && (
-                          <div>
-                            <SectionTitle>자격증</SectionTitle>
-                            <ul className="flex flex-col gap-2">
-                              {detail.certifications.map((c, i) => (
-                                <li key={i} className="flex gap-2 text-[14.5px] text-[#3A4356]">
-                                  <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
-                                  {c}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                        {detail.achievements && detail.achievements.length > 0 && (
-                          <div>
-                            <SectionTitle>성과</SectionTitle>
-                            <ul className="flex flex-col gap-2">
-                              {detail.achievements.map((a, i) => (
-                                <li key={i} className="flex gap-2 text-[14.5px] text-[#3A4356]">
-                                  <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
-                                  {a}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-                      </section>
+                    {/* 실제 이력서 원본 보기 */}
+                    {detail.resumeUrl && (
+                      <a
+                        href={detail.resumeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex w-fit items-center gap-2 rounded-sm border-2 border-[#E8590C] px-8 py-3.5 text-[15px] font-semibold text-[#E8590C] transition hover:bg-[#FFF6EF]"
+                      >
+                        실제 이력서 원본 보기
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </a>
                     )}
                   </div>
                 </div>

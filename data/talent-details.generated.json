@@ -1,0 +1,644 @@
+{
+  "f09c7ae2-5e1b-443a-a6d4-5b65842df8db": {
+    "id": "f09c7ae2-5e1b-443a-a6d4-5b65842df8db",
+    "detail": {
+      "titleLine": "시니어 프론트엔드 엔지니어",
+      "objective": "프론트엔드 개발 분야에서 8년 이상의 경력을 가진 시니어 엔지니어입니다. 다양한 프로젝트에서 사용자 경험을 개선하고, 유지보수성을 높이며, 효율적인 코드 작성을 위해 노력해왔습니다. 최신 기술 스택을 활용하여 팀과 협력하며 지속 가능한 솔루션을 제공합니다.",
+      "education": [
+        {
+          "period": "2009 - 2013",
+          "school": "호치민시 과학대학교",
+          "major": "컴퓨터 과학"
+        }
+      ],
+      "skillGroups": [
+        {
+          "title": "프론트엔드 기술",
+          "items": [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "jQuery"
+          ]
+        },
+        {
+          "title": "프레임워크 및 라이브러리",
+          "items": [
+            "ReactJS",
+            "NextJS",
+            "Angular",
+            "Typescript"
+          ]
+        },
+        {
+          "title": "도구 및 빌드 시스템",
+          "items": [
+            "webpack",
+            "gulp",
+            "Jest",
+            "Storybook"
+          ]
+        },
+        {
+          "title": "스타일링 및 UI 디자인",
+          "items": [
+            "SCSS",
+            "Bootstrap",
+            "Tailwindcss",
+            "less"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "period": "08/2024 – 06/2025",
+          "company": "Byteuptech",
+          "project": "레거시 프론트엔드 시스템 유지보수 및 현대화",
+          "customer": "내부 프로젝트",
+          "role": "시니어 프론트엔드 개발자",
+          "summary": "레거시 시스템을 현대화하고 안정성을 유지하며 기능 향상 중 회귀 문제를 최소화했습니다.",
+          "tasks": [
+            "기능 및 기술 문서 작성",
+            "백엔드 개발자 및 디자이너와 협력",
+            "Next.js로 새로운 프로젝트 설정",
+            "재사용 가능한 UI 컴포넌트 라이브러리 개발"
+          ]
+        },
+        {
+          "period": "08/2019 – 07/2024",
+          "company": "SAI Digital Viet Nam",
+          "project": "제품 관리 시스템 및 FibreTrace® 플랫폼 개발",
+          "customer": "Brother",
+          "role": "시니어 프론트엔드 개발자",
+          "summary": "Next.js와 TypeScript를 사용하여 제품 관리 시스템의 핵심 모듈을 개발했습니다.",
+          "tasks": [
+            "프론트엔드 아키텍처 구축",
+            "SEO 최적화된 UI 솔루션 제공",
+            "코드 리뷰 및 유지보수성 향상",
+            "비즈니스 요구사항을 기술 솔루션으로 변환"
+          ]
+        },
+        {
+          "period": "01/2018 - 07/2019",
+          "company": "Ekino Viet Nam",
+          "project": "자동차 수리 서비스 예약 애플리케이션 개발",
+          "customer": "내부 프로젝트",
+          "role": "프론트엔드 개발자",
+          "summary": "ReactJS를 사용하여 사용자 친화적인 단일 페이지 애플리케이션을 개발했습니다.",
+          "tasks": [
+            "모듈형 아키텍처 작업",
+            "코드 리뷰 및 유닛 테스트 참여",
+            "프론트엔드 기술 지식 공유"
+          ]
+        },
+        {
+          "period": "05/2015 - 09/2017",
+          "company": "Lazada Viet Nam",
+          "project": "E-commerce 웹사이트 편집",
+          "customer": "내부 프로젝트",
+          "role": "프론트엔드 개발자",
+          "summary": "웹사이트 기능 향상 및 방문자 참여를 위한 랜딩 페이지 개발에 참여했습니다.",
+          "tasks": [
+            "HTML 이메일 템플릿 및 뉴스레터 생성",
+            "트래픽 분석 및 사용자 경험 개선"
+          ]
+        },
+        {
+          "period": "05/2014 - 05/2015",
+          "company": "VINA Design",
+          "project": "SEO 친화적인 웹사이트 개발",
+          "customer": "내부 프로젝트",
+          "role": "프론트엔드 개발자",
+          "summary": "디자인 및 백엔드 팀과 협력하여 프로젝트를 제시간에 완료했습니다.",
+          "tasks": []
+        }
+      ],
+      "certifications": [],
+      "achievements": []
+    },
+    "resumeUrl": null,
+    "photo": "/talent-photos/f09c7ae2-5e1b-443a-a6d4-5b65842df8db.png"
+  },
+  "2c10e292-551b-430f-88d6-3444ee9ffb66": {
+    "id": "2c10e292-551b-430f-88d6-3444ee9ffb66",
+    "detail": {
+      "titleLine": "소프트웨어 개발 및 프로젝트 관리 전문가",
+      "objective": "소프트웨어 공학 학사 학위를 보유한 PM입니다. 온라인 쇼핑 워크플로 최적화 및 API 테스트 경험을 통해 시스템 안정성을 확보한 경력을 가지고 있습니다. Agile 팀에서의 협업 경험을 바탕으로 효율적인 프로젝트 관리를 지향합니다.",
+      "education": [
+        {
+          "period": "FPT University Can Tho",
+          "school": "FPT University Can Tho",
+          "major": "소프트웨어 공학"
+        }
+      ],
+      "skillGroups": [
+        {
+          "title": "프로그래밍 언어",
+          "items": [
+            "C#",
+            "JavaScript",
+            "Java Spring Boot",
+            "ReactJS"
+          ]
+        },
+        {
+          "title": "웹 기술",
+          "items": [
+            "HTML",
+            "CSS",
+            "Bootstrap",
+            "ASP.NET MVC"
+          ]
+        },
+        {
+          "title": "데이터베이스 및 API",
+          "items": [
+            "PostgreSQL",
+            "SQL Server",
+            "MongoDB",
+            "API Testing"
+          ]
+        },
+        {
+          "title": "도구 및 협업",
+          "items": [
+            "Postman",
+            "Swagger",
+            "Jira",
+            "Docker"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "period": "01/2025-04/2025",
+          "company": "FPT Software Can Tho",
+          "project": "온라인 쇼핑 시스템 최적화",
+          "customer": "내부 프로젝트",
+          "role": "개발자 / 테스터",
+          "summary": "Agile 팀 내에서 온라인 쇼핑 워크플로를 최적화하고 시스템 안정성을 확보하기 위한 작업을 수행했습니다.",
+          "tasks": [
+            "온라인 쇼핑 워크플로 최적화",
+            "API 테스트 실행",
+            "결함 추적 관리",
+            "시스템 안정성 확보",
+            "팀 내 협업 및 커뮤니케이션"
+          ]
+        }
+      ],
+      "certifications": [],
+      "achievements": []
+    },
+    "resumeUrl": null,
+    "photo": "/talent-photos/2c10e292-551b-430f-88d6-3444ee9ffb66.png"
+  },
+  "ce5116dd-2b1f-4c71-8379-2824d00ff9ae": {
+    "id": "ce5116dd-2b1f-4c71-8379-2824d00ff9ae",
+    "detail": {
+      "titleLine": "14년 경력의 소프트웨어 테스트 리드 QC",
+      "objective": "소프트웨어 테스트 분야에서 14년의 경험을 보유한 QA 전문가입니다. 품질 기준 관리 및 팀원 교육에 능숙하며, 다양한 플랫폼에서의 테스트 자동화 및 성능 테스트 경험이 있습니다. 고객의 요구 사항을 충족시키기 위해 최선을 다하고 있습니다.",
+      "education": [
+        {
+          "period": "2005 - 2009",
+          "school": "Ton Duc Thang University",
+          "major": "정보기술"
+        }
+      ],
+      "skillGroups": [
+        {
+          "title": "프로그래밍 언어",
+          "items": [
+            "Java",
+            "JavaScript",
+            "Python",
+            "TypeScript"
+          ]
+        },
+        {
+          "title": "테스트 도구",
+          "items": [
+            "Cypress",
+            "Selenium",
+            "Appium",
+            "Cucumber"
+          ]
+        },
+        {
+          "title": "CI/CD 및 빌드 도구",
+          "items": [
+            "Maven",
+            "Jenkins",
+            "HP Load Runner",
+            "Locust"
+          ]
+        },
+        {
+          "title": "프로젝트 관리 도구",
+          "items": [
+            "Jira",
+            "Confluence",
+            "Redmine",
+            "Zephyr"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "period": "AUG 2024 - NOW",
+          "company": "GFT",
+          "project": "일상적인 워크플로우 관리",
+          "customer": "내부",
+          "role": "Pro Tester",
+          "summary": "일일 워크플로우 및 일정 관리, 성과 평가 수행.",
+          "tasks": [
+            "품질 기준 관리",
+            "팀원 성과 평가",
+            "일일 일정 조정"
+          ]
+        },
+        {
+          "period": "FEB 2023 - AUG 2024",
+          "company": "Yojee",
+          "project": "제품 테스트",
+          "customer": "내부",
+          "role": "Lead QA and QC",
+          "summary": "팀원 교육 및 제품 테스트 참여.",
+          "tasks": [
+            "애자일 프로세스 교육",
+            "문제 식별 및 분석",
+            "테스트 계획 수립"
+          ]
+        },
+        {
+          "period": "FEB 2020 - FEB 2023",
+          "company": "KPMG Consultant",
+          "project": "성능 테스트",
+          "customer": "내부",
+          "role": "Performance Manager",
+          "summary": "비즈니스 요구 사항 분석 및 팀원 교육.",
+          "tasks": [
+            "성능 및 자동화 테스트 수행",
+            "테스트 문서 작성",
+            "팀원 교육"
+          ]
+        },
+        {
+          "period": "FEB 2018 - JAN 2020",
+          "company": "Elisoft",
+          "project": "모바일 및 웹 애플리케이션 테스트",
+          "customer": "내부",
+          "role": "Test Lead QA/QC",
+          "summary": "테스트 활동 주도 및 버그 추적 조정.",
+          "tasks": [
+            "테스트 계획 작성",
+            "버그 추적 및 보고",
+            "테스트 결과 분석"
+          ]
+        },
+        {
+          "period": "JUL 2016 - FEB 2018",
+          "company": "Mediastep",
+          "project": "자동화 프레임워크 구축",
+          "customer": "내부",
+          "role": "Principle Test Engineer",
+          "summary": "웹 및 모바일 애플리케이션을 위한 자동화 프레임워크 구축.",
+          "tasks": [
+            "테스트 문서 작성",
+            "테스트 자동화 프레임워크 개발",
+            "테스트 수행 및 결과 보고"
+          ]
+        },
+        {
+          "period": "JUL 2013 - JUL 2016",
+          "company": "Terralogic",
+          "project": "다양한 플랫폼 테스트",
+          "customer": "내부",
+          "role": "Senior QC Engineer",
+          "summary": "광범위한 플랫폼에서 테스트 수행.",
+          "tasks": [
+            "테스트 자동화 프레임워크 개발",
+            "테스트 계획 수립",
+            "테스트 결과 분석"
+          ]
+        },
+        {
+          "period": "JUL 2011 - JUL 2013",
+          "company": "Gameloft",
+          "project": "게임 개발 품질 보증",
+          "customer": "내부",
+          "role": "Supervisor QC",
+          "summary": "테스트 팀 감독 및 품질 보증.",
+          "tasks": [
+            "테스트 계획 작성",
+            "버그 보고 및 관리",
+            "테스트 결과 분석"
+          ]
+        }
+      ],
+      "certifications": [
+        "ISTQB Certified Tester",
+        "Agile Testing Certification"
+      ],
+      "achievements": [
+        "모바일 애플리케이션 테스트 자동화로 품질 향상",
+        "팀원 교육을 통한 테스트 효율성 증가"
+      ]
+    },
+    "resumeUrl": null,
+    "photo": "/talent-photos/ce5116dd-2b1f-4c71-8379-2824d00ff9ae.png"
+  },
+  "2d06a91c-3aaf-4fcc-aa9b-fecce6ea6516": {
+    "id": "2d06a91c-3aaf-4fcc-aa9b-fecce6ea6516",
+    "detail": {
+      "titleLine": "풀스택 개발자",
+      "objective": "저는 다양한 기술 스택을 활용하여 웹 애플리케이션을 개발하는 풀스택 개발자입니다. NestJS와 Next.js를 사용하여 K-pop 팬 플랫폼의 기능을 설계하고 구현하였습니다. Agile 환경에서 팀과 협력하며, 안정적인 시스템을 구축하는 데 기여하고 있습니다.",
+      "education": [
+        {
+          "period": "FPT University",
+          "school": "FPT University",
+          "major": "정보기술"
+        }
+      ],
+      "skillGroups": [
+        {
+          "title": "프로그래밍 언어",
+          "items": [
+            "TypeScript",
+            "JavaScript"
+          ]
+        },
+        {
+          "title": "프론트엔드 기술",
+          "items": [
+            "HTML/CSS",
+            "React.js",
+            "Next.js 14",
+            "React Native"
+          ]
+        },
+        {
+          "title": "백엔드 기술",
+          "items": [
+            ".NET",
+            "NestJS",
+            "Node.js",
+            "PostgreSQL"
+          ]
+        },
+        {
+          "title": "기타 기술",
+          "items": [
+            "Docker",
+            "CI/CD",
+            "Vercel",
+            "Cloudflare"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "period": "2025년 9월 - 현재",
+          "company": "724 Software",
+          "project": "K-pop 팬 플랫폼",
+          "customer": "K-pop 팬",
+          "role": "풀스택 개발자",
+          "summary": "NestJS 마이크로서비스 모노레포와 Next.js 프론트엔드에서 생산 기능을 설계하고 제공하였습니다.",
+          "tasks": [
+            "제품 팀과 협력하여 기능 개발",
+            "Agile 환경에서 작업 수행"
+          ]
+        },
+        {
+          "period": "2024년 12월 - 2025년 7월",
+          "company": "FPT Software",
+          "project": "내부 웹 관리 시스템",
+          "customer": "내부 팀",
+          "role": "백엔드 개발자 (.NET)",
+          "summary": "RESTful API와 비즈니스 로직을 개발하고 레거시 모듈을 리팩토링하였습니다.",
+          "tasks": [
+            "유닛 테스트 작성",
+            "시스템 안정성 향상"
+          ]
+        },
+        {
+          "period": "2024년 8월 - 2024년 12월",
+          "company": "FPT Software",
+          "project": "개인화된 디지털 SAT 준비 플랫폼",
+          "customer": "학생",
+          "role": "팀 리드 - 풀스택 개발자",
+          "summary": "4명의 개발자로 구성된 Agile 팀을 이끌어 사용자 친화적인 인터페이스를 개발하였습니다.",
+          "tasks": [
+            "React.js를 사용하여 인터페이스 개발",
+            "Vercel에 배포"
+          ]
+        }
+      ],
+      "certifications": [],
+      "achievements": []
+    },
+    "resumeUrl": null,
+    "photo": "/talent-photos/2d06a91c-3aaf-4fcc-aa9b-fecce6ea6516.png"
+  },
+  "81e12b1f-3344-4e56-829c-bc968af34ada": {
+    "id": "81e12b1f-3344-4e56-829c-bc968af34ada",
+    "detail": {
+      "titleLine": "프로젝트 매니저",
+      "objective": "17년 이상의 소프트웨어 엔지니어링 경험을 가진 프로젝트 매니저입니다. 비즈니스 및 기술 스택을 연구하고 프로젝트 진행 상황을 계획 및 추적하는 데 능숙합니다. 다양한 팀을 이끌며 성공적인 프로젝트를 수행해왔습니다.",
+      "education": [
+        {
+          "period": "2000 - 2004",
+          "school": "Hanoi University of Industry",
+          "major": "소프트웨어 공학"
+        }
+      ],
+      "skillGroups": [
+        {
+          "title": "프로그래밍 언어",
+          "items": [
+            "Java",
+            "HTML",
+            "JavaScript",
+            "CSS"
+          ]
+        },
+        {
+          "title": "데이터베이스",
+          "items": [
+            "SQL",
+            "Redis"
+          ]
+        },
+        {
+          "title": "프레임워크",
+          "items": [
+            "Spring Boot",
+            "J2EE",
+            "JSF",
+            "Spring"
+          ]
+        },
+        {
+          "title": "기타 기술",
+          "items": [
+            "Hibernate"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "period": "08/2017 - 현재",
+          "company": "ST Joint Stock Company",
+          "project": "소프트웨어 개발",
+          "customer": "내부",
+          "role": "소프트웨어 부서장",
+          "summary": "비즈니스 및 기술 스택 연구, 프로젝트 계획 및 진행 상황 추적.",
+          "tasks": [
+            "프로젝트 요구사항 분석",
+            "팀원 관리 및 조율",
+            "진행 상황 보고서 작성"
+          ]
+        },
+        {
+          "period": "03/2010 - 08/2017",
+          "company": "Aviation Logistics Joint Stock Company",
+          "project": "화물 및 문서 관리 시스템",
+          "customer": "내부",
+          "role": "팀 리더",
+          "summary": "화물 관리 및 문서 관리 시스템 모듈 개발.",
+          "tasks": [
+            "모듈 설계 및 구현",
+            "테스트 및 배포",
+            "고객 요구사항 반영"
+          ]
+        },
+        {
+          "period": "07/2012 - 08/2013",
+          "company": "CMC",
+          "project": "통신 인프라",
+          "customer": "내부",
+          "role": "소프트웨어 엔지니어",
+          "summary": "Java를 사용한 통신 인프라 모듈 개발.",
+          "tasks": [
+            "모듈 설계 및 개발",
+            "코드 리뷰 및 최적화",
+            "문서화"
+          ]
+        },
+        {
+          "period": "05/2010 - 06/2012",
+          "company": "CIS",
+          "project": "전력 금융 프로젝트",
+          "customer": "내부",
+          "role": "소프트웨어 개발자",
+          "summary": "전력 금융 프로젝트를 위한 모듈 개발 및 배포.",
+          "tasks": [
+            "모듈 개발",
+            "시스템 통합",
+            "유지보수"
+          ]
+        }
+      ],
+      "certifications": [],
+      "achievements": []
+    },
+    "resumeUrl": null,
+    "photo": "/talent-photos/81e12b1f-3344-4e56-829c-bc968af34ada.png"
+  },
+  "3c462517-d45e-40be-810c-74e48061fb71": {
+    "id": "3c462517-d45e-40be-810c-74e48061fb71",
+    "detail": {
+      "titleLine": "백엔드 소프트웨어 엔지니어",
+      "objective": "10년 이상의 경력을 가진 백엔드 소프트웨어 엔지니어입니다. 다양한 팀의 백엔드 개발 및 기술 검토 위원회를 이끌며, 모바일 및 백엔드 애플리케이션 개발에 주력하고 있습니다. 최신 기술을 활용하여 효율적이고 안정적인 시스템을 구축하는 데 열정을 가지고 있습니다.",
+      "education": [
+        {
+          "period": "2008 - 2012",
+          "school": "Posts and Telecommunications Institute of Technology (PTIT)",
+          "major": "정보통신"
+        }
+      ],
+      "skillGroups": [
+        {
+          "title": "프로그래밍 언어",
+          "items": [
+            "Golang",
+            "Python",
+            "Java",
+            "C/C++"
+          ]
+        },
+        {
+          "title": "웹 및 모바일 기술",
+          "items": [
+            "Nodejs",
+            "Android",
+            "PHP",
+            "JavaScript"
+          ]
+        },
+        {
+          "title": "데이터베이스 및 클라우드",
+          "items": [
+            "Postgres",
+            "Redis",
+            "ElasticSearch",
+            "MongoDB"
+          ]
+        },
+        {
+          "title": "기타 기술",
+          "items": [
+            "Machine learning",
+            "K8s",
+            "SpringBoot",
+            "Git"
+          ]
+        }
+      ],
+      "experience": [
+        {
+          "period": "2021.05 - 현재",
+          "company": "Teko VietNam company",
+          "project": "백엔드 개발 및 기술 검토",
+          "customer": "내부 팀",
+          "role": "백엔드 팀 리드",
+          "summary": "다양한 팀의 백엔드 개발 및 기술 검토 위원회를 이끌고 있습니다.",
+          "tasks": [
+            "팀원들과의 협업 및 기술 검토 진행",
+            "백엔드 시스템 아키텍처 설계",
+            "코드 품질 관리 및 개선"
+          ]
+        },
+        {
+          "period": "2018.04 - 현재",
+          "company": "ViettelPost – VtpTek company",
+          "project": "ViettelPost 애플리케이션 개발",
+          "customer": "ViettelPost",
+          "role": "모바일 개발 팀 리더 / 백엔드 팀 리더",
+          "summary": "ViettelPost 애플리케이션의 모바일 및 백엔드 개발을 이끌고 있습니다.",
+          "tasks": [
+            "애플리케이션 기능 설계 및 구현",
+            "팀원 교육 및 멘토링",
+            "프로젝트 일정 관리"
+          ]
+        },
+        {
+          "period": "2016.01 - 2018.04",
+          "company": "Samsung VietNam R&D Mobile Center",
+          "project": "SPen SDK 라이브러리 개발",
+          "customer": "삼성",
+          "role": "모바일 개발자",
+          "summary": "다양한 애플리케이션을 위한 SPen SDK 라이브러리를 개발하고 유지보수했습니다.",
+          "tasks": [
+            "SDK 기능 설계 및 구현",
+            "기술 문서 작성",
+            "버그 수정 및 성능 개선"
+          ]
+        }
+      ],
+      "certifications": [],
+      "achievements": []
+    },
+    "resumeUrl": null,
+    "photo": "/talent-photos/3c462517-d45e-40be-810c-74e48061fb71.png"
+  }
+}
