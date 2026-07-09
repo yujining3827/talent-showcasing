@@ -55,9 +55,8 @@ export default function TalentDetailPage() {
   const [loading, setLoading] = useState(true);
   const [imgFailed, setImgFailed] = useState(false);
 
-  const gen = (GENERATED as unknown as Record<string, { detail?: TalentDetail; resumeUrl?: string | null; photo?: string }>)[id];
+  const gen = (GENERATED as unknown as Record<string, { detail?: TalentDetail; resumeUrl?: string | null }>)[id];
   const detail: TalentDetail | undefined = TALENT_DETAILS[id] ?? gen?.detail;
-  const genPhoto = gen?.photo; // 뷰티파이닝된 사진(있으면 우선)
 
   useEffect(() => {
     if (!id) return;
@@ -105,9 +104,9 @@ export default function TalentDetailPage() {
             {/* 좌: 프로필 이미지 */}
             <div>
               <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#EEF1F6]">
-                {(genPhoto || talent.photo_url) && !imgFailed ? (
+                {talent.photo_url && !imgFailed ? (
                   <img
-                    src={genPhoto || talent.photo_url || ""}
+                    src={talent.photo_url}
                     alt={talent.name}
                     onError={() => setImgFailed(true)}
                     className="h-full w-full object-cover"
@@ -118,12 +117,20 @@ export default function TalentDetailPage() {
                     <img src="/default-profile.png" alt="" className="h-[70%] w-[70%] object-contain" />
                   </div>
                 )}
-                <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-md bg-white/95 px-2.5 py-1.5 text-[11px] font-semibold text-[#171E2D] shadow-[0_2px_8px_-2px_rgba(10,18,32,0.25)]">
-                  <span className="h-2 w-2 rounded-full bg-[#1DAA6E]" />
-                  바로 채용가능
-                </div>
               </div>
-              {talent.location && <p className="mt-3 text-center text-[13px] text-[#697386]">{talent.location}</p>}
+
+              {/* 바로 채용 가능 + 채용 문의 */}
+              <div className="mt-4 rounded-lg border border-[#EEF1F5] px-4 py-4 text-center">
+                <p className="text-[15px] font-semibold text-[#171E2D]">
+                  이 인재는 <span className="font-bold text-[#E8590C]">바로 채용 가능</span>합니다
+                </p>
+                <Link
+                  href="/pricing"
+                  className="mt-3 flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]"
+                >
+                  이 인재 채용 문의하기
+                </Link>
+              </div>
             </div>
 
             {/* 우: 요약 + CTA + 이력 */}
@@ -157,6 +164,7 @@ export default function TalentDetailPage() {
                     </div>
                   )}
                   <InfoRow label="학력">{talent.school || "확인 중"}</InfoRow>
+                  {talent.location && <InfoRow label="거주지">{talent.location}</InfoRow>}
                   {/* 주소 · GitHub (개인정보 최소 노출) */}
                   {detail?.basic?.map((b) => (
                     <InfoRow key={b.label} label={b.label}>
@@ -171,14 +179,6 @@ export default function TalentDetailPage() {
                   ))}
                 </div>
               </div>
-
-              {/* CTA */}
-              <Link
-                href="/pricing"
-                className="mt-10 inline-flex h-14 items-center justify-center rounded-sm bg-[#E8590C] px-10 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A]"
-              >
-                이 인재 채용 문의하기
-              </Link>
 
               {/* CTA 아래: 이력 상세 (CTA와 좌측 정렬) */}
               {detail && (

@@ -116,8 +116,7 @@
       "certifications": [],
       "achievements": []
     },
-    "resumeUrl": null,
-    "photo": "/talent-photos/f09c7ae2-5e1b-443a-a6d4-5b65842df8db.png"
+    "resumeUrl": null
   },
   "2c10e292-551b-430f-88d6-3444ee9ffb66": {
     "id": "2c10e292-551b-430f-88d6-3444ee9ffb66",
@@ -189,8 +188,7 @@
       "certifications": [],
       "achievements": []
     },
-    "resumeUrl": null,
-    "photo": "/talent-photos/2c10e292-551b-430f-88d6-3444ee9ffb66.png"
+    "resumeUrl": null
   },
   "ce5116dd-2b1f-4c71-8379-2824d00ff9ae": {
     "id": "ce5116dd-2b1f-4c71-8379-2824d00ff9ae",
@@ -344,8 +342,7 @@
         "팀원 교육을 통한 테스트 효율성 증가"
       ]
     },
-    "resumeUrl": null,
-    "photo": "/talent-photos/ce5116dd-2b1f-4c71-8379-2824d00ff9ae.png"
+    "resumeUrl": null
   },
   "2d06a91c-3aaf-4fcc-aa9b-fecce6ea6516": {
     "id": "2d06a91c-3aaf-4fcc-aa9b-fecce6ea6516",
@@ -436,8 +433,7 @@
       "certifications": [],
       "achievements": []
     },
-    "resumeUrl": null,
-    "photo": "/talent-photos/2d06a91c-3aaf-4fcc-aa9b-fecce6ea6516.png"
+    "resumeUrl": null
   },
   "81e12b1f-3344-4e56-829c-bc968af34ada": {
     "id": "81e12b1f-3344-4e56-829c-bc968af34ada",
@@ -541,8 +537,7 @@
       "certifications": [],
       "achievements": []
     },
-    "resumeUrl": null,
-    "photo": "/talent-photos/81e12b1f-3344-4e56-829c-bc968af34ada.png"
+    "resumeUrl": null
   },
   "3c462517-d45e-40be-810c-74e48061fb71": {
     "id": "3c462517-d45e-40be-810c-74e48061fb71",
@@ -638,7 +633,6 @@
       "certifications": [],
       "achievements": []
     },
-    "resumeUrl": null,
-    "photo": "/talent-photos/3c462517-d45e-40be-810c-74e48061fb71.png"
+    "resumeUrl": null
   }
 }

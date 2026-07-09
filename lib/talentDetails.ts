@@ -28,9 +28,8 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-1": {
     id: "hero-1",
     titleLine: "시니어 QA 엔지니어 · 품질 관리 스페셜리스트",
-    // 개인정보(생년월일·성별·연락처·이메일)는 노출하지 않음 — 주소·GitHub만
+    // 개인정보(생년월일·성별·연락처·이메일)는 노출하지 않음 — 거주지는 별도 표시, 여기선 GitHub만
     basic: [
-      { label: "주소", value: "베트남 호치민" },
       { label: "GitHub", value: "github.com/trnmhung", href: "https://github.com/trnmhung" },
     ],
     objective:

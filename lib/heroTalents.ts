@@ -34,7 +34,7 @@ export const HERO_TALENTS: HeroTalent[] = [
     companyElite: true,
     companyDomain: "samsung.com",
     yoeYears: 5,
-    location: "Ho Chi Minh City",
+    location: "베트남 호치민",
     skills: ["Manual Testing", "API Testing", "Test Case Design", "Agile/Scrum"],
     language: "IELTS 7.0 · TOEIC 825",
   },
