@@ -26,7 +26,7 @@ export const HERO_TALENTS: HeroTalent[] = [
     name: "Trần Minh Hưng",
     role: "QA Engineer",
     headline: "삼성 출신 시니어 QA 엔지니어",
-    photo_url: "/hero3.png",
+    photo_url: "/HERO%20PROFILE.png",
     school: "Ho Chi Minh University of Technology",
     schoolElite: true,
     schoolTier: "top",
