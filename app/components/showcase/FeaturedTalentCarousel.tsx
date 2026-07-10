@@ -37,10 +37,12 @@ export const FEATURED_TALENTS: FeaturedTalent[] = [
   { id: "ft-graphic", role: "Graphic Designer", title: "문화·F&B 브랜드·포스터 그래픽", category: "디자인", skills: ["Branding", "Editorial", "Print"], image: "/portfolio/poster_design.png", link: null },
   { id: "ft-cardnews", role: "Content Designer", title: "이벤트·리테일 SNS 카드뉴스·포스터", category: "디자인", skills: ["Social Media", "Card News", "Poster"], image: "/portfolio/cardnews_design.png", link: null },
   { id: "ft-housing", role: "Product Designer", title: "부동산 플랫폼 nhapho123 UX/UI", category: "디자인", skills: ["Figma", "Web Design", "Mobile App"], image: "/portfolio/housing_service_design.png", link: null },
+  { id: "ft-package", role: "Package Designer", title: "그루밍 브랜드 LE NORD 패키지 디자인", category: "디자인", skills: ["Packaging", "Branding", "Print"], image: "/portfolio/package_design.png", link: null },
   { id: "ft-product-design", role: "Product Marketer", title: "뷰티 브랜드 스킨케어 런칭 캠페인", category: "마케팅", skills: ["Campaign Strategy", "Paid Ads", "ROAS"], image: "/portfolio/product-design.png", link: null },
   { id: "ft-frontend", role: "Front End Developer", title: "React 포트폴리오 웹사이트", category: "개발", skills: ["React", "TypeScript", "Next.js"], image: "/portfolio/frontend.png", link: null },
   { id: "ft-growth", role: "Growth Marketer", title: "이커머스 퍼포먼스 광고·전환 최적화", category: "마케팅", skills: ["Performance", "GA4", "ROAS"], image: "/portfolio/growth.png", link: null },
   { id: "ft-influencer", role: "Influencer Marketer", title: "뷰티 인플루언서 마케팅 캠페인", category: "마케팅", skills: ["Influencer", "Instagram", "Social Media"], image: "/portfolio/influence_marketing.png", link: null },
+  { id: "ft-beauty-social", role: "Social Marketer", title: "그루밍 브랜드 SNS·커머스 마케팅", category: "마케팅", skills: ["Social Media", "E-commerce", "Content"], image: "/portfolio/beauty_social.png", link: null },
   { id: "ft-backend", role: "Senior Backend Developer", title: "MSA 백엔드 아키텍처 설계", category: "개발", skills: ["AWS", "Kafka", "Kubernetes"], image: "/portfolio/backend.png", link: null },
 ];
 
@@ -106,6 +108,22 @@ function TalentCard({ talent }: { talent: FeaturedTalent }) {
   return <article className={cardClass}>{inner}</article>;
 }
 
+/* ---- 대분류 칩 (세그먼트 컨트롤) ---- */
+function CategoryChip({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition-all duration-200 sm:px-4 sm:py-2 sm:text-[13.5px] ${
+        active ? "bg-white text-[#E8590C] shadow-[0_2px_8px_-2px_rgba(10,18,32,0.2)]" : "text-[#8A93A5] hover:text-[#3A4356]"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
 type FeaturedTalentCarouselProps = {
   talents?: FeaturedTalent[];
   eyebrow?: string;
@@ -159,26 +177,13 @@ export default function FeaturedTalentCarousel({
             <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">{description}</p>
           </div>
 
-          {/* 우측 — 세그먼트 칩 (화살표는 캐러셀 오버레이로 이동) */}
-          <div className="inline-flex flex-wrap items-center gap-1 rounded-full border border-[#ECEFF3] bg-[#F5F6F8] p-1">
-            {categories.map((cat) => {
-              const active = cat === activeCategory;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActiveCategory(cat)}
-                  aria-pressed={active}
-                  className={`rounded-full px-4 py-2 text-[13.5px] font-semibold transition-all duration-200 ${
-                    active
-                      ? "bg-white text-[#E8590C] shadow-[0_2px_8px_-2px_rgba(10,18,32,0.2)]"
-                      : "text-[#8A93A5] hover:text-[#3A4356]"
-                  }`}
-                >
-                  {cat}
-                </button>
-              );
-            })}
+          {/* 우측 — 세그먼트 칩 (모바일: 넘치면 가로 스크롤, 줄바꿈 없음) */}
+          <div className="w-full md:w-auto">
+            <div className="inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full border border-[#ECEFF3] bg-[#F5F6F8] p-1 scrollbar-hide">
+              {categories.map((cat) => (
+                <CategoryChip key={cat} label={cat} active={cat === activeCategory} onClick={() => setActiveCategory(cat)} />
+              ))}
+            </div>
           </div>
         </div>
 
