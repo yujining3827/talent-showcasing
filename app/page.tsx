@@ -27,17 +27,18 @@ type ShowcaseTalent = {
   language?: string | null;
 };
 
-// 출신 회사 → 로고 파일(public/). 파일 있는 회사만 카드 배경에 옅게 노출
-const COMPANY_LOGOS: Record<string, string> = {
-  samsung: "/samsung.svg",
-  vng: "/VNG.webp",
-  "fpt software": "/FPT.png",
-  fpt: "/FPT.png",
-  grab: "/Grab.png",
-  google: "/google.png",
-  kpmg: "/KPMG.webp",
+// 출신 회사 → 로고 파일(public/). 파일 있는 회사만 카드에 노출.
+// className: 로고별 크기 오버라이드 (여백/비율 달라서 개별 조정, 기본 h-5)
+const COMPANY_LOGOS: Record<string, { src: string; className?: string }> = {
+  samsung: { src: "/samsung.svg" },
+  vng: { src: "/VNG.webp" },
+  "fpt software": { src: "/FPT%20Software.webp", className: "h-9" },
+  fpt: { src: "/FPT%20Software.webp", className: "h-9" },
+  grab: { src: "/Grab.png" },
+  google: { src: "/google.png" },
+  kpmg: { src: "/KPMG.webp" },
 };
-function companyLogo(company: string | null): string | null {
+function companyLogo(company: string | null): { src: string; className?: string } | null {
   if (!company) return null;
   return COMPANY_LOGOS[company.trim().toLowerCase()] ?? null;
 }
@@ -104,14 +105,16 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
         </div>
       </div>
       <div className="relative flex-1 p-6">
-        {/* 출신 회사 로고 — 우측 상단에 선명하게 (파일 있는 회사만) */}
-        {companyLogo(talent.company) && (
-          <img
-            src={companyLogo(talent.company)!}
-            alt={talent.company ?? ""}
-            className="absolute right-5 top-[52px] h-5 w-auto max-w-[80px] object-contain"
-          />
-        )}
+        {/* 출신 회사 로고 — 헤드라인 라인 우측에 선명하게 (파일 있는 회사만, 세로 중앙 정렬) */}
+        {(() => {
+          const logo = companyLogo(talent.company);
+          if (!logo) return null;
+          return (
+            <div className="absolute right-5 top-[44px] flex h-7 items-center">
+              <img src={logo.src} alt={talent.company ?? ""} className={`w-auto max-w-[92px] object-contain ${logo.className ?? "h-5"}`} />
+            </div>
+          );
+        })()}
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">이달의 검증 인재</p>
         <p className="mt-2 text-[19px] font-semibold text-[#171E2D]">{talent.headline || `검증된 ${talent.role || "테크"} 전문가`}</p>
         <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
