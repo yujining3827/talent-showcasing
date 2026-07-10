@@ -129,76 +129,6 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
   );
 }
 
-const CAMPUS_PROOF = [
-  {
-    tag: "VKU campus",
-    location: "Da Nang",
-    short: "VKU",
-    logo: "/vku.png",
-    full: "Vietnam-Korea University of ICT",
-    pool: "한국-베트남 ICT 협력 기반의 대학 풀",
-    desc: "협력 네트워크를 통해 IT 전공자와 프로젝트 경험자를 먼저 검토합니다.",
-  },
-  {
-    tag: "HUTECH campus",
-    location: "Ho Chi Minh City",
-    short: "HUTECH",
-    logo: "/HUTECH.jpg",
-    full: "Ho Chi Minh City University of Technology",
-    pool: "실무형 공학/IT 전공자 풀",
-    desc: "현지 산학형 교육 기반으로 주니어부터 미들급 개발자 후보를 확보합니다.",
-  },
-  {
-    tag: "UEH campus",
-    location: "Ho Chi Minh City",
-    short: "UEH",
-    logo: "/UEH.jpg",
-    full: "University of Economics Ho Chi Minh City",
-    pool: "데이터/비즈니스 이해도가 있는 후보군",
-    desc: "경제대 출신 후보는 운영, 데이터, PM 성향의 역할까지 함께 검토하기 좋습니다.",
-  },
-  {
-    tag: "FPT University campus",
-    location: "Hanoi / HCMC / Da Nang",
-    short: "FPT University",
-    logo: "/FPT.png",
-    full: "Software-focused talent pipeline",
-    pool: "소프트웨어 교육 기반 후보군",
-    desc: "FPT Software 생태계와 연결되는 개발자 후보를 선별해 비교합니다.",
-  },
-];
-
-function VerificationProofBanner({ eliteSchoolShare }: { eliteSchoolShare: number | null }) {
-  return (
-    <div className="border-y border-[#F2DFD1] bg-[#FFF6EF] px-5 py-10">
-      <div className="mx-auto flex max-w-[1360px] flex-col gap-6">
-        <div>
-          <p className="text-[22px] font-semibold text-[#171E2D]">상위 대학 출신을 먼저 봅니다.</p>
-          {eliteSchoolShare !== null && (
-            <p className="mt-1 text-[13px] text-[#5B667A]">
-              현재 노출 중인 인재 풀의 <span className="font-semibold text-[#E8590C]">{eliteSchoolShare}%</span>가 상위권 대학 출신입니다.
-            </p>
-          )}
-        </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {CAMPUS_PROOF.map((campus) => (
-            <div key={campus.short} className="rounded-md border border-[#EFE0D3] bg-white p-4 shadow-[0_10px_30px_-24px_rgba(10,18,32,0.4)]">
-              <p className="text-[11px] text-[#8A93A5]">
-                {campus.tag} · {campus.location}
-              </p>
-              <p className="mt-2 text-[19px] font-bold text-[#171E2D]">{campus.short}</p>
-              <p className="mt-0.5 text-[12px] text-[#5B667A]">{campus.full}</p>
-              {/* 로고 — 대학명 아래, 테두리 없이 */}
-              <img src={campus.logo} alt={campus.short} className="mt-4 h-20 w-auto max-w-full object-contain mx-auto" />
-              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#E8590C]">{campus.pool}</p>
-              <p className="mt-1 text-[12.5px] leading-[1.55] text-[#5B667A]">{campus.desc}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function TalentStripCard({ talent, selected, onSelect }: { talent: ShowcaseTalent; selected: boolean; onSelect: () => void }) {
   return (
@@ -392,7 +322,7 @@ function TrustLogos() {
     { name: "KPMG", src: "/KPMG.webp" },
   ];
   return (
-    <section className="border-b border-[#E6E9EF] bg-white">
+    <section className="bg-white">
       <div className="pt-14 pb-16">
         {/* 무한 마퀴: 동일 트랙 2개를 나란히 두고 각자 -100% 이동 → 끊김 없이 이어짐 */}
         <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
@@ -472,18 +402,11 @@ export default function LandingPage() {
     });
   }, []);
 
-  const eliteSchoolShare = useMemo(() => {
-    if (talents.length === 0) return null;
-    return Math.round((talents.filter((t) => t.schoolElite).length / talents.length) * 100);
-  }, [talents]);
-
-
   return (
     <main className="min-h-screen bg-white">
       <SiteHeader />
       <Hero talents={heroTalents} />
       <TrustLogos />
-      <VerificationProofBanner eliteSchoolShare={eliteSchoolShare} />
       <FeaturedTalentCarousel />
       <TalentPreview talents={premiumTalents} />
       <Testimonials />

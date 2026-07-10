@@ -36,9 +36,11 @@ export const FEATURED_TALENTS: FeaturedTalent[] = [
   { id: "ft-senior-uiux", role: "Senior UX/UI Designer", title: "핀테크 앱 FinMate UX/UI 디자인", category: "디자인", skills: ["Figma", "Design System", "Prototyping"], image: "/portfolio/senior_uiux.png", link: null },
   { id: "ft-graphic", role: "Graphic Designer", title: "문화·F&B 브랜드·포스터 그래픽", category: "디자인", skills: ["Branding", "Editorial", "Print"], image: "/portfolio/poster_design.png", link: null },
   { id: "ft-cardnews", role: "Content Designer", title: "이벤트·리테일 SNS 카드뉴스·포스터", category: "디자인", skills: ["Social Media", "Card News", "Poster"], image: "/portfolio/cardnews_design.png", link: null },
+  { id: "ft-housing", role: "Product Designer", title: "부동산 플랫폼 nhapho123 UX/UI", category: "디자인", skills: ["Figma", "Web Design", "Mobile App"], image: "/portfolio/housing_service_design.png", link: null },
   { id: "ft-product-design", role: "Product Marketer", title: "뷰티 브랜드 스킨케어 런칭 캠페인", category: "마케팅", skills: ["Campaign Strategy", "Paid Ads", "ROAS"], image: "/portfolio/product-design.png", link: null },
   { id: "ft-frontend", role: "Front End Developer", title: "React 포트폴리오 웹사이트", category: "개발", skills: ["React", "TypeScript", "Next.js"], image: "/portfolio/frontend.png", link: null },
   { id: "ft-growth", role: "Growth Marketer", title: "이커머스 퍼포먼스 광고·전환 최적화", category: "마케팅", skills: ["Performance", "GA4", "ROAS"], image: "/portfolio/growth.png", link: null },
+  { id: "ft-influencer", role: "Influencer Marketer", title: "뷰티 인플루언서 마케팅 캠페인", category: "마케팅", skills: ["Influencer", "Instagram", "Social Media"], image: "/portfolio/influence_marketing.png", link: null },
   { id: "ft-backend", role: "Senior Backend Developer", title: "MSA 백엔드 아키텍처 설계", category: "개발", skills: ["AWS", "Kafka", "Kubernetes"], image: "/portfolio/backend.png", link: null },
 ];
 
