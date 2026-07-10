@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 /* ============================================================================
@@ -101,6 +102,10 @@ export default function Testimonials() {
           <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">고객사 후기</p>
           <h2 className="mt-3 text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">검증된 인재로, 채용을 끝낸 기업들</h2>
           <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">실제 고객사가 공고마감으로 어떻게 채용했는지 확인해보세요.</p>
+          <Link href="/cases" className="mt-4 inline-flex items-center gap-1 text-[14px] font-semibold text-[#E8590C] transition hover:text-[#C74E0A]">
+            고객 사례 전체 보기
+            <span aria-hidden>→</span>
+          </Link>
         </div>
 
         <div className="mt-8 grid grid-cols-1 gap-4 md:mt-12 md:grid-cols-[1.4fr_1fr] md:gap-6">
