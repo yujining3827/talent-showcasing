@@ -303,7 +303,7 @@ export default function TalentDetailPage() {
                         rel="noopener noreferrer"
                         className="inline-flex w-fit items-center gap-2 rounded-sm border-2 border-[#E8590C] px-8 py-3.5 text-[15px] font-semibold text-[#E8590C] transition hover:bg-[#FFF6EF]"
                       >
-                        실제 이력서 원본 보기
+                        이력서 · 포트폴리오 원본 보기
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                           <path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
