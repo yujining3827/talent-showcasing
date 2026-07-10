@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -14,40 +14,48 @@ import Autoplay from "embla-carousel-autoplay";
  * ========================================================================== */
 export type FeaturedTalent = {
   id: string;
-  role: string;
+  role: string; // 직무 (카드 상단 작은 라벨)
+  title: string; // 프로젝트 제목 (카드 큰 타이틀)
+  category: string; // 대분류 (칩 필터용): 개발 · 디자인 · QA · 인공지능 · 마케팅
   skills: string[];
   image?: string | null;
   link?: string | null;
 };
 
+// 칩 노출 순서 (해당 카테고리에 카드가 있을 때만 칩 표시)
+export const PORTFOLIO_CATEGORIES = ["개발", "디자인", "QA", "인공지능", "마케팅"];
+
+// ⚠️ 이미지 파일은 public/portfolio/ 아래에 아래 파일명으로 저장하세요.
+//   리다이렉트 링크(link)는 추후 연결 예정 — 지금은 전부 null.
+//   (기존 Cao Thanh Hung Figma 링크 보관용:
+//    https://www.figma.com/proto/qFUpJXy9VQx44VuGtJ6OO6/CAO-THANH-HUNG-PORTFOLIO?page-id=0%3A1&node-id=928-154820&starting-point-node-id=903%3A2 )
 export const FEATURED_TALENTS: FeaturedTalent[] = [
-  {
-    id: "ft-cth",
-    role: "Senior UX/UI Designer",
-    skills: ["Figma", "Illustrator", "Photoshop", "After Effects"],
-    image: "/portfolio.png",
-    link: "https://www.figma.com/proto/qFUpJXy9VQx44VuGtJ6OO6/CAO-THANH-HUNG-PORTFOLIO?page-id=0%3A1&node-id=928-154820&starting-point-node-id=903%3A2",
-  },
-  { id: "ft-1", role: "Senior Backend Engineer", skills: ["Spring Boot", "AWS", "Kubernetes"], image: null },
-  { id: "ft-2", role: "Frontend Engineer", skills: ["React", "TypeScript", "Next.js"], image: null },
-  { id: "ft-3", role: "Product Designer", skills: ["Figma", "Design System", "UX Research"], image: null },
-  { id: "ft-4", role: "AI / ML Engineer", skills: ["PyTorch", "LLM", "RAG"], image: null },
-  { id: "ft-5", role: "Growth Marketer", skills: ["Performance", "GA4", "SQL"], image: null },
-  { id: "ft-6", role: "Product Manager", skills: ["Roadmap", "Analytics", "A/B Test"], image: null },
+  { id: "ft-qa", role: "Senior QA Engineer", title: "테스트 자동화 · 품질 대시보드", category: "개발", skills: ["Test Automation", "Jira", "API Testing"], image: "/portfolio/qa.png", link: null },
+  { id: "ft-fullstack", role: "Full-stack Developer", title: "SaaS 어드민 대시보드 구축", category: "개발", skills: ["React", "Node.js", "TypeScript"], image: "/portfolio/fullstack.png", link: null },
+  { id: "ft-uiux", role: "UX/UI Designer", title: "커머스 앱 UX/UI 리디자인", category: "디자인", skills: ["Figma", "Wireframing", "Design System"], image: "/portfolio/uiux.png", link: null },
+  { id: "ft-senior-uiux", role: "Senior UX/UI Designer", title: "핀테크 앱 FinMate UX/UI 디자인", category: "디자인", skills: ["Figma", "Design System", "Prototyping"], image: "/portfolio/senior_uiux.png", link: null },
+  { id: "ft-graphic", role: "Graphic Designer", title: "문화·F&B 브랜드·포스터 그래픽", category: "디자인", skills: ["Branding", "Editorial", "Print"], image: "/portfolio/poster_design.png", link: null },
+  { id: "ft-cardnews", role: "Content Designer", title: "이벤트·리테일 SNS 카드뉴스·포스터", category: "디자인", skills: ["Social Media", "Card News", "Poster"], image: "/portfolio/cardnews_design.png", link: null },
+  { id: "ft-product-design", role: "Product Marketer", title: "뷰티 브랜드 스킨케어 런칭 캠페인", category: "마케팅", skills: ["Campaign Strategy", "Paid Ads", "ROAS"], image: "/portfolio/product-design.png", link: null },
+  { id: "ft-frontend", role: "Front End Developer", title: "React 포트폴리오 웹사이트", category: "개발", skills: ["React", "TypeScript", "Next.js"], image: "/portfolio/frontend.png", link: null },
+  { id: "ft-growth", role: "Growth Marketer", title: "이커머스 퍼포먼스 광고·전환 최적화", category: "마케팅", skills: ["Performance", "GA4", "ROAS"], image: "/portfolio/growth.png", link: null },
+  { id: "ft-backend", role: "Senior Backend Developer", title: "MSA 백엔드 아키텍처 설계", category: "개발", skills: ["AWS", "Kafka", "Kubernetes"], image: "/portfolio/backend.png", link: null },
 ];
 
 /* ---- 개별 카드 ---- */
 function TalentCard({ talent }: { talent: FeaturedTalent }) {
+  const [imgFailed, setImgFailed] = useState(false);
   const cardClass =
-    "group relative block aspect-[4/3] overflow-hidden rounded-xl bg-[#EEF1F6] shadow-[0_12px_40px_-28px_rgba(10,18,32,0.5)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-30px_rgba(232,89,12,0.45)]";
+    "group relative block aspect-[16/10] overflow-hidden rounded-xl bg-[#EEF1F6] shadow-[0_12px_40px_-28px_rgba(10,18,32,0.5)] transition-shadow duration-300 hover:shadow-[0_28px_60px_-30px_rgba(232,89,12,0.45)]";
 
   const inner = (
     <>
-      {/* 대표 이미지 / Placeholder */}
-      {talent.image ? (
+      {/* 대표 이미지 / Placeholder (이미지 없거나 로드 실패 시 폴백) */}
+      {talent.image && !imgFailed ? (
         <img
           src={talent.image}
           alt={talent.role}
+          onError={() => setImgFailed(true)}
           className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
         />
       ) : (
@@ -68,9 +76,10 @@ function TalentCard({ talent }: { talent: FeaturedTalent }) {
       {/* 하단 그라디언트 오버레이 */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[62%] bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
 
-      {/* 텍스트 (이미지 하단) */}
+      {/* 텍스트 (이미지 하단) — 직무 라벨 + 프로젝트 타이틀 */}
       <div className="absolute inset-x-0 bottom-0 p-5">
-        <h3 className="text-[18px] font-bold leading-[1.3] text-white">{talent.role}</h3>
+        <p className="text-[11.5px] font-semibold uppercase tracking-[0.14em] text-white/70">{talent.role}</p>
+        <h3 className="mt-1 text-[19px] font-bold leading-[1.3] text-white">{talent.title}</h3>
         <div className="mt-3 flex flex-wrap gap-1.5">
           {talent.skills.map((skill) => (
             <span
@@ -95,29 +104,6 @@ function TalentCard({ talent }: { talent: FeaturedTalent }) {
   return <article className={cardClass}>{inner}</article>;
 }
 
-/* ---- 좌우 화살표 ---- */
-function ArrowButton({ direction, onClick, disabled }: { direction: "prev" | "next"; onClick: () => void; disabled?: boolean }) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={direction === "prev" ? "이전" : "다음"}
-      className="flex h-11 w-11 items-center justify-center rounded-full border border-[#E4E8EF] bg-white text-[#59657A] shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] transition hover:border-[#E8590C] hover:text-[#E8590C] disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d={direction === "prev" ? "M15 5l-7 7 7 7" : "M9 5l7 7-7 7"}
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </button>
-  );
-}
-
 type FeaturedTalentCarouselProps = {
   talents?: FeaturedTalent[];
   eyebrow?: string;
@@ -138,55 +124,99 @@ export default function FeaturedTalentCarousel({
     [Autoplay({ delay: autoplayDelay, stopOnInteraction: false, stopOnMouseEnter: true })]
   );
 
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(false);
+  // 대분류 칩 필터 — 카드가 있는 카테고리만 노출
+  const categories = useMemo(
+    () => ["전체", ...PORTFOLIO_CATEGORIES.filter((c) => talents.some((t) => t.category === c))],
+    [talents]
+  );
+  const [activeCategory, setActiveCategory] = useState("전체");
+  const filtered = useMemo(
+    () => (activeCategory === "전체" ? talents : talents.filter((t) => t.category === activeCategory)),
+    [talents, activeCategory]
+  );
 
+  // loop 캐러셀이라 화살표는 항상 활성 (양 끝 비활성 처리 불필요)
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
-  const onSelect = useCallback(() => {
-    if (!emblaApi) return;
-    setCanPrev(emblaApi.canScrollPrev());
-    setCanNext(emblaApi.canScrollNext());
-  }, [emblaApi]);
-
+  // 카테고리 전환 시 슬라이드 재계산 + 처음으로
   useEffect(() => {
     if (!emblaApi) return;
-    onSelect();
-    emblaApi.on("select", onSelect).on("reInit", onSelect);
-    return () => {
-      emblaApi.off("select", onSelect).off("reInit", onSelect);
-    };
-  }, [emblaApi, onSelect]);
+    emblaApi.reInit();
+    emblaApi.scrollTo(0, true);
+  }, [emblaApi, activeCategory]);
 
   return (
     <section id="portfolio" className="bg-white scroll-mt-[84px]">
       <div className="mx-auto max-w-[1360px] px-5 py-24">
-        {/* 헤더 + 화살표 */}
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-[680px]">
+        {/* 헤더 (좌: 타이틀 / 우: 칩 세그먼트 + 화살표) */}
+        <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-10">
+          <div className="max-w-[560px]">
             <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">{eyebrow}</p>
             <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">{title}</h2>
             <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">{description}</p>
           </div>
-          <div className="flex shrink-0 gap-2.5">
-            <ArrowButton direction="prev" onClick={scrollPrev} disabled={!canPrev} />
-            <ArrowButton direction="next" onClick={scrollNext} disabled={!canNext} />
+
+          {/* 우측 — 세그먼트 칩 (화살표는 캐러셀 오버레이로 이동) */}
+          <div className="inline-flex flex-wrap items-center gap-1 rounded-full border border-[#ECEFF3] bg-[#F5F6F8] p-1">
+            {categories.map((cat) => {
+              const active = cat === activeCategory;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setActiveCategory(cat)}
+                  aria-pressed={active}
+                  className={`rounded-full px-4 py-2 text-[13.5px] font-semibold transition-all duration-200 ${
+                    active
+                      ? "bg-white text-[#E8590C] shadow-[0_2px_8px_-2px_rgba(10,18,32,0.2)]"
+                      : "text-[#8A93A5] hover:text-[#3A4356]"
+                  }`}
+                >
+                  {cat}
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* 캐러셀 뷰포트 */}
-        <div className="mt-12 overflow-hidden" ref={emblaRef}>
-          <div className="-ml-5 flex touch-pan-y">
-            {talents.map((talent) => (
-              <div
-                key={talent.id}
-                className="min-w-0 shrink-0 grow-0 basis-[85%] pl-5 sm:basis-1/2 lg:basis-1/2 xl:basis-1/3"
-              >
-                <TalentCard talent={talent} />
-              </div>
-            ))}
+        {/* 캐러셀 (호버 시 양 끝 화살표 노출 — hero 슬라이드 방식) */}
+        {/* group/carousel: 화살표 노출 전용 (카드 줌은 각 카드의 group으로 분리) */}
+        <div className="group/carousel relative mt-12">
+          <div className="overflow-hidden" ref={emblaRef}>
+            <div className="-ml-5 flex touch-pan-y">
+              {filtered.map((talent) => (
+                <div
+                  key={talent.id}
+                  className="min-w-0 shrink-0 grow-0 basis-[85%] pl-5 sm:basis-1/2 lg:basis-1/2 xl:basis-1/3"
+                >
+                  <TalentCard talent={talent} />
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* 오버레이 화살표 — hero 슬라이드처럼 작게 양 끝에 걸쳐서, 데스크톱 호버 시 노출 */}
+          <button
+            type="button"
+            onClick={scrollPrev}
+            aria-label="이전"
+            className="absolute left-0 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] backdrop-blur transition duration-200 hover:bg-white hover:text-[#E8590C] group-hover/carousel:opacity-100 md:flex"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            onClick={scrollNext}
+            aria-label="다음"
+            className="absolute right-0 top-1/2 z-30 hidden -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] backdrop-blur transition duration-200 hover:bg-white hover:text-[#E8590C] group-hover/carousel:opacity-100 md:flex"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </div>
     </section>
