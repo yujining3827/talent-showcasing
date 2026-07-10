@@ -95,7 +95,7 @@ export default function Testimonials() {
   const t = FEATURED[active];
 
   return (
-    <section className="bg-white">
+    <section id="testimonials" className="bg-white scroll-mt-[84px]">
       <div className="mx-auto max-w-[1360px] px-5 py-24">
         <div className="max-w-[680px]">
           <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">고객사 후기</p>

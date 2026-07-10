@@ -134,6 +134,7 @@ const CAMPUS_PROOF = [
     tag: "VKU campus",
     location: "Da Nang",
     short: "VKU",
+    logo: "/vku.png",
     full: "Vietnam-Korea University of ICT",
     pool: "한국-베트남 ICT 협력 기반의 대학 풀",
     desc: "협력 네트워크를 통해 IT 전공자와 프로젝트 경험자를 먼저 검토합니다.",
@@ -142,6 +143,7 @@ const CAMPUS_PROOF = [
     tag: "HUTECH campus",
     location: "Ho Chi Minh City",
     short: "HUTECH",
+    logo: "/HUTECH.jpg",
     full: "Ho Chi Minh City University of Technology",
     pool: "실무형 공학/IT 전공자 풀",
     desc: "현지 산학형 교육 기반으로 주니어부터 미들급 개발자 후보를 확보합니다.",
@@ -150,6 +152,7 @@ const CAMPUS_PROOF = [
     tag: "UEH campus",
     location: "Ho Chi Minh City",
     short: "UEH",
+    logo: "/UEH.jpg",
     full: "University of Economics Ho Chi Minh City",
     pool: "데이터/비즈니스 이해도가 있는 후보군",
     desc: "경제대 출신 후보는 운영, 데이터, PM 성향의 역할까지 함께 검토하기 좋습니다.",
@@ -158,6 +161,7 @@ const CAMPUS_PROOF = [
     tag: "FPT University campus",
     location: "Hanoi / HCMC / Da Nang",
     short: "FPT University",
+    logo: "/FPT.png",
     full: "Software-focused talent pipeline",
     pool: "소프트웨어 교육 기반 후보군",
     desc: "FPT Software 생태계와 연결되는 개발자 후보를 선별해 비교합니다.",
@@ -184,9 +188,10 @@ function VerificationProofBanner({ eliteSchoolShare }: { eliteSchoolShare: numbe
               </p>
               <p className="mt-2 text-[19px] font-bold text-[#171E2D]">{campus.short}</p>
               <p className="mt-0.5 text-[12px] text-[#5B667A]">{campus.full}</p>
-              <p className="mt-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#E8590C]">{campus.pool}</p>
+              {/* 로고 — 대학명 아래, 테두리 없이 */}
+              <img src={campus.logo} alt={campus.short} className="mt-4 h-20 w-auto max-w-full object-contain mx-auto" />
+              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#E8590C]">{campus.pool}</p>
               <p className="mt-1 text-[12.5px] leading-[1.55] text-[#5B667A]">{campus.desc}</p>
-              <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#B0B8C4]">Campus proof</p>
             </div>
           ))}
         </div>
@@ -311,9 +316,19 @@ function SiteHeader() {
         <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
           <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-10 w-auto" />
         </Link>
-        <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
-          바로 채용하기
-        </Link>
+        <div className="flex items-center gap-7">
+          <nav className="hidden items-center gap-7 md:flex">
+            <a href="#portfolio" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
+              포트폴리오 미리보기
+            </a>
+            <a href="#testimonials" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
+              고객 후기
+            </a>
+          </nav>
+          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
+            바로 채용하기
+          </Link>
+        </div>
       </div>
     </header>
   );
