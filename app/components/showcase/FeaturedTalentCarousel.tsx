@@ -150,13 +150,13 @@ export default function FeaturedTalentCarousel({
 
   return (
     <section id="portfolio" className="bg-white scroll-mt-[84px]">
-      <div className="mx-auto max-w-[1360px] px-5 py-24">
+      <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-24">
         {/* 헤더 (좌: 타이틀 / 우: 칩 세그먼트 + 화살표) */}
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between md:gap-10">
           <div className="max-w-[560px]">
             <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">{eyebrow}</p>
-            <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">{title}</h2>
-            <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">{description}</p>
+            <h2 className="mt-3 text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">{title}</h2>
+            <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">{description}</p>
           </div>
 
           {/* 우측 — 세그먼트 칩 (화살표는 캐러셀 오버레이로 이동) */}
@@ -184,7 +184,7 @@ export default function FeaturedTalentCarousel({
 
         {/* 캐러셀 (호버 시 양 끝 화살표 노출 — hero 슬라이드 방식) */}
         {/* group/carousel: 화살표 노출 전용 (카드 줌은 각 카드의 group으로 분리) */}
-        <div className="group/carousel relative mt-12">
+        <div className="group/carousel relative mt-8 md:mt-12">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="-ml-5 flex touch-pan-y">
               {filtered.map((talent) => (

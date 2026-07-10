@@ -4,9 +4,9 @@ import Link from "next/link";
 export default function ContactCTA() {
   return (
     <section className="bg-[#242832]">
-      <div className="mx-auto flex max-w-[1360px] flex-col items-start gap-6 px-5 py-20 md:flex-row md:items-center md:justify-between">
+      <div className="mx-auto flex max-w-[1360px] flex-col items-start gap-6 px-5 py-14 md:flex-row md:items-center md:justify-between md:py-20">
         <div>
-          <h2 className="text-[28px] font-semibold leading-[1.3] text-white md:text-[36px]">
+          <h2 className="text-[24px] font-semibold leading-[1.3] text-white sm:text-[28px] md:text-[36px]">
             마음에 드는 인재를 찾으셨나요?
             <br />
             지금 상담을 요청하세요.
@@ -17,7 +17,7 @@ export default function ContactCTA() {
         </div>
         <Link
           href="/pricing"
-          className="inline-flex h-14 flex-shrink-0 items-center justify-center rounded-sm bg-[#E8590C] px-9 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A]"
+          className="inline-flex h-14 w-full flex-shrink-0 items-center justify-center rounded-sm bg-[#E8590C] px-9 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto"
         >
           상담 요청하기
         </Link>

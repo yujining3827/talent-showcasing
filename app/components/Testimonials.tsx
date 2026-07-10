@@ -96,22 +96,22 @@ export default function Testimonials() {
 
   return (
     <section id="testimonials" className="bg-white scroll-mt-[84px]">
-      <div className="mx-auto max-w-[1360px] px-5 py-24">
+      <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-24">
         <div className="max-w-[680px]">
           <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">고객사 후기</p>
-          <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">검증된 인재로, 채용을 끝낸 기업들</h2>
-          <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">실제 고객사가 공고마감으로 어떻게 채용했는지 확인해보세요.</p>
+          <h2 className="mt-3 text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">검증된 인재로, 채용을 끝낸 기업들</h2>
+          <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">실제 고객사가 공고마감으로 어떻게 채용했는지 확인해보세요.</p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-[1.4fr_1fr]">
+        <div className="mt-8 grid grid-cols-1 gap-4 md:mt-12 md:grid-cols-[1.4fr_1fr] md:gap-6">
           {/* 대표 후기 (4개 자동 전환) */}
-          <div className="flex min-h-[340px] flex-col justify-between rounded-2xl border border-[#EAEDF2] bg-white p-8 shadow-[0_20px_60px_-40px_rgba(10,18,32,0.5)] md:p-10">
+          <div className="flex min-h-[300px] flex-col justify-between rounded-2xl border border-[#EAEDF2] bg-white p-6 shadow-[0_20px_60px_-40px_rgba(10,18,32,0.5)] sm:min-h-[340px] sm:p-8 md:p-10">
             <div key={active} className="animate-testimonial">
               <Stars />
               {t.metric && (
                 <span className="mt-5 inline-block rounded-full bg-[#FFF1E8] px-3 py-1 text-[13px] font-bold text-[#E8590C]">{t.metric}</span>
               )}
-              <p className="mt-4 text-[22px] font-semibold leading-[1.5] text-[#171E2D] md:text-[26px]">“{t.quote}”</p>
+              <p className="mt-4 text-[18px] font-semibold leading-[1.5] text-[#171E2D] sm:text-[22px] md:text-[26px]">“{t.quote}”</p>
             </div>
             <div className="mt-8 flex items-end justify-between gap-4">
               <div key={`a-${active}`} className="animate-testimonial">
@@ -133,7 +133,7 @@ export default function Testimonials() {
           </div>
 
           {/* 작은 후기 2개 (고정) */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 md:gap-6">
             {SMALL.map((s, i) => (
               <SmallCard key={i} t={s} />
             ))}

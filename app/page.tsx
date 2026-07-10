@@ -62,7 +62,7 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
 function StatBlock({ value, label, accent = false }: { value: string; label: string; accent?: boolean }) {
   return (
     <div>
-      <p className={`text-[28px] font-bold ${accent ? "text-[#E8590C]" : "text-[#171E2D]"}`}>{value}</p>
+      <p className={`text-[24px] font-bold sm:text-[28px] ${accent ? "text-[#E8590C]" : "text-[#171E2D]"}`}>{value}</p>
       <p className="mt-1 text-[12px] text-[#59657A]">{label}</p>
     </div>
   );
@@ -242,11 +242,11 @@ function TalentStrip({
 function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#EEF1F5] bg-white/90 backdrop-blur">
-      <div className="mx-auto flex h-[72px] max-w-[1360px] items-center justify-between px-5">
+      <div className="mx-auto flex h-[60px] max-w-[1360px] items-center justify-between px-5 sm:h-[72px]">
         <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
-          <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-10 w-auto" />
+          <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-8 w-auto sm:h-10" />
         </Link>
-        <div className="flex items-center gap-7">
+        <div className="flex items-center gap-4 sm:gap-7">
           <nav className="hidden items-center gap-7 md:flex">
             <a href="#portfolio" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
               포트폴리오 미리보기
@@ -255,7 +255,7 @@ function SiteHeader() {
               고객 후기
             </a>
           </nav>
-          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
+          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-6 sm:py-3 sm:text-[15px]">
             바로 채용하기
           </Link>
         </div>
@@ -275,33 +275,39 @@ function Hero({
 
   return (
     <section className="relative isolate overflow-hidden bg-white text-[#192133]">
-      <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-10 px-5 pb-16 pt-8 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-12">
+      <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-5 px-5 pb-12 pt-8 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-12">
         <div className="z-10 max-w-[640px]">
           <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#FAD9C6] bg-[#FFF1E8] px-3 py-1.5 text-[13px] font-semibold text-[#E8590C]">
             <VerifiedIcon color="#E8590C" />
             세상에 없던 안심매칭
           </div>
-          <h1 className="text-[55px] font-bold leading-[1.3] tracking-normal text-[#171E2D] md:text-[52px]">
+          <h1 className="text-[36px] font-bold leading-[1.3] tracking-normal text-[#171E2D] sm:text-[44px] md:text-[52px]">
             인건비 50%<br />역량은 그대로.<br />최상위 글로벌 인재 구독
           </h1>
-          <p className="mt-6 max-w-[640px] text-[24px] leading-[1.65] text-[#30394C]">
-            국내 최다 보유 베트남 인재 안심 매칭 
+          <p className="mt-5 max-w-[640px] text-[18px] leading-[1.65] text-[#30394C] sm:text-[20px] md:mt-6 md:text-[24px]">
+            국내 최다 보유 베트남 인재 안심 매칭
           </p>
-          <div className="mt-8 grid grid-cols-3 gap-5 border-t border-[#BCC5D4] pt-6">
+          {/* 모바일: 인재 카드를 첫 화면(헤드라인 바로 아래)에 노출 */}
+          {featured && (
+            <div className="mt-6 md:hidden">
+              <FeaturedCandidatePanel talent={featured} />
+            </div>
+          )}
+          <div className="mt-8 grid grid-cols-2 gap-5 border-t border-[#BCC5D4] pt-6 md:grid-cols-3">
             <StatBlock value="2만+" label="검증된 베트남 인재 풀" accent />
             <StatBlock value="91%" label="명문대 출신 인재"  />
           </div>
-          <div className="mt-11 flex flex-col gap-5 sm:flex-row">
-            <Link href="/pricing" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm bg-[#E8590C] px-11 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A]">
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-5 md:mt-11">
+            <Link href="/pricing" className="inline-flex h-14 w-full items-center justify-center rounded-sm bg-[#E8590C] px-6 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto sm:min-w-[15rem] sm:px-11">
               바로 인재 추천받기
             </Link>
-            <a href="#portfolio" className="inline-flex h-14 min-w-[15rem] items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-11 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60">
+            <a href="#portfolio" className="inline-flex h-14 w-full items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-6 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60 sm:w-auto sm:min-w-[15rem] sm:px-11">
               포트폴리오 미리보기
             </a>
           </div>
         </div>
 
-        {featured ? <FeaturedCandidatePanel talent={featured} /> : <div className="hidden md:block" />}
+        <div className="hidden md:block">{featured ? <FeaturedCandidatePanel talent={featured} /> : null}</div>
 
         <div className="z-20 mt-4 md:col-span-2 md:mt-8">
           <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} onSelect={setSelectedId} />
@@ -329,11 +335,11 @@ function TrustLogos() {
           {[0, 1].map((dup) => (
             <div key={dup} className="animate-marquee flex shrink-0 items-center" aria-hidden={dup === 1}>
               {logos.map((logo) => (
-                <div key={logo.name} className="flex shrink-0 items-center pr-24">
+                <div key={logo.name} className="flex shrink-0 items-center pr-14 sm:pr-24">
                   {logo.src ? (
-                    <img src={logo.src} alt={logo.name} className="h-16 w-auto object-contain" />
+                    <img src={logo.src} alt={logo.name} className="h-10 w-auto object-contain sm:h-16" />
                   ) : (
-                    <span className="whitespace-nowrap text-[19px] font-semibold text-[#3A4356]">{logo.name}</span>
+                    <span className="whitespace-nowrap text-[16px] font-semibold text-[#3A4356] sm:text-[19px]">{logo.name}</span>
                   )}
                 </div>
               ))}
@@ -352,14 +358,14 @@ function TrustLogos() {
 function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
   return (
     <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
-      <div className="mx-auto max-w-[1360px] px-5 py-24">
+      <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-24">
         <div className="max-w-[720px]">
           <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Curated talent showcase</p>
-          <h2 className="mt-3 text-[34px] font-semibold tracking-normal text-[#171E2D] md:text-[44px]">출신과 검증 정보가 먼저 보이는 인재 카드</h2>
-          <p className="mt-4 text-[17px] leading-[1.7] text-[#5B667A]">대학교, 이전 회사, 공개 동의, 사진 품질을 기준으로 신뢰할 수 있는 프로필을 우선 노출합니다.</p>
+          <h2 className="mt-3 text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">출신과 검증 정보가 먼저 보이는 인재 카드</h2>
+          <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">대학교, 이전 회사, 공개 동의, 사진 품질을 기준으로 신뢰할 수 있는 프로필을 우선 노출합니다.</p>
         </div>
         {talents.length > 0 ? (
-          <div className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-2">
+          <div className="mt-8 grid grid-cols-1 gap-4 md:mt-12 md:gap-5 lg:grid-cols-2">
             {talents.slice(0, 6).map((talent) => (
               <ProfileCard key={talent.id} t={talent} />
             ))}
