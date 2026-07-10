@@ -27,6 +27,21 @@ type ShowcaseTalent = {
   language?: string | null;
 };
 
+// 출신 회사 → 로고 파일(public/). 파일 있는 회사만 카드 배경에 옅게 노출
+const COMPANY_LOGOS: Record<string, string> = {
+  samsung: "/samsung.svg",
+  vng: "/VNG.webp",
+  "fpt software": "/FPT.png",
+  fpt: "/FPT.png",
+  grab: "/Grab.png",
+  google: "/google.png",
+  kpmg: "/KPMG.webp",
+};
+function companyLogo(company: string | null): string | null {
+  if (!company) return null;
+  return COMPANY_LOGOS[company.trim().toLowerCase()] ?? null;
+}
+
 function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?: boolean }) {
   const [failed, setFailed] = useState(false);
   const src = talent.photo_url || null;
@@ -88,7 +103,17 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
           </p>
         </div>
       </div>
-      <div className="flex-1 p-6">
+      <div className="relative flex-1 overflow-hidden p-6">
+        {/* 출신 회사 로고 — 배경에 옅게 (파일 있는 회사만) */}
+        {companyLogo(talent.company) && (
+          <img
+            src={companyLogo(talent.company)!}
+            alt=""
+            aria-hidden="true"
+            className="pointer-events-none absolute -bottom-6 -right-4 z-0 w-52 opacity-[0.12]"
+          />
+        )}
+        <div className="relative z-10">
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">이달의 검증 인재</p>
         <p className="mt-2 text-[19px] font-semibold text-[#171E2D]">{talent.headline || `검증된 ${talent.role || "테크"} 전문가`}</p>
         <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
@@ -123,6 +148,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
             <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">학력</span>
             <span className="text-right text-[13px] leading-[1.5] text-[#5B667A]">{talent.school || "확인 중"}</span>
           </div>
+        </div>
         </div>
       </div>
     </Link>
