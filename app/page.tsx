@@ -280,6 +280,9 @@ function SiteHeader() {
             <a href="#testimonials" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
               고객 후기
             </a>
+            <Link href="/cases" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
+              고객 사례
+            </Link>
           </nav>
           <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-6 sm:py-3 sm:text-[15px]">
             바로 채용하기
