@@ -33,11 +33,16 @@ type ShowcaseTalent = {
 const COMPANY_LOGOS: Record<string, { src: string; className?: string }> = {
   samsung: { src: "/samsung.svg" },
   vng: { src: "/VNG.webp" },
-  "fpt software": { src: "/FPT%20Software.webp", className: "h-9" },
-  fpt: { src: "/FPT%20Software.webp", className: "h-9" },
+  "fpt software": { src: "/FPT%20Software.webp", className: "h-[52px]" },
+  fpt: { src: "/FPT%20Software.webp", className: "h-[52px]" },
   grab: { src: "/Grab.png" },
   google: { src: "/google.png" },
   kpmg: { src: "/KPMG.webp" },
+  nab: { src: "/NAB.svg" },
+  mondelez: { src: "/Mondelez.png", className: "h-14" },
+  prudential: { src: "/Prudential.webp" },
+  moatable: { src: "/Moatable.png" },
+  "moatable inc.": { src: "/Moatable.png" },
 };
 function companyLogo(company: string | null): { src: string; className?: string } | null {
   if (!company) return null;
@@ -111,13 +116,19 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
           const logo = companyLogo(talent.company);
           if (!logo) return null;
           return (
-            <div className="absolute right-5 top-[44px] flex h-7 items-center">
-              <img src={logo.src} alt={talent.company ?? ""} className={`w-auto max-w-[92px] object-contain ${logo.className ?? "h-5"}`} />
+            <div className="absolute right-10 top-[46px] flex h-14 items-center">
+              <img src={logo.src} alt={talent.company ?? ""} className={`w-auto max-w-[150px] object-contain ${logo.className ?? "h-9"}`} />
             </div>
           );
         })()}
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">이달의 검증 인재</p>
-        <p className="mt-2 text-[19px] font-semibold text-[#171E2D]">{talent.headline || `검증된 ${talent.role || "테크"} 전문가`}</p>
+        <p className="mt-2 pr-[156px] text-[19px] font-semibold leading-[1.4] text-[#171E2D]">
+          {(talent.headline || `검증된 ${talent.role || "테크"} 전문가`).split("/n").map((line, i) => (
+            <span key={i} className="block">
+              {line.trim()}
+            </span>
+          ))}
+        </p>
         <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
         {/* 경력·어학(강조·주황 값) / 기술·학력(보조·회색) — 간격/패딩 균일 */}
         <div className="mt-8 flex flex-col gap-6">

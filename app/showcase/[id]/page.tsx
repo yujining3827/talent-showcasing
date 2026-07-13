@@ -140,7 +140,7 @@ export default function TalentDetailPage() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">{talent.role || "테크 전문가"}</p>
                 <h1 className="mt-2 text-[32px] font-bold leading-[1.2] text-[#171E2D]">{talent.name}</h1>
                 <p className="mt-2 text-[16px] leading-[1.6] text-[#5B667A]">
-                  {detail?.titleLine || talent.headline || `검증된 ${talent.role || "테크"} 전문가`}
+                  {(detail?.titleLine || talent.headline || `검증된 ${talent.role || "테크"} 전문가`).replace(/\s*\/n\s*/g, " ")}
                 </p>
 
                 <div className="mt-8 flex flex-col gap-6">
