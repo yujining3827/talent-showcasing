@@ -14,9 +14,6 @@ export default function SiteHeader() {
             <Link href="/#portfolio" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
               포트폴리오 미리보기
             </Link>
-            <Link href="/#testimonials" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
-              고객 후기
-            </Link>
             <Link href="/cases" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
               고객 사례
             </Link>

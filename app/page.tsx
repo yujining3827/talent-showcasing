@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
-import ContactCTA from "@/app/components/ContactCTA";
-import Testimonials from "@/app/components/Testimonials";
+import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
 import { HERO_TALENTS } from "@/lib/heroTalents";
@@ -416,8 +415,7 @@ export default function LandingPage() {
       <TrustLogos />
       <FeaturedTalentCarousel />
       <TalentPreview talents={premiumTalents} />
-      <Testimonials />
-      <ContactCTA />
+      <CaseStudiesPreview />
       <SiteFooter />
     </main>
   );
