@@ -133,5 +133,17 @@ export async function GET() {
     (t.schoolTier === "top" ? 8 : 0) + (isEliteSchool(t.school) ? 4 : 0) + (isEliteCompany(t.company) ? 3 : 0) + (t.yoeYears || 0) / 100;
   talents.sort((a, b) => score(b) - score(a));
 
-  return NextResponse.json({ total: talents.length, talents });
+  return NextResponse.json({
+    total: talents.length,
+    talents,
+    // ⚠️ 임시 디버그 (원인 확인용, 시크릿 없음) — 해결되면 제거
+    _debug: {
+      urlHost: (url || "").replace("https://", "").split(".")[0],
+      keyLen: (key || "").length,
+      rawCount: data?.length ?? 0,
+      verdictsCount: Object.keys(verdicts).length,
+      withPhoto: mapped.filter((t) => t.photo_url).length,
+      afterFilter: talents.length,
+    },
+  });
 }
