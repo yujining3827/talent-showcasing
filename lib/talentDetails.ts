@@ -11,13 +11,36 @@ export type ExperienceItem = {
   tasks?: string[];
 };
 
+// 주요 프로젝트(포트폴리오) — 경력과 별개로 대표 작업물을 카드로 노출
+export type ProjectItem = {
+  name: string;         // 프로젝트명
+  domain?: string;      // 도메인/분야 (예: 핀테크, 헬스케어, 이커머스)
+  period?: string;
+  role?: string;        // 담당 역할
+  description?: string; // 한 줄 설명
+  tech?: string[];      // 사용 기술
+  liveUrl?: string;     // 배포된 라이브 데모/서비스/디자인(Figma) 바로가기
+  liveLabel?: string;   // liveUrl 버튼 라벨 (기본 "Live Demo", 예: "Figma")
+  sourceUrl?: string;   // GitHub 등 소스 코드
+  highlights?: string[]; // 핵심 성과 (선택)
+};
+
+// 상단 요약에 노출할 대표 링크 (있는 것만 버튼으로 표시)
+export type TalentLinks = {
+  github?: string;
+  portfolio?: string; // 포트폴리오 사이트/파일 (미지정 시 resumeUrl로 대체)
+  website?: string;   // 개인 웹사이트/블로그
+};
+
 export type TalentDetail = {
   id: string;
   titleLine?: string; // 직무 요약 라인
   basic?: { label: string; value: string; href?: string }[];
+  links?: TalentLinks; // 상단 요약 링크 버튼 (GitHub·포트폴리오·웹사이트)
   objective?: string;
   education?: { period: string; school: string; major: string }[];
   skillGroups?: { title: string; items: string[] }[];
+  projects?: ProjectItem[]; // 주요 프로젝트 (라이브 데모/소스 링크 포함)
   experience?: ExperienceItem[];
   certifications?: string[];
   achievements?: string[];
@@ -28,10 +51,7 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-1": {
     id: "hero-1",
     titleLine: "시니어 QA 엔지니어 · 품질 관리 스페셜리스트",
-    // 개인정보(생년월일·성별·연락처·이메일)는 노출하지 않음 — 거주지는 별도 표시, 여기선 GitHub만
-    basic: [
-      { label: "GitHub", value: "github.com/trnmhung", href: "https://github.com/trnmhung" },
-    ],
+    links: { github: "https://github.com/trnmhung" },
     objective:
       "5년 이상의 B2B 소프트웨어 테스트 경력을 보유한 품질 관리 스페셜리스트이자 시니어 QA 엔지니어입니다. 삼성의 대규모 디지털 사이니지 플랫폼을 포함해, 종합적인 테스트 전략과 부서 간 협업을 통해 제품의 안정성·성능·사용자 경험을 보장해왔습니다. 데이터 기반 및 AI 활용 접근으로 테스트 효율과 제품 품질을 높이고, 엔터프라이즈 고객을 위한 확장 가능한 SaaS 솔루션을 제공하는 데 강점이 있습니다.",
     education: [
@@ -58,6 +78,34 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
         ],
       },
       { title: "언어", items: ["영어 (업무 가능)", "프랑스어 (기초)"] },
+    ],
+    projects: [
+      {
+        name: "HOCS — 병원 운영 관제 시스템",
+        domain: "헬스케어 · B2B SaaS",
+        period: "2024 – 2026",
+        role: "시니어 QA 엔지니어",
+        description: "환자·의약품·의료기기의 실시간 데이터를 모니터링/업데이트하는 병원 운영 플랫폼. 싱가포르 Tan Tock Seng Hospital 납품.",
+        tech: ["Manual/Regression", "API Testing", "DB Testing", "Jira", "TestRail"],
+        highlights: ["웹·모바일 회귀·스모크·UI/UX·DB 테스트 전 영역 담당", "명세 기반 테스트 케이스 설계 및 리포트 작성"],
+      },
+      {
+        name: "삼성 B2B Signage — 디지털 사이니지 플랫폼",
+        domain: "디스플레이 · 글로벌",
+        period: "2020 – 2024",
+        role: "서브리더 · 시니어 QA (5인 팀)",
+        description: "삼성 대표 디스플레이 제품인 기업용 사이니지 광고 솔루션. 전 세계 대상 안정성·신뢰성 검증.",
+        tech: ["Selenium/Appium", "Postman", "JMeter", "BrowserStack", "Confluence"],
+        highlights: ["인도팀 지식 이전 및 베트남팀 온보딩 주도", "SQA 최우수 퍼포먼스 Top 10 (2022·2023)"],
+      },
+      {
+        name: "Neuralyzer — 산업 인프라 보안 SW",
+        domain: "사이버 보안 · US",
+        period: "2020",
+        role: "QA 엔지니어",
+        description: "대형 산업·공장 IT 인프라를 온라인 공격으로부터 보호하는 보안 소프트웨어. 통합·시스템 테스트 담당.",
+        tech: ["Integration Testing", "System Testing", "API", "Smoke/Regression"],
+      },
     ],
     experience: [
       {
@@ -118,6 +166,44 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-2": {
     id: "hero-2",
     titleLine: "시니어 UX/UI 디자이너 · 모바일·웹 프로덕트 디자인",
+    links: { website : "https://caothanhhung.framer.website/" },
+    projects: [
+      {
+        name: "Catgirl.io — Web3 게임 플랫폼",
+        domain: "Web3 · 게이밍",
+        period: "2024 – 2026",
+        role: "시니어 UX/UI 디자이너 (BLOCKPIXELS)",
+        description: "스테이크홀더 요구사항을 웹·모바일 고전환 비주얼로 구현. 엔드투엔드 디자인 리드.",
+        tech: ["Figma", "Design System", "Web/Mobile"],
+        liveUrl: "https://www.catgirl.io/",
+      },
+      {
+        name: "Unipaws — 반려동물 Web3 서비스",
+        domain: "Web3 · 이커머스",
+        period: "2024 – 2026",
+        role: "시니어 UX/UI 디자이너 (BLOCKPIXELS)",
+        description: "반려동물 커머스/커뮤니티 제품의 웹·모바일 UX/UI 엔드투엔드 설계.",
+        tech: ["Figma", "Prototyping", "UX Research"],
+        liveUrl: "https://www.unipaws.world/",
+      },
+      {
+        name: "Narwhal Finance — DeFi 파생상품",
+        domain: "DeFi · 핀테크",
+        role: "UX/UI 디자이너",
+        description: "온체인 파생상품 거래 앱의 인터페이스 디자인.",
+        tech: ["Figma", "Design System"],
+        liveUrl: "https://app.narwhal.finance/",
+      },
+      {
+        name: "Zalo Cloud · Developers (VNG)",
+        domain: "클라우드 · 개발자 플랫폼",
+        period: "2021 – 2024",
+        role: "시니어 UI/UX 디자이너 (VNG)",
+        description: "베트남 대표 테크 VNG의 Zalo 개발자·클라우드 제품 UX/UI 및 디자인 시스템 구축.",
+        tech: ["Figma", "Design System", "Usability Testing"],
+        liveUrl: "https://developers.zalo.me/",
+      },
+    ],
     objective:
       "8년 이상의 경력을 가진 시니어 UX/UI 디자이너로, 모바일 및 웹 제품 디자인, 사용자 연구, 디자인 시스템 개발에 전문성을 보유하고 있습니다. VNG(Zalo Cloud) 등에서 디자인 팀을 이끌고 다양한 부서와 협업하여 직관적이고 효과적인 디지털 경험을 제공한 검증된 능력을 갖추고 있습니다.",
     skillGroups: [
@@ -163,6 +249,41 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-3": {
     id: "hero-3",
     titleLine: "AI/ML 엔지니어 · RAG·AI Agent 전문",
+    links: { github: "https://github.com/pgtkhai" },
+    projects: [
+      {
+        name: "CV·JD 파싱 툴킷",
+        domain: "AI · 문서 파싱",
+        period: "2025",
+        role: "AI 엔지니어 (Aniday)",
+        description: "CV·JD에서 구조화 스키마로 정보를 추출하는 자동 파이프라인. 민감정보 탐지·자동 마스킹 모듈과 OCR(Google Cloud Vision) 통합.",
+        tech: ["Gemini API", "Google Cloud Vision", "FastAPI", "Docker"],
+      },
+      {
+        name: "Job-Candidate 매칭 엔진",
+        domain: "AI · 시맨틱 검색",
+        period: "2025",
+        role: "AI 엔지니어 (Aniday)",
+        description: "임베딩 기반 시맨틱 매칭으로 후보-공고 적합도를 산출. Elasticsearch 벡터 검색으로 저지연 인덱싱.",
+        tech: ["Gemini API", "MongoDB", "Elasticsearch", "Google Embedding"],
+      },
+      {
+        name: "CD-HMA — Blind 이미지 초해상도 (연구)",
+        domain: "컴퓨터 비전 · 논문",
+        period: "2025",
+        role: "제1저자 (ICMV 2025)",
+        description: "열화 인지 하이브리드 멀티축 어텐션 네트워크. 5개 벤치마크에서 SOTA급 성능 달성, 국제학회 ICMV 게재.",
+        tech: ["PyTorch", "Diffusion", "Super-resolution"],
+        sourceUrl: "https://github.com/pgtkhai/CD-HMA",
+      },
+      {
+        name: "자동 콜드 이메일 아웃리치",
+        domain: "AI · 자동화",
+        role: "AI 엔지니어 (Aniday)",
+        description: "n8n 워크플로우로 리드 스크래핑·연락처 보강(Hunter.io) 후 Gemini로 맞춤 이메일을 생성·자동 발송.",
+        tech: ["n8n", "Gemini API", "Hunter.io", "Google Workspace API"],
+      },
+    ],
     objective:
       "RAG(검색 증강 생성)와 AI Agent, 컴퓨터 비전·NLP를 아우르는 AI/ML 엔지니어입니다. Gemini 등 최신 LLM API를 활용해 실용적인 AI 애플리케이션을 구축하며, 관련 연구 논문 경력도 보유하고 있습니다. IELTS 8.0의 영어 역량으로 글로벌 환경에서의 협업에 강점이 있습니다.",
     skillGroups: [
@@ -211,6 +332,37 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-5": {
     id: "hero-5",
     titleLine: "프론트엔드 엔지니어 · React · Vue",
+    links: { website: "https://toan-vo.lovable.app" },
+    projects: [
+      {
+        name: "Promer AI — Shopify 광고 크리에이티브 앱",
+        domain: "AI · 이커머스 (Shopify)",
+        period: "2024 – 2025",
+        role: "프론트엔드 엔지니어 (FireGroup)",
+        description: "Remix·Tailwind로 Shopify Admin 네이티브 UI 구현. SSE로 AI 에이전트 응답을 실시간 스트리밍.",
+        tech: ["Remix", "Tailwind CSS", "Jotai", "SSE", "Shopify Polaris"],
+        highlights: ["Shopify 앱스토어 4.6★ · 2,000+ 가맹점 사용"],
+        liveUrl: "https://apps.shopify.com/promer-creative-studio",
+      },
+      {
+        name: "Pettiny — 반려동물 이커머스",
+        domain: "이커머스 · 플랫폼",
+        period: "2023",
+        role: "풀스택 개발자",
+        description: "반려동물 용품 커머스와 펫샵·동물병원·수의사를 연결하는 서비스. 지도·실시간 기능 포함.",
+        tech: ["Next.js", "TypeScript", "Firebase", "AWS", "Google Maps API"],
+        liveUrl: "https://pettiny.netlify.app/",
+      },
+      {
+        name: "Lofty — 부동산 SaaS 플랫폼",
+        domain: "부동산 · B2B SaaS",
+        period: "2025 – 현재",
+        role: "프론트엔드 엔지니어 (Moatable)",
+        description: "CRM·빌링·CMS를 아우르는 부동산 플랫폼. SSR 적용으로 Lighthouse SEO +25%, FCP 15% 개선.",
+        tech: ["Vue 3", "Pinia", "SSR"],
+        highlights: ["SEO 점수 +25% · 페이지 로드 15% 단축"],
+      },
+    ],
     objective:
       "React와 Vue 생태계에 능숙한 프론트엔드 엔지니어입니다. 다양한 웹 애플리케이션을 개발하며 컴포넌트 설계, 상태 관리, 사용자 경험 최적화에 강점을 쌓아왔습니다. 최신 프레임워크와 AI 연동 기능 개발 경험도 보유하고 있습니다.",
     skillGroups: [
@@ -231,6 +383,34 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-6": {
     id: "hero-6",
     titleLine: "시니어 백엔드 개발자 · 핀테크·결제 시스템",
+    links: { github: "https://github.com/nguy3n47", website: "https://2land.dev" },
+    projects: [
+      {
+        name: "Walaa Claims2 — 보험 청구 심사 플랫폼",
+        domain: "인슈어테크 · 중동",
+        period: "2025 – 현재",
+        role: "시니어 풀스택 엔지니어 (CoverGo)",
+        description: "중동 대형 보험사향 TPA 청구 플랫폼. 청구당 100+ 항목을 처리하는 심사 엔진과 Temporal 기반 사전승인 워크플로우 구축.",
+        tech: ["NestJS", "Vue 3", "PostgreSQL", "Temporal", "GraphQL", "AWS"],
+        highlights: ["수작업 대사(reconciliation)를 자동 심사 엔진으로 대체", "데이터 웨어하우스 동기화 파이프라인 신규 설계"],
+      },
+      {
+        name: "멀티클라우드 관리 플랫폼",
+        domain: "클라우드 · SaaS",
+        period: "2024 – 2025",
+        role: "풀스택 엔지니어 (CloudVerse.AI)",
+        description: "AWS/Azure/GCP 비용·컴플라이언스를 통합 가시화. OAuth2 SSO, CUR 자동 수집, 크로스클라우드 SKU 비교 기능 구현.",
+        tech: ["NestJS", "Next.js", "GraphQL", "PostgreSQL", "RabbitMQ"],
+      },
+      {
+        name: "NAB Builders — 인터넷뱅킹 미니앱 프레임워크",
+        domain: "핀테크 · 뱅킹 (호주)",
+        period: "2023",
+        role: "풀스택 엔지니어 (NAB)",
+        description: "호주 대형은행 NAB의 인터넷뱅킹 미니앱 프레임워크. BFF 패턴 구현 및 기술 명세 작성.",
+        tech: ["Node.js", "Express", "React", "GraphQL", "AWS"],
+      },
+    ],
     objective:
       "Node.js·NestJS 백엔드 프레임워크와 PostgreSQL 데이터 모델링, AWS 인프라를 전문으로 하는 5년 이상 경력의 시니어 백엔드 개발자입니다. 핀테크·결제 시스템 개발에 능숙하며, 문제 해결 능력이 뛰어나고 주니어에서 시니어까지 꾸준한 경력 성장을 보여줍니다.",
     skillGroups: [
@@ -276,6 +456,7 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-7": {
     id: "hero-7",
     titleLine: "그로스 마케터 · 퍼포먼스·프로덕트 마케팅",
+    links: { website: "https://www.thaibaotran-growth.com/" },
     objective:
       "핀테크·AI 제품을 베트남과 글로벌 시장에서 스케일업한 2년+ 경력의 그로스 마케터입니다. MoMo, Mondelez 등 국내외 대표 기업에서 사용자 획득·전환·리텐션을 데이터 기반으로 개선해왔으며, 엔지니어와 직접 협업할 수 있는 기술 이해도와 강한 오너십이 강점입니다.",
     education: [
@@ -285,6 +466,35 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
       { title: "그로스 · 마케팅", items: ["사용자 획득(UA) · 퍼포먼스 마케팅", "ROAS · SEO 최적화", "정성·정량 리서치 · A/B 테스트"] },
       { title: "데이터 · 툴", items: ["GA4 · Ad Networks (Google·Meta·Unity·AppLovin·Mintegral)", "MMP (Appsflyer·Adjust)", "Power BI · Looker · MSSQL · R"] },
       { title: "언어", items: ["영어 (IELTS Academic 7.5)"] },
+    ],
+    projects: [
+      {
+        name: "AI Intern · Thinking Desk 런칭",
+        domain: "AI 하드웨어 · 이커머스 (US/EU)",
+        period: "2025 – 현재",
+        role: "Growth · Product Executive",
+        description: "AI 제품 2종의 마켓 진입·런칭을 총괄. 7인 크로스펑셔널 팀 + 3개 AI 에이전트 운영.",
+        tech: ["Google Ads", "Meta Ads", "GA4", "Growth Strategy"],
+        highlights: ["2개월 만에 $300K 매출 · 15K DAU 달성", "월 $20K 예산으로 240만 트래픽 · ROAS 6.5X"],
+      },
+      {
+        name: "MoMo 'Donate by Purchase' 플로우",
+        domain: "핀테크 · QR 결제 (베트남)",
+        period: "2024 – 2025",
+        role: "Associate Growth Executive",
+        description: "베트남 대표 핀테크 MoMo 앱의 기부-결제 연계 플로우를 설계·운영.",
+        tech: ["A/B Testing", "Gamification", "Market Research"],
+        highlights: ["170만 거래 상승 · 리텐션 +13% MoM", "가맹점 프로모션으로 MAU +12% · DAU +9%"],
+      },
+      {
+        name: "Uplive 하이퍼캐주얼 게임 UA",
+        domain: "모바일 게임 (US)",
+        period: "2025",
+        role: "User Acquisition Executive",
+        description: "Amanotes 자회사 Uplive의 게임 3종 런칭 사용자 획득(UA) 전략 담당.",
+        tech: ["TikTok Ads", "Google Ads", "MMP (Appsflyer)"],
+        highlights: ["월 $50K 집행 · D14 ROAS 120% 유지"],
+      },
     ],
     experience: [
       {
@@ -341,6 +551,41 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
   "hero-8": {
     id: "hero-8",
     titleLine: "프로덕트 디자이너 · UX/UI · 프론트엔드 이해도",
+    links: { website: "https://tyler-builder.digital/" },
+    projects: [
+      {
+        name: "2Nong — 농업 AI 에코시스템",
+        domain: "애그테크 · AI",
+        period: "2023 – 2026",
+        role: "프로덕트 디자이너 (ADVN GLOBAL)",
+        description: "웹·모바일 통합 리디자인. 작물 진단·전문가 지식·커머스를 하나의 AI 기반 여정으로 통합.",
+        tech: ["Figma", "Product Design", "AI UX"],
+        highlights: ["10만+ 활성 사용자 도달", "작물 진단 시간을 며칠→초 단위로 단축"],
+      },
+      {
+        name: "Track-asia — 실시간 물류 관제",
+        domain: "물류 · 지도 솔루션",
+        role: "UX 전략 · 프로덕트 디자이너",
+        description: "물류 운영자용 실시간 트래킹 시스템의 정보 구조·대시보드 설계, 복잡한 데이터 시각화 담당.",
+        tech: ["Figma", "Information Architecture", "Data Viz"],
+      },
+      {
+        name: "SIH Hospital — 헬스케어 예약 플랫폼",
+        domain: "헬스케어",
+        role: "프로덕트 디자이너",
+        description: "예약 플로우 리디자인으로 다단계 마찰 감소. 프로덕션 레디 마크업 제공으로 개발 효율 개선.",
+        tech: ["Figma", "UX Flow", "HTML/CSS"],
+        highlights: ["시스템 성능 30% 개선"],
+      },
+      {
+        name: "Crafto — HTML5 템플릿 (200+ 컴포넌트)",
+        domain: "프론트엔드 · 디자인 시스템",
+        role: "프로덕트 디자이너 · 마크업 엔지니어",
+        description: "Atomic Design 기반 200+ 재사용 컴포넌트. SEO 최적화·크로스브라우저 대응 시맨틱 마크업.",
+        tech: ["HTML", "CSS", "JavaScript", "Atomic Design"],
+        liveUrl: "https://craftohtml.themezaa.com/",
+      },
+    ],
     objective:
       "5년 이상의 UX/UI 디자인 및 전환 최적화 경험을 보유한 프로덕트 디자이너입니다. 디자인과 프론트엔드 개발을 연결하는 역량이 뛰어나며, 전자상거래·헬스케어·물류 등 다양한 산업에서 엔드투엔드 디자인 전략을 주도해 왔습니다.",
     skillGroups: [
@@ -382,6 +627,25 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
       { title: "백엔드 · 언어", items: ["Golang · Python · Java", "C/C++", "시스템 아키텍처 설계"] },
       { title: "AI", items: ["Machine Learning", "LLM"] },
       { title: "리더십", items: ["백엔드 팀 리드", "기술 검토 위원회 운영", "팀원 교육 · 멘토링"] },
+    ],
+    projects: [
+      {
+        name: "Samsung SPen SDK 라이브러리",
+        domain: "모바일 SDK · 삼성",
+        period: "2016 – 2018",
+        role: "모바일 개발자",
+        description: "삼성 R&D 센터에서 다양한 애플리케이션용 SPen SDK 라이브러리를 개발·유지보수. SDK 기능 설계 및 기술 문서 작성.",
+        tech: ["Java", "Android", "SDK 설계"],
+      },
+      {
+        name: "ViettelPost 물류 애플리케이션",
+        domain: "물류 · 이커머스",
+        period: "2018 – 2021",
+        role: "모바일·백엔드 팀 리더",
+        description: "ViettelPost 앱의 모바일·백엔드 개발을 이끌며 기능 설계·구현과 팀 멘토링, 일정 관리를 담당.",
+        tech: ["Golang", "Java", "System Architecture"],
+        highlights: ["모바일·백엔드 두 팀 리드로 엔드투엔드 개발 총괄"],
+      },
     ],
     experience: [
       {
@@ -439,6 +703,80 @@ export const TALENT_DETAILS: Record<string, TalentDetail> = {
       { title: "전문 분야", items: ["모바일 퍼스트 UX/UI", "디자인 시스템 · 프로토타이핑", "사용자 연구 · 사용성 테스트", "AI·헬스케어 제품 경험"] },
       { title: "기술 이해", items: ["CSS · HTML · JavaScript", "반응형 · 디자인-개발 핸드오프", "애자일 · Jira"] },
       { title: "언어", items: ["영어 (유창)", "베트남어 (원어민)"] },
+    ],
+    projects: [
+      {
+        name: "Sacombank — 웹·앱 프로덕트 디자인",
+        domain: "핀테크 · 뱅킹",
+        role: "시니어 프로덕트 디자이너",
+        description: "모바일 퍼스트 제품 디자인, 디자인 시스템, 온보딩·서비스 플로우 설계.",
+        tech: ["Figma", "Design System", "Mobile-first"],
+        liveUrl: "https://www.figma.com/design/RbxOSHy84nMzCKU5o7CLTB/Sacombank-Design-Direction---private?node-id=1307-3370&t=2FCqcArhQglGicvf-4",
+        liveLabel: "Figma",
+      },
+      {
+        name: "HDBank — 모바일 앱",
+        domain: "핀테크 · 뱅킹",
+        role: "프로덕트 디자이너",
+        description: "모바일 앱 UX, 금융 가이던스 플로우, 사용자 명확성과 태스크 완료율 개선.",
+        tech: ["Figma", "Mobile UX", "Prototyping"],
+        liveUrl: "https://www.figma.com/proto/6c79HQU7BMNJiDNB7KqVNA?node-id=0-1&t=ibNOW04ku8qBZo3N-6",
+        liveLabel: "Figma",
+      },
+      {
+        name: "Propzy Mortgage — 모기지 서비스",
+        domain: "프롭테크 · 핀테크",
+        role: "프로덕트 디자이너",
+        description: "복잡한 서비스 UX, 폼, 추천형 플로우와 사용자 의사결정 지원 설계.",
+        tech: ["Figma", "Service UX", "Form Design"],
+        liveUrl: "https://www.figma.com/design/tFr8f3NxSw4UbuW4C7tPnd/Mortgage-Improvement--Y-?node-id=416-20016&t=THUh8yxVXjEWYXjB-4",
+        liveLabel: "Figma",
+      },
+      {
+        name: "EVN App — 공공 서비스 앱",
+        domain: "공공 서비스 · 유틸리티",
+        role: "프로덕트 디자이너",
+        description: "사용자 중심 리디자인, 사용성 테스트, 더 명확한 서비스 여정 설계.",
+        tech: ["Figma", "Usability Testing", "UX Research"],
+        liveUrl: "https://www.figma.com/design/lWJflNkyUKWSvsEkEyH0Mg/PTI-2-VNPOST-(Copy)?node-id=0-1&t=6czU6mrEBZr9GktR-1",
+        liveLabel: "Figma",
+      },
+      {
+        name: "Third Place — 마켓플레이스",
+        domain: "마켓플레이스 · 커머스",
+        role: "프로덕트 디자이너",
+        description: "마켓플레이스 UX, 인게이지먼트 플로우, 상품 탐색 경험 설계.",
+        tech: ["Figma", "Marketplace UX", "Product Discovery"],
+        liveUrl: "https://www.figma.com/design/DH3wYYvun3dm4fXI1Wh73Q/Third-Place---(Backup30nov)?node-id=37-8778&t=tsZj3I5P4vBfh7R6-4",
+        liveLabel: "Figma",
+      },
+      {
+        name: "Outdoors — 마켓플레이스",
+        domain: "마켓플레이스 · 리테일",
+        role: "프로덕트 디자이너",
+        description: "사용자 리서치, 여정 매핑, 반응형 제품 경험 설계.",
+        tech: ["Figma", "User Research", "Journey Mapping"],
+        liveUrl: "https://www.figma.com/design/tgm79yu5Ei2MpYeGvsenpg/UOUTDOORS-private?node-id=1-2&t=hPALXmCWa6KDijrJ-4",
+        liveLabel: "Figma",
+      },
+      {
+        name: "WWE Champions — 모바일 게임",
+        domain: "게임 · 엔터테인먼트",
+        role: "UI · 인터랙션 디자이너",
+        description: "모바일 게임 UI, 감성적 인게이지먼트, 비주얼 인터랙션 디자인.",
+        tech: ["Figma", "Game UI", "Interaction Design"],
+        liveUrl: "https://www.figma.com/design/bCfOpe9erYbwJHPFtZQ4zP/WWE-V2-(edit---y-console)-(rep)?node-id=25710-133&t=DpCqEQzj6OED19jK-4",
+        liveLabel: "Figma",
+      },
+      {
+        name: "기타 디자인 & 레이아웃",
+        domain: "마케팅 · 비주얼",
+        role: "디자이너",
+        description: "마케팅 비주얼, 랜딩 페이지, 캠페인 자산, 제품 커뮤니케이션 자료.",
+        tech: ["Graphic Design", "Landing Page", "Campaign"],
+        liveUrl: "https://www.flickr.com/photos/56033193@N08/",
+        liveLabel: "Flickr",
+      },
     ],
     experience: [
       {

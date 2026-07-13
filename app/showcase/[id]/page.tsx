@@ -39,6 +39,27 @@ function InfoRow({ label, accent, children }: { label: string; accent?: boolean;
   );
 }
 
+// 대표 링크 버튼 (아이콘 + 라벨)
+function ProfileLink({ href, kind, label }: { href: string; kind: "github" | "portfolio" | "website" | "live"; label: string }) {
+  const icon = {
+    github: <path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49v-1.7c-2.78.62-3.37-1.22-3.37-1.22-.46-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.06 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.7 0 0 .84-.28 2.75 1.05a9.35 9.35 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.4.2 2.44.1 2.7.64.72 1.03 1.63 1.03 2.75 0 3.93-2.34 4.79-4.57 5.05.36.32.68.94.68 1.9v2.82c0 .27.18.6.69.49A10.26 10.26 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z" fill="currentColor" />,
+    portfolio: <path d="M14 3v4a1 1 0 0 0 1 1h4M5 3h9l6 6v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" fill="none" />,
+    website: <><circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.6" fill="none" /><path d="M3 12h18M12 3c2.5 2.5 3.5 6 3.5 9S14.5 18.5 12 21c-2.5-2.5-3.5-6-3.5-9S9.5 5.5 12 3Z" stroke="currentColor" strokeWidth="1.6" fill="none" /></>,
+    live: <path d="M8 5v14l11-7L8 5Z" fill="currentColor" />,
+  }[kind];
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1.5 rounded-md border border-[#DDE2EA] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#3A4356] transition hover:border-[#E8590C] hover:text-[#E8590C]"
+    >
+      <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true">{icon}</svg>
+      {label}
+    </a>
+  );
+}
+
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-5 flex items-center gap-3">
@@ -143,6 +164,23 @@ export default function TalentDetailPage() {
                   {(detail?.titleLine || talent.headline || `검증된 ${talent.role || "테크"} 전문가`).replace(/\s*\/n\s*/g, " ")}
                 </p>
 
+                {/* 대표 링크 (GitHub · 포트폴리오 사이트 · 웹사이트) — 있는 것만 노출
+                    포트폴리오는 하단 '이력서·포트폴리오 원본 보기'(resumeUrl)와 겹치지 않도록,
+                    별도 포트폴리오 사이트(links.portfolio)가 있을 때만 노출 (resumeUrl fallback 없음) */}
+                {(() => {
+                  const gh = detail?.links?.github;
+                  const pf = detail?.links?.portfolio;
+                  const web = detail?.links?.website;
+                  if (!gh && !pf && !web) return null;
+                  return (
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {gh && <ProfileLink href={gh} kind="github" label="GitHub" />}
+                      {pf && <ProfileLink href={pf} kind="portfolio" label="포트폴리오" />}
+                      {web && <ProfileLink href={web} kind="website" label="웹사이트" />}
+                    </div>
+                  );
+                })()}
+
                 <div className="mt-8 flex flex-col gap-6">
                   <InfoRow label="경력" accent>
                     {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
@@ -189,6 +227,51 @@ export default function TalentDetailPage() {
                       <section>
                         <SectionTitle>소개</SectionTitle>
                         <p className="text-[15.5px] leading-[1.85] text-[#3A4356]">{detail.objective}</p>
+                      </section>
+                    )}
+
+                    {/* 주요 프로젝트 */}
+                    {detail.projects && detail.projects.length > 0 && (
+                      <section>
+                        <SectionTitle>주요 프로젝트</SectionTitle>
+                        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                          {detail.projects.map((p, i) => (
+                            <div key={i} className="flex flex-col rounded-xl border border-[#EEF1F5] p-6 shadow-[0_10px_30px_-26px_rgba(10,18,32,0.4)]">
+                              <div className="flex items-start justify-between gap-3">
+                                <p className="text-[16px] font-bold leading-[1.35] text-[#171E2D]">{p.name}</p>
+                                {p.period && <span className="shrink-0 pt-0.5 text-[12px] font-medium text-[#9AA3B2]">{p.period}</span>}
+                              </div>
+                              <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px]">
+                                {p.domain && <span className="rounded-full bg-[#FFF1E8] px-2.5 py-0.5 font-semibold text-[#E8590C]">{p.domain}</span>}
+                                {p.role && <span className="text-[#8A93A5]">{p.role}</span>}
+                              </div>
+                              {p.description && <p className="mt-3 text-[14px] leading-[1.7] text-[#5B667A]">{p.description}</p>}
+                              {p.highlights && p.highlights.length > 0 && (
+                                <ul className="mt-3 flex flex-col gap-1.5">
+                                  {p.highlights.map((h, j) => (
+                                    <li key={j} className="flex gap-2 text-[13.5px] leading-[1.6] text-[#3A4356]">
+                                      <span className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-[#E8590C]" />
+                                      {h}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                              {p.tech && p.tech.length > 0 && (
+                                <div className="mt-3 flex flex-wrap gap-1.5">
+                                  {p.tech.map((t) => (
+                                    <span key={t} className="rounded-full bg-[#F1F3F7] px-2.5 py-1 text-[11.5px] font-medium text-[#5B667A]">{t}</span>
+                                  ))}
+                                </div>
+                              )}
+                              {(p.liveUrl || p.sourceUrl) && (
+                                <div className="mt-4 flex flex-wrap gap-2 pt-1">
+                                  {p.liveUrl && <ProfileLink href={p.liveUrl} kind="live" label={p.liveLabel || "Live Demo"} />}
+                                  {p.sourceUrl && <ProfileLink href={p.sourceUrl} kind="github" label="소스 코드" />}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </section>
                     )}
 
