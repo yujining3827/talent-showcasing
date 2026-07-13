@@ -125,7 +125,7 @@ export default function TalentDetailPage() {
                   이 인재는 <span className="font-bold text-[#E8590C]">바로 채용 가능</span>합니다
                 </p>
                 <Link
-                  href="/pricing"
+                  href={`/pricing?talentId=${encodeURIComponent(talent.id)}&talentName=${encodeURIComponent(talent.name)}&talentRole=${encodeURIComponent(talent.role || "")}`}
                   className="mt-3 flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]"
                 >
                   이 인재 채용 문의하기

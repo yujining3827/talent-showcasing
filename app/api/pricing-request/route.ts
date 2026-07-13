@@ -26,6 +26,12 @@ type Body = {
   jdUrl?: string;
   jdFileName?: string | null;
   consent?: boolean;
+  // 특정 인재 문의(상세 페이지 진입) 시
+  talentId?: string | null;
+  talentName?: string | null;
+  talentRole?: string | null;
+  interviewSlots?: { date: string; times: string[] }[];
+  interviewNote?: string;
 };
 
 export async function POST(req: Request) {
@@ -36,7 +42,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid json" }, { status: 400 });
   }
 
-  const { name, company, contact, roles = [], workType, duration, startTime, industry, jd, jdUrl, jdFileName, consent } = body;
+  const { name, company, contact, roles = [], workType, duration, startTime, industry, jd, jdUrl, jdFileName, consent,
+    talentId, talentName, talentRole, interviewSlots = [], interviewNote } = body;
 
   // 필수: 담당자·기업·연락처·동의
   if (!name?.trim() || !company?.trim() || !contact?.trim() || !consent) {
@@ -64,6 +71,11 @@ export async function POST(req: Request) {
       jd_url: jdUrl || null,
       jd_file_name: jdFileName || null,
       consent: true,
+      talent_id: talentId || null,
+      talent_name: talentName || null,
+      talent_role: talentRole || null,
+      interview_slots: interviewSlots.length ? interviewSlots : null,
+      interview_note: interviewNote || null,
     });
     if (error) saveError = error.message;
     else saved = true;
@@ -77,10 +89,17 @@ export async function POST(req: Request) {
   const webhook = process.env.SLACK_WEBHOOK_URL;
   if (webhook) {
     try {
+      const slotsText = interviewSlots
+        .filter((s) => s.date && s.times.length)
+        .map((s) => `${s.date} (${s.times.join(", ")})`)
+        .join(" / ");
       const lines = [
-        "🎯 *새 인재 추천 요청이 접수되었습니다*",
+        talentName ? "🎯 *특정 인재 채용 문의가 접수되었습니다*" : "🎯 *새 인재 추천 요청이 접수되었습니다*",
+        talentName ? `• *문의 인재:* ${talentName}${talentRole ? ` · ${talentRole}` : ""}` : null,
         `• *담당자:* ${name}  |  *기업:* ${company}`,
         `• *연락처:* ${contact}`,
+        slotsText ? `• *희망 면접:* ${slotsText}` : null,
+        interviewNote ? `• *면접 요청사항:* ${interviewNote}` : null,
         `• *관심 직무:* ${roles.length ? roles.join(", ") : "-"}`,
         `• *근무:* ${workType || "-"} / ${duration || "-"} / ${startTime || "-"}`,
         `• *업종:* ${industry || "-"}`,
@@ -125,9 +144,19 @@ export async function POST(req: Request) {
  *    jd_url text,
  *    jd_file_name text,
  *    consent boolean not null default false,
+ *    talent_id text, talent_name text, talent_role text,   -- 특정 인재 문의
+ *    interview_slots jsonb, interview_note text,            -- 희망 면접 일정
  *    status text not null default 'new',
  *    created_at timestamptz not null default now()
  *  );
+ *
+ *  -- 기존 테이블이 있으면 컬럼만 추가:
+ *  alter table public.pricing_requests
+ *    add column if not exists talent_id text,
+ *    add column if not exists talent_name text,
+ *    add column if not exists talent_role text,
+ *    add column if not exists interview_slots jsonb,
+ *    add column if not exists interview_note text;
  *  -- service_role 로만 insert 하므로 RLS 정책 불필요 (RLS 켜두고 정책 없음 = anon 차단)
  *  alter table public.pricing_requests enable row level security;
  * -------------------------------------------------------------------------- */

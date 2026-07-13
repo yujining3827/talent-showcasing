@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { EMPTY_FORM, type PricingForm } from "@/app/components/pricing/types";
 import ProgressBar from "@/app/components/pricing/ProgressBar";
+import StepInterview from "@/app/components/pricing/StepInterview";
 import StepOne from "@/app/components/pricing/StepOne";
 import StepTwo from "@/app/components/pricing/StepTwo";
 import SiteFooter from "@/app/components/SiteFooter";
@@ -20,11 +21,26 @@ export default function PricingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  // 상세 페이지 "이 인재 채용 문의하기"로 진입 시 talent 정보(쿼리) → 맨 앞 면접일정 스텝 추가
+  const [talent, setTalent] = useState<{ id: string; name: string; role: string } | null>(null);
+
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const id = p.get("talentId");
+    if (id) setTalent({ id, name: p.get("talentName") || "", role: p.get("talentRole") || "" });
+  }, []);
 
   const patch = (p: Partial<PricingForm>) => setForm((prev) => ({ ...prev, ...p }));
 
-  // Step1 필수: 관심 직무(1개+) / Step2 필수: 성함·기업명·연락처 + 개인정보 동의
-  const canNext = form.roles.length > 0;
+  // 진입 경로에 따라 스텝 구성 (talent 문의: 면접일정→채용요건→담당자 / 일반: 채용요건→담당자)
+  const isTalentInquiry = !!talent;
+  const steps = isTalentInquiry ? (["interview", "requirements", "contact"] as const) : (["requirements", "contact"] as const);
+  const total = steps.length;
+  const stepKey = steps[step - 1];
+  const isLast = step === total;
+
+  const interviewOk = form.interviewSlots.some((s) => s.date && s.times.length > 0);
+  const canGoNext = stepKey === "interview" ? interviewOk : stepKey === "requirements" ? form.roles.length > 0 : false;
   const canSubmit = !!(form.name.trim() && form.company.trim() && form.contact.trim() && form.consent);
 
   function resetForm() {
@@ -37,8 +53,8 @@ export default function PricingPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (step === 1) {
-      if (canNext) setStep(2); // Enter 입력 시에도 다음 단계로
+    if (!isLast) {
+      if (canGoNext) setStep(step + 1); // Enter/다음 → 다음 스텝
       return;
     }
     if (!canSubmit || submitting) return;
@@ -48,7 +64,14 @@ export default function PricingPage() {
       const res = await fetch("/api/pricing-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, jdFileName: jdFile?.name ?? null }),
+        body: JSON.stringify({
+          ...form,
+          jdFileName: jdFile?.name ?? null,
+          talentId: talent?.id ?? null,
+          talentName: talent?.name ?? null,
+          talentRole: talent?.role ?? null,
+          interviewSlots: isTalentInquiry ? form.interviewSlots.filter((s) => s.date && s.times.length > 0) : [],
+        }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
       setDone(true);
@@ -148,28 +171,37 @@ export default function PricingPage() {
           <form onSubmit={handleSubmit} className="flex flex-col">
               {/* 스텝 콘텐츠 (전환 애니메이션) */}
               <div key={step} className="animate-step-in">
-                {step === 1 ? (
-                  <StepOne form={form} patch={patch} onNext={() => canNext && setStep(2)} canNext={canNext} />
+                {stepKey === "interview" ? (
+                  <StepInterview
+                    form={form}
+                    patch={patch}
+                    onNext={() => canGoNext && setStep(step + 1)}
+                    canNext={canGoNext}
+                    talentName={talent?.name}
+                    talentRole={talent?.role}
+                  />
+                ) : stepKey === "requirements" ? (
+                  <StepOne form={form} patch={patch} onNext={() => canGoNext && setStep(step + 1)} canNext={canGoNext} />
                 ) : (
                   <StepTwo
                     form={form}
                     patch={patch}
                     jdFile={jdFile}
                     setJdFile={setJdFile}
-                    onPrev={() => setStep(1)}
+                    onPrev={() => setStep(step - 1)}
                     submitting={submitting}
                     canSubmit={canSubmit}
                   />
                 )}
               </div>
 
-              {submitError && step === 2 && (
+              {submitError && isLast && (
                 <p className="mt-4 rounded-md bg-[#FEF3F2] px-3.5 py-2.5 text-[13px] font-medium text-[#D92D20]">{submitError}</p>
               )}
 
               {/* 진행률 */}
               <div className="mt-8 border-t border-[#F1F3F7] pt-6">
-                <ProgressBar step={step} total={2} />
+                <ProgressBar step={step} total={total} />
               </div>
             </form>
         </div>
