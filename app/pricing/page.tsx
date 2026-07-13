@@ -8,6 +8,7 @@ import StepInterview from "@/app/components/pricing/StepInterview";
 import StepOne from "@/app/components/pricing/StepOne";
 import StepTwo from "@/app/components/pricing/StepTwo";
 import SiteFooter from "@/app/components/SiteFooter";
+import { HERO_TALENTS, type HeroTalent } from "@/lib/heroTalents";
 
 /* ============================================================================
  *  가격 알아보기 / 인재 추천 요청 — 2-step 위저드
@@ -34,14 +35,17 @@ export default function PricingPage() {
 
   // 진입 경로에 따라 스텝 구성 (talent 문의: 면접일정→채용요건→담당자 / 일반: 채용요건→담당자)
   const isTalentInquiry = !!talent;
-  const steps = isTalentInquiry ? (["interview", "requirements", "contact"] as const) : (["requirements", "contact"] as const);
+  // 하드코딩 히어로 인재면 상세 요약을 함께 노출 (뎁스1에서 다시 보여주기)
+  const talentData: HeroTalent | null = talent ? HERO_TALENTS.find((t) => t.id === talent.id) ?? null : null;
+  // 인재 문의: [인재요약+담당자정보 → 채용요건+JD(제출)] / 일반: [채용요건 → 담당자정보(제출)]
+  const steps = isTalentInquiry ? (["interview", "requirements"] as const) : (["requirements", "contact"] as const);
   const total = steps.length;
   const stepKey = steps[step - 1];
   const isLast = step === total;
 
-  const interviewOk = form.interviewSlots.some((s) => s.date && s.times.length > 0);
-  const canGoNext = stepKey === "interview" ? interviewOk : stepKey === "requirements" ? form.roles.length > 0 : false;
-  const canSubmit = !!(form.name.trim() && form.company.trim() && form.contact.trim() && form.consent);
+  const contactOk = !!(form.name.trim() && form.company.trim() && form.contact.trim() && form.consent);
+  const canGoNext = stepKey === "interview" ? contactOk : stepKey === "requirements" ? form.roles.length > 0 : false;
+  const canSubmit = contactOk;
 
   function resetForm() {
     setForm(EMPTY_FORM);
@@ -138,18 +142,32 @@ export default function PricingPage() {
           <Link href="/" className="mb-4 inline-flex items-center text-[14px] font-medium text-[#59657A] transition hover:text-[#E8590C]">
             ← 홈으로
           </Link>
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">인재 추천 요청</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">
+            {isTalentInquiry ? "인재 상담 요청" : "인재 추천 요청"}
+          </p>
           <h1 className="mt-3 text-[32px] font-bold leading-[1.25] text-[#171E2D] md:text-[40px]">
             인건비 50%,
             <br />
             검증된 인재를 만나보세요
           </h1>
-          <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
-            간단한 정보만 남겨주시면 담당자가 빠르게 연락드립니다. <br />
-            찾으시는 인재의 JD까지 남겨주시면,
-            <br /> 조건에 맞는
-            <span className="font-semibold text-[#E8590C]"> 맞춤 추천 인재</span>를 메일로 보내드려요.
-          </p>
+          {isTalentInquiry ? (
+            <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
+              관심 있는 인재를 선택 후
+              <br />
+              담당자 정보를 남겨주시면
+              <br />
+              인재 정보를 메일로 전달 드립니다.
+              <br />
+              <span className="text-[14px] font-semibold text-[#E8590C]">(채용비용, 면접 가능일, 출근 희망일)</span>
+            </p>
+          ) : (
+            <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
+              간단한 정보만 남겨주시면 담당자가 빠르게 연락드립니다. <br />
+              찾으시는 인재의 JD까지 남겨주시면,
+              <br /> 조건에 맞는
+              <span className="font-semibold text-[#E8590C]"> 맞춤 추천 인재</span>를 메일로 보내드려요.
+            </p>
+          )}
           <ul className="mt-8 space-y-3">
             {[
               "개발·마케팅·디자인·영업·CS 전 직군 채용",
@@ -179,15 +197,25 @@ export default function PricingPage() {
                     canNext={canGoNext}
                     talentName={talent?.name}
                     talentRole={talent?.role}
+                    talentData={talentData}
                   />
                 ) : stepKey === "requirements" ? (
-                  <StepOne form={form} patch={patch} onNext={() => canGoNext && setStep(step + 1)} canNext={canGoNext} />
-                ) : (
-                  <StepTwo
+                  <StepOne
                     form={form}
                     patch={patch}
                     jdFile={jdFile}
                     setJdFile={setJdFile}
+                    onNext={() => canGoNext && setStep(step + 1)}
+                    canNext={canGoNext}
+                    isLast={isLast}
+                    onPrev={() => setStep(step - 1)}
+                    submitting={submitting}
+                    canSubmit={canSubmit}
+                  />
+                ) : (
+                  <StepTwo
+                    form={form}
+                    patch={patch}
                     onPrev={() => setStep(step - 1)}
                     submitting={submitting}
                     canSubmit={canSubmit}

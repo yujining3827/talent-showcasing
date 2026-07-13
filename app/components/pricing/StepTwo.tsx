@@ -5,15 +5,13 @@ import { inputClass, type PricingForm } from "./types";
 type Props = {
   form: PricingForm;
   patch: (p: Partial<PricingForm>) => void;
-  jdFile: File | null;
-  setJdFile: (f: File | null) => void;
   onPrev: () => void;
   submitting: boolean;
   canSubmit: boolean;
 };
 
-/* Step 2 — 담당자 정보 (성함·기업명·연락처) + 인재 JD (URL + PDF 첨부) */
-export default function StepTwo({ form, patch, jdFile, setJdFile, onPrev, submitting, canSubmit }: Props) {
+/* Step 2 — 담당자 정보 (성함·기업명·연락처) */
+export default function StepTwo({ form, patch, onPrev, submitting, canSubmit }: Props) {
   return (
     <div className="flex flex-col gap-5">
       <div>
@@ -29,24 +27,6 @@ export default function StepTwo({ form, patch, jdFile, setJdFile, onPrev, submit
       </InlineField>
       <InlineField label="연락처" required hint="전화 또는 이메일">
         <input className={inputClass} value={form.contact} onChange={(e) => patch({ contact: e.target.value })} placeholder="010-0000-0000 / name@company.com" />
-      </InlineField>
-
-      {/* 인재 JD — URL + PDF 첨부 둘 다 노출 */}
-      <InlineField label="인재 JD" hint="선택 · URL 또는 PDF">
-        <div className="flex flex-col gap-3">
-          <input
-            type="url"
-            className={inputClass}
-            value={form.jdUrl}
-            onChange={(e) => patch({ jdUrl: e.target.value })}
-            placeholder="https://notion.so/... 채용공고 · JD 링크"
-          />
-          <label className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-[#D6DBE3] bg-[#FAFBFC] px-4 py-6 text-center transition hover:border-[#E8590C] hover:bg-[#FFF8F3]">
-            <span className="text-[13px] font-semibold text-[#3A4356]">{jdFile ? jdFile.name : "PDF 파일 첨부"}</span>
-            <span className="text-[12px] text-[#AEB6C4]">{jdFile ? "다른 파일로 변경하려면 클릭" : "PDF · 최대 10MB"}</span>
-            <input type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => setJdFile(e.target.files?.[0] ?? null)} />
-          </label>
-        </div>
       </InlineField>
 
       {/* 개인정보 수집·이용 동의 (필수) — 연락처를 받는 폼이므로 법정 필수 */}
