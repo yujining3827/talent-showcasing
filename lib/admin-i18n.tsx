@@ -52,6 +52,7 @@ const translations: Record<string, Record<AdminLang, string>> = {
   "nav.interviews": { ko: "AI 인터뷰", en: "AI Interviews", vi: "Phỏng vấn AI" },
   "nav.profiles": { ko: "프로필 카드", en: "Profile Cards", vi: "Thẻ hồ sơ" },
   "nav.messages": { ko: "VOC", en: "VOC", vi: "VOC" },
+  "nav.chats": { ko: "1:1 채팅", en: "Live Chat", vi: "Chat trực tiếp" },
   "nav.delivery": { ko: "기업 전달", en: "Delivery", vi: "Gửi doanh nghiệp" },
   "nav.jd": { ko: "JD 관리", en: "JD Management", vi: "Quản lý JD" },
 
