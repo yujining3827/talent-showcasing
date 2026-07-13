@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { createHash } from "crypto";
 import { isEliteSchool, isEliteCompany } from "@/lib/prestige";
 // 비전 큐레이션 결과 — 빌드 타임 import (Vercel 서버리스에서도 항상 번들에 포함됨)
 import PHOTO_VERDICTS from "@/data/photo-verdicts.json";
@@ -133,6 +134,15 @@ export async function GET() {
     (t.schoolTier === "top" ? 8 : 0) + (isEliteSchool(t.school) ? 4 : 0) + (isEliteCompany(t.company) ? 3 : 0) + (t.yoeYears || 0) / 100;
   talents.sort((a, b) => score(b) - score(a));
 
+  // 키 지문(해시) + JWT payload(ref/role) — 시크릿 아님, 키가 맞는 프로젝트/역할인지 확인용
+  let keyRef: string | null = null;
+  let keyRole: string | null = null;
+  try {
+    const payload = JSON.parse(Buffer.from((key || "").split(".")[1] || "", "base64").toString("utf8"));
+    keyRef = payload?.ref ?? null;
+    keyRole = payload?.role ?? null;
+  } catch { /* noop */ }
+
   return NextResponse.json({
     total: talents.length,
     talents,
@@ -140,6 +150,9 @@ export async function GET() {
     _debug: {
       urlHost: (url || "").replace("https://", "").split(".")[0],
       keyLen: (key || "").length,
+      keyHash: createHash("sha256").update(key || "").digest("hex").slice(0, 10),
+      keyRef,
+      keyRole,
       rawCount: data?.length ?? 0,
       verdictsCount: Object.keys(verdicts).length,
       withPhoto: mapped.filter((t) => t.photo_url).length,
