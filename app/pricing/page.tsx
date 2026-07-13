@@ -19,6 +19,7 @@ export default function PricingPage() {
   const [jdFile, setJdFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const patch = (p: Partial<PricingForm>) => setForm((prev) => ({ ...prev, ...p }));
 
@@ -31,6 +32,7 @@ export default function PricingPage() {
     setJdFile(null);
     setStep(1);
     setDone(false);
+    setSubmitError(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -41,11 +43,20 @@ export default function PricingPage() {
     }
     if (!canSubmit || submitting) return;
     setSubmitting(true);
-    // TODO(추후): Supabase 저장 + (JD 있으면) 추천 인재 메일 발송
-    //   payload = { ...form, jdType, jdFileName: jdFile?.name }
-    await new Promise((r) => setTimeout(r, 500));
-    setSubmitting(false);
-    setDone(true);
+    setSubmitError(null);
+    try {
+      const res = await fetch("/api/pricing-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, jdFileName: jdFile?.name ?? null }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
+      setDone(true);
+    } catch (err) {
+      setSubmitError(err instanceof Error ? err.message : "제출 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   // 제출 완료 — 헤더만 있는 전체 화면
@@ -151,6 +162,10 @@ export default function PricingPage() {
                   />
                 )}
               </div>
+
+              {submitError && step === 2 && (
+                <p className="mt-4 rounded-md bg-[#FEF3F2] px-3.5 py-2.5 text-[13px] font-medium text-[#D92D20]">{submitError}</p>
+              )}
 
               {/* 진행률 */}
               <div className="mt-8 border-t border-[#F1F3F7] pt-6">
