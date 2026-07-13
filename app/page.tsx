@@ -81,10 +81,53 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   );
 }
 
-function StatBlock({ value, label, accent = false }: { value: string; label: string; accent?: boolean }) {
+// 숫자 카운트업 — run이 true가 되면 0 → target까지 easeOutExpo로 빠르게 올라가다 멈춤
+function useCountUp(target: number, run: boolean, duration = 2000) {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (!run) return;
+    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
+      setVal(target);
+      return;
+    }
+    let raf = 0;
+    let t0: number | null = null;
+    const ease = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)); // easeOutExpo
+    const tick = (now: number) => {
+      if (t0 === null) t0 = now;
+      const p = Math.min((now - t0) / duration, 1);
+      setVal(target * ease(p));
+      if (p < 1) raf = requestAnimationFrame(tick);
+      else setVal(target);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [target, run, duration]);
+  return val;
+}
+
+function StatBlock({
+  value,
+  label,
+  accent = false,
+  countTo,
+  format,
+}: {
+  value: string;
+  label: string;
+  accent?: boolean;
+  countTo?: number; // 지정 시 0 → countTo 카운트업 후 format으로 렌더
+  format?: (n: number) => string;
+}) {
+  const animated = countTo !== undefined && format !== undefined;
+  const [run, setRun] = useState(false);
+  useEffect(() => setRun(true), []); // 첫 렌더(사이트 접속) 후 시작
+  const n = useCountUp(countTo ?? 0, run && animated);
   return (
     <div>
-      <p className={`text-[24px] font-bold sm:text-[28px] ${accent ? "text-[#E8590C]" : "text-[#171E2D]"}`}>{value}</p>
+      <p className={`text-[24px] font-bold tabular-nums sm:text-[28px] ${accent ? "text-[#E8590C]" : "text-[#171E2D]"}`}>
+        {animated ? format!(n) : value}
+      </p>
       <p className="mt-1 text-[12px] text-[#59657A]">{label}</p>
     </div>
   );
@@ -307,8 +350,14 @@ function Hero({
             </div>
           )}
           <div className="mt-8 grid max-w-[440px] grid-cols-2 gap-5 border-t border-[#BCC5D4] pt-6">
-            <StatBlock value="2만+" label="검증된 베트남 인재 풀" accent />
-            <StatBlock value="91%" label="명문대 출신 인재"  />
+            <StatBlock
+              value="2만+"
+              label="검증된 베트남 인재 풀"
+              accent
+              countTo={20000}
+              format={(n) => (n >= 20000 ? "2만+" : `${(n / 10000).toFixed(1)}만`)}
+            />
+            <StatBlock value="91%" label="명문대 출신 인재" countTo={91} format={(n) => `${Math.round(n)}%`} />
           </div>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-5 md:mt-11">
             <Link href="/pricing" className="inline-flex h-14 w-full items-center justify-center rounded-sm bg-[#E8590C] px-6 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto sm:min-w-[15rem] sm:px-11">
