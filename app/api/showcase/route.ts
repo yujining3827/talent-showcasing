@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { readFileSync } from "fs";
-import { join } from "path";
 import { isEliteSchool, isEliteCompany } from "@/lib/prestige";
+// 비전 큐레이션 결과 — 빌드 타임 import (Vercel 서버리스에서도 항상 번들에 포함됨)
+import PHOTO_VERDICTS from "@/data/photo-verdicts.json";
 
-// 비전 큐레이션 결과 (data/photo-verdicts.json)
 function loadVerdicts(): Record<string, { headshot?: boolean; quality?: number; good?: boolean }> {
-  try { return JSON.parse(readFileSync(join(process.cwd(), "data", "photo-verdicts.json"), "utf8")); }
-  catch { return {}; }
+  return PHOTO_VERDICTS as Record<string, { headshot?: boolean; quality?: number; good?: boolean }>;
 }
 
 export const dynamic = "force-dynamic";
