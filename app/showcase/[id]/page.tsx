@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 import { HERO_TALENTS } from "@/lib/heroTalents";
 import { TALENT_DETAILS, type TalentDetail } from "@/lib/talentDetails";
 import ContactCTA from "@/app/components/ContactCTA";
+import SiteHeader from "@/app/components/SiteHeader";
 // 오프라인 생성(뷰티파이닝) 결과 — 실제 인재의 한글 이력/사진
 import GENERATED from "@/data/talent-details.generated.json";
 
@@ -99,17 +100,7 @@ export default function TalentDetailPage() {
 
   return (
     <main className="min-h-screen bg-white text-[#171E2D]">
-      {/* 헤더 */}
-      <header className="sticky top-0 z-50 border-b border-[#EEF1F5] bg-white/90 backdrop-blur">
-        <div className="mx-auto flex h-[72px] max-w-[1360px] items-center justify-between px-5">
-          <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
-            <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-9 w-auto" />
-          </Link>
-          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-6 py-3 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A]">
-            인재 추천받기
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <div className="mx-auto max-w-[1360px] px-5 pt-12 pb-24">
         <Link href="/" className="mb-6 inline-flex items-center text-[14px] font-medium text-[#59657A] transition hover:text-[#E8590C]">

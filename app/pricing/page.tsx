@@ -8,6 +8,7 @@ import StepInterview from "@/app/components/pricing/StepInterview";
 import StepOne from "@/app/components/pricing/StepOne";
 import StepTwo from "@/app/components/pricing/StepTwo";
 import SiteFooter from "@/app/components/SiteFooter";
+import SiteHeader from "@/app/components/SiteHeader";
 import { HERO_TALENTS, type HeroTalent } from "@/lib/heroTalents";
 
 /* ============================================================================
@@ -127,14 +128,7 @@ export default function PricingPage() {
 
   return (
     <main className="min-h-screen bg-white text-[#171E2D]">
-      {/* 헤더 */}
-      <header className="border-b border-[#EEF1F5]">
-        <div className="mx-auto flex h-[72px] max-w-[1100px] items-center justify-between px-5">
-          <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
-            <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-9 w-auto" />
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-12 px-5 py-16 md:grid-cols-[0.9fr_1.1fr] md:py-24">
         {/* 좌: 소개 */}
