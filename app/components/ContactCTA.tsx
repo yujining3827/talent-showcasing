@@ -19,7 +19,7 @@ export default function ContactCTA() {
           href="/pricing"
           className="inline-flex h-14 w-full flex-shrink-0 items-center justify-center rounded-sm bg-[#E8590C] px-9 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto"
         >
-          상담 요청하기
+          인재 추천받기
         </Link>
       </div>
     </section>

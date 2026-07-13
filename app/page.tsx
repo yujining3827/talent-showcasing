@@ -6,6 +6,8 @@ import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import ContactCTA from "@/app/components/ContactCTA";
 import Testimonials from "@/app/components/Testimonials";
+import SiteHeader from "@/app/components/SiteHeader";
+import SiteFooter from "@/app/components/SiteFooter";
 import { HERO_TALENTS } from "@/lib/heroTalents";
 
 type ShowcaseTalent = {
@@ -265,34 +267,6 @@ function TalentStrip({
   );
 }
 
-function SiteHeader() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-[#EEF1F5] bg-white/90 backdrop-blur">
-      <div className="mx-auto flex h-[60px] max-w-[1360px] items-center justify-between px-5 sm:h-[72px]">
-        <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
-          <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-8 w-auto sm:h-10" />
-        </Link>
-        <div className="flex items-center gap-4 sm:gap-7">
-          <nav className="hidden items-center gap-7 md:flex">
-            <a href="#portfolio" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
-              포트폴리오 미리보기
-            </a>
-            <a href="#testimonials" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
-              고객 후기
-            </a>
-            <Link href="/cases" className="text-[15px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
-              고객 사례
-            </Link>
-          </nav>
-          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-6 sm:py-3 sm:text-[15px]">
-            바로 채용하기
-          </Link>
-        </div>
-      </div>
-    </header>
-  );
-}
-
 function Hero({
   talents,
 }: {
@@ -322,13 +296,13 @@ function Hero({
               <FeaturedCandidatePanel talent={featured} />
             </div>
           )}
-          <div className="mt-8 grid grid-cols-2 gap-5 border-t border-[#BCC5D4] pt-6 md:grid-cols-3">
+          <div className="mt-8 grid max-w-[440px] grid-cols-2 gap-5 border-t border-[#BCC5D4] pt-6">
             <StatBlock value="2만+" label="검증된 베트남 인재 풀" accent />
             <StatBlock value="91%" label="명문대 출신 인재"  />
           </div>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-5 md:mt-11">
             <Link href="/pricing" className="inline-flex h-14 w-full items-center justify-center rounded-sm bg-[#E8590C] px-6 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto sm:min-w-[15rem] sm:px-11">
-              바로 인재 추천받기
+              인재 추천받기
             </Link>
             <a href="#portfolio" className="inline-flex h-14 w-full items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-6 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60 sm:w-auto sm:min-w-[15rem] sm:px-11">
               포트폴리오 미리보기
@@ -359,6 +333,10 @@ function TrustLogos() {
   return (
     <section className="bg-white">
       <div className="pt-14 pb-16">
+        {/* 섹션 의미를 로고보다 먼저 — "고객사 로고"로 오독되지 않도록 라벨 선행 */}
+        <p className="mb-10 px-5 text-center text-[15px] font-semibold text-[#3A4356] sm:text-[17px]">
+          이런 기업에서 일했던 인재를 제안합니다
+        </p>
         {/* 무한 마퀴: 동일 트랙 2개를 나란히 두고 각자 -100% 이동 → 끊김 없이 이어짐 */}
         <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
           {[0, 1].map((dup) => (
@@ -375,33 +353,27 @@ function TrustLogos() {
             </div>
           ))}
         </div>
-        {/* 섹션 의미 안내 — 인재들의 이전 소속 (옅게) */}
-        <p className="mt-12 px-5 text-center text-[13px] font-medium text-[#B4BBC7]">
-          이런 기업에서 일했던 인재를 제안합니다
-        </p>
       </div>
     </section>
   );
 }
 
 function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
+  // 데이터가 없으면 섹션 자체를 감춘다 — "불러오는 중" 상태를 고객에게 노출하지 않음
+  if (talents.length === 0) return null;
   return (
     <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
       <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-24">
         <div className="max-w-[720px]">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Curated talent showcase</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">엄선된 인재 쇼케이스</p>
           <h2 className="mt-3 text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">출신과 검증 정보가 먼저 보이는 인재 카드</h2>
           <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">대학교, 이전 회사, 공개 동의, 사진 품질을 기준으로 신뢰할 수 있는 프로필을 우선 노출합니다.</p>
         </div>
-        {talents.length > 0 ? (
-          <div className="mt-8 grid grid-cols-1 gap-4 md:mt-12 md:gap-5 lg:grid-cols-2">
-            {talents.slice(0, 6).map((talent) => (
-              <ProfileCard key={talent.id} t={talent} />
-            ))}
-          </div>
-        ) : (
-          <p className="mt-12 text-[15px] text-[#697386]">검증된 인재 데이터를 불러오는 중입니다.</p>
-        )}
+        <div className="mt-8 grid grid-cols-1 gap-4 md:mt-12 md:gap-5 lg:grid-cols-2">
+          {talents.slice(0, 6).map((talent) => (
+            <ProfileCard key={talent.id} t={talent} />
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -446,6 +418,7 @@ export default function LandingPage() {
       <TalentPreview talents={premiumTalents} />
       <Testimonials />
       <ContactCTA />
+      <SiteFooter />
     </main>
   );
 }

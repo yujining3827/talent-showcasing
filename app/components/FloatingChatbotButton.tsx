@@ -31,9 +31,9 @@ export default function FloatingChatbotButton() {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* 말풍선 */}
+      {/* 말풍선 — 모바일에서는 인재 카드 등 콘텐츠를 가려서 데스크톱에서만 노출 */}
       <div
-        className={`absolute right-full top-1/2 mr-3 -translate-y-1/2 whitespace-nowrap rounded-2xl border border-[#EEF1F5] bg-white px-4 py-2.5 text-[14px] font-semibold text-[#171E2D] shadow-[0_10px_30px_-8px_rgba(10,18,32,0.25)] transition-all duration-300 ease-out ${
+        className={`absolute right-full top-1/2 mr-3 hidden -translate-y-1/2 whitespace-nowrap rounded-2xl border border-[#EEF1F5] bg-white px-4 py-2.5 text-[14px] font-semibold text-[#171E2D] shadow-[0_10px_30px_-8px_rgba(10,18,32,0.25)] transition-all duration-300 ease-out sm:block ${
           bubbleVisible ? "translate-x-0 opacity-100" : "pointer-events-none translate-x-2 opacity-0"
         }`}
       >

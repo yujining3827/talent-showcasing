@@ -6,6 +6,7 @@ import { EMPTY_FORM, type PricingForm } from "@/app/components/pricing/types";
 import ProgressBar from "@/app/components/pricing/ProgressBar";
 import StepOne from "@/app/components/pricing/StepOne";
 import StepTwo from "@/app/components/pricing/StepTwo";
+import SiteFooter from "@/app/components/SiteFooter";
 
 /* ============================================================================
  *  가격 알아보기 / 인재 추천 요청 — 2-step 위저드
@@ -21,9 +22,9 @@ export default function PricingPage() {
 
   const patch = (p: Partial<PricingForm>) => setForm((prev) => ({ ...prev, ...p }));
 
-  // Step1 필수: 관심 직무(1개+) / Step2 필수: 성함·기업명·연락처
+  // Step1 필수: 관심 직무(1개+) / Step2 필수: 성함·기업명·연락처 + 개인정보 동의
   const canNext = form.roles.length > 0;
-  const canSubmit = !!(form.name.trim() && form.company.trim() && form.contact.trim());
+  const canSubmit = !!(form.name.trim() && form.company.trim() && form.contact.trim() && form.consent);
 
   function resetForm() {
     setForm(EMPTY_FORM);
@@ -103,9 +104,9 @@ export default function PricingPage() {
           <Link href="/" className="mb-4 inline-flex items-center text-[14px] font-medium text-[#59657A] transition hover:text-[#E8590C]">
             ← 홈으로
           </Link>
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Get started</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">인재 추천 요청</p>
           <h1 className="mt-3 text-[32px] font-bold leading-[1.25] text-[#171E2D] md:text-[40px]">
-            채용비 50%,
+            인건비 50%,
             <br />
             검증된 인재를 만나보세요
           </h1>
@@ -158,6 +159,7 @@ export default function PricingPage() {
             </form>
         </div>
       </div>
+      <SiteFooter />
     </main>
   );
 }

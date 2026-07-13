@@ -15,6 +15,7 @@ export type PricingForm = {
   industry: string; // 기업 업종 (드롭다운 단일)
   jd: string; // 텍스트 JD
   jdUrl: string; // URL JD
+  consent: boolean; // 개인정보 수집·이용 동의 (필수)
 };
 
 export const EMPTY_FORM: PricingForm = {
@@ -28,6 +29,7 @@ export const EMPTY_FORM: PricingForm = {
   industry: "",
   jd: "",
   jdUrl: "",
+  consent: false,
 };
 
 export const ROLE_OPTIONS = ["백엔드", "프론트엔드", "풀스택", "모바일", "QA", "UI/UX", "PM", "DevOps", "AI", "기타"];

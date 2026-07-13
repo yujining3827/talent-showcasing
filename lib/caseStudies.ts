@@ -1,13 +1,15 @@
 /* ============================================================================
  *  고객 사례(Case Studies) 데이터
- *  ⚠️ 와꾸용 스켈레톤 — 실제 사례가 확정되면 아래 배열만 교체하면 됩니다.
- *   - thumbnail/images: public/cases/<slug>/ 에 이미지 넣고 경로 지정
- *   - interview: 그리팅HR 인터뷰 양식(질문/답변). 답변은 placeholder.
- *   - siteUrl: 실제 구축한 사이트 (있으면 상세 하단에 "사이트 보러가기" 노출)
+ *  - CASE_STUDIES: 공개 사례만. 사이트에 노출된다.
+ *  - DRAFT_CASE_STUDIES: 내용 미확정 스켈레톤. 실제 사례가 확정되면
+ *    내용을 채운 뒤 CASE_STUDIES로 옮긴다. (미완성 상태로 노출 금지)
+ *  - story: 회사 시점의 사실 서술. quote/interview는 실제 고객 발화가
+ *    확보된 사례에만 넣는다 — 임의로 지어 넣지 말 것.
  * ========================================================================== */
 
 export type CaseMetric = { value: string; label: string };
 export type CaseQA = { q: string; a: string };
+export type CaseSection = { title: string; body: string };
 
 export type CaseStudy = {
   slug: string;
@@ -19,10 +21,11 @@ export type CaseStudy = {
   summary: string; // 카드/상세 상단 요약 한 줄
   thumbnail: string; // 대표 이미지
   images: string[]; // 상세 본문 갤러리
-  metrics: CaseMetric[]; // 핵심 지표 3개
-  quote: string; // 대표 인용구 (pull quote)
-  quoteBy: string; // 인용 담당자
-  interview: CaseQA[]; // 인터뷰 Q&A 본문
+  metrics: CaseMetric[]; // 핵심 지표 (0~3개, 실측만)
+  story: CaseSection[]; // 본문 — 프로젝트 서술 (회사 시점)
+  quote?: string; // 대표 인용구 — 실제 고객 코멘트 확보 시에만
+  quoteBy?: string;
+  interview?: CaseQA[]; // 실제 인터뷰 확보 시에만
   siteUrl?: string | null;
 };
 
@@ -38,77 +41,29 @@ export const CASE_STUDIES: CaseStudy[] = [
     thumbnail: "/cases/doruri/doruri-1.png",
     images: ["/cases/doruri/doruri-2.jpg", "/cases/doruri/doruri-3.jpg"],
     metrics: [
-      { value: "N주", label: "쇼핑몰 오픈까지 걸린 기간" },
-      { value: "50%", label: "국내 대비 절감된 인건비" },
-      { value: "N건", label: "런칭 후 운영·개선 작업" },
+      { value: "50%", label: "국내 대비 인건비 수준" },
+      { value: "구축 → 운영", label: "원스톱 진행 범위" },
     ],
-    quote: "여기에 고객사의 대표 코멘트가 한 문장 들어갑니다. 실제 후기가 확정되면 교체하세요.",
-    quoteBy: "도루리 · 담당자",
-    interview: [
+    story: [
       {
-        q: "어떤 작업을 맡기셨나요?",
-        a: "답변 placeholder — 작업 배경과 요청 범위(쇼핑몰 구축, 상세페이지, 프로모션 배너 등)가 들어갈 자리입니다.",
+        title: "프로젝트 배경",
+        body: "도루리는 프리미엄 육포를 만드는 D2C 브랜드입니다. 자사몰을 새로 구축하고 런칭 이후 상세페이지·프로모션까지 이어서 운영할 수 있는 웹 개발·디자인 리소스가 필요했고, 공고마감이 검증된 베트남 인재를 매칭해 프로젝트를 함께 진행했습니다.",
       },
       {
-        q: "베트남 인재와의 협업은 어땠나요?",
-        a: "답변 placeholder — 커뮤니케이션 방식, 작업 속도, 품질에 대한 실제 경험담이 들어갈 자리입니다.",
+        title: "어떤 작업을 진행했나요",
+        body: "브랜드 자사몰 구축을 중심으로, 제품 상세페이지 제작과 프로모션 배너·이벤트 페이지 디자인까지 웹 개발과 디자인을 한 사람이 엔드투엔드로 담당했습니다. 기획 의도를 반영한 브랜드 톤의 페이지를 만들고, 런칭 이후에도 운영 과정에서 나오는 개선 요청을 반영했습니다.",
       },
       {
-        q: "결과물에 만족하시나요?",
-        a: "답변 placeholder — 결과물 평가와 비용 대비 만족도, 추천 의사가 들어갈 자리입니다.",
+        title: "결과",
+        body: "자사몰(doruri.com)이 오픈해 실제로 운영되고 있습니다. 국내 채용 대비 절반 수준의 인건비로 구축부터 운영까지 끊김 없이 진행한 사례입니다.",
       },
     ],
     siteUrl: "https://doruri.com/",
   },
-  {
-    slug: "case-2",
-    company: "고객사 B",
-    industry: "업종 placeholder",
-    scope: "작업 범위 placeholder",
-    talentRole: "직무 placeholder",
-    title: "사례 제목이 들어갈 자리입니다 — 성과 중심 한 줄",
-    summary: "사례 요약 한 줄이 들어갈 자리입니다.",
-    thumbnail: "",
-    images: [],
-    metrics: [
-      { value: "N%", label: "지표 placeholder" },
-      { value: "N주", label: "지표 placeholder" },
-      { value: "N건", label: "지표 placeholder" },
-    ],
-    quote: "대표 인용구 placeholder.",
-    quoteBy: "고객사 B · 담당자",
-    interview: [
-      { q: "어떤 작업을 맡기셨나요?", a: "답변 placeholder." },
-      { q: "베트남 인재와의 협업은 어땠나요?", a: "답변 placeholder." },
-      { q: "결과물에 만족하시나요?", a: "답변 placeholder." },
-    ],
-    siteUrl: null,
-  },
-  {
-    slug: "case-3",
-    company: "고객사 C",
-    industry: "업종 placeholder",
-    scope: "작업 범위 placeholder",
-    talentRole: "직무 placeholder",
-    title: "사례 제목이 들어갈 자리입니다 — 성과 중심 한 줄",
-    summary: "사례 요약 한 줄이 들어갈 자리입니다.",
-    thumbnail: "",
-    images: [],
-    metrics: [
-      { value: "N%", label: "지표 placeholder" },
-      { value: "N주", label: "지표 placeholder" },
-      { value: "N건", label: "지표 placeholder" },
-    ],
-    quote: "대표 인용구 placeholder.",
-    quoteBy: "고객사 C · 담당자",
-    interview: [
-      { q: "어떤 작업을 맡기셨나요?", a: "답변 placeholder." },
-      { q: "베트남 인재와의 협업은 어땠나요?", a: "답변 placeholder." },
-      { q: "결과물에 만족하시나요?", a: "답변 placeholder." },
-    ],
-    siteUrl: null,
-  },
 ];
+
+/* 미확정 스켈레톤 — 내용 확정 전까지 사이트에 노출하지 않는다 */
+export const DRAFT_CASE_STUDIES: CaseStudy[] = [];
 
 export function getCaseBySlug(slug: string) {
   return CASE_STUDIES.find((c) => c.slug === slug) || null;

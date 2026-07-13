@@ -1,30 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ContactCTA from "@/app/components/ContactCTA";
+import SiteHeader from "@/app/components/SiteHeader";
+import SiteFooter from "@/app/components/SiteFooter";
 import { CASE_STUDIES, getCaseBySlug } from "@/lib/caseStudies";
 
 export function generateStaticParams() {
   return CASE_STUDIES.map((c) => ({ slug: c.slug }));
 }
 
-/* 고객 사례 상세 — 그리팅HR 인터뷰 양식 참고한 와꾸 (Q&A + 인용구 + 갤러리) */
+/* 고객 사례 상세 — 회사 시점 스토리 서술 + (확보 시) 고객 인용구 + 갤러리 */
 export default function CaseDetailPage({ params }: { params: { slug: string } }) {
   const c = getCaseBySlug(params.slug);
   if (!c) notFound();
 
   return (
     <main className="min-h-screen bg-white text-[#171E2D]">
-      {/* 헤더 */}
-      <header className="sticky top-0 z-50 border-b border-[#EEF1F5] bg-white/90 backdrop-blur">
-        <div className="mx-auto flex h-[60px] max-w-[1100px] items-center justify-between px-5 sm:h-[72px]">
-          <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
-            <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-8 w-auto sm:h-9" />
-          </Link>
-          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-6 sm:py-3 sm:text-[15px]">
-            바로 채용하기
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <article className="mx-auto max-w-[820px] px-5 py-10 md:py-16">
         {/* 상단: 뒤로가기 + 메타 */}
@@ -43,44 +35,40 @@ export default function CaseDetailPage({ params }: { params: { slug: string } })
         <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">{c.summary}</p>
 
         {/* 대표 이미지 */}
-        <div className="mt-8 overflow-hidden rounded-xl bg-[#F1F3F7]">
-          {c.thumbnail ? (
+        {c.thumbnail && (
+          <div className="mt-8 overflow-hidden rounded-xl bg-[#F1F3F7]">
             <img src={c.thumbnail} alt={c.company} className="w-full object-cover" />
-          ) : (
-            <div className="flex aspect-[16/9] w-full items-center justify-center bg-gradient-to-br from-[#F1F3F7] to-[#DDE3EC]">
-              <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#AEB6C4]">대표 이미지 준비 중</span>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* 핵심 지표 3블록 */}
-        <div className="mt-8 grid grid-cols-1 gap-4 rounded-xl border border-[#EEF1F5] bg-[#FAFBFC] p-6 sm:grid-cols-3 md:p-8">
-          {c.metrics.map((m) => (
-            <div key={m.label}>
-              <p className="text-[24px] font-bold text-[#E8590C] sm:text-[28px]">{m.value}</p>
-              <p className="mt-1 text-[13px] text-[#5B667A]">{m.label}</p>
-            </div>
-          ))}
-        </div>
+        {/* 핵심 지표 — 실측 지표가 있을 때만 */}
+        {c.metrics.length > 0 && (
+          <div className="mt-8 flex flex-wrap gap-x-14 gap-y-6 rounded-xl border border-[#EEF1F5] bg-[#FAFBFC] p-6 md:p-8">
+            {c.metrics.map((m) => (
+              <div key={m.label}>
+                <p className="text-[24px] font-bold text-[#E8590C] sm:text-[28px]">{m.value}</p>
+                <p className="mt-1 text-[13px] text-[#5B667A]">{m.label}</p>
+              </div>
+            ))}
+          </div>
+        )}
 
-        {/* 인터뷰 Q&A 본문 */}
+        {/* 본문 — 스토리 서술 */}
         <div className="mt-12 flex flex-col gap-10 md:mt-16">
-          {c.interview.map((qa, i) => (
-            <section key={qa.q}>
-              <h2 className="text-[19px] font-bold leading-[1.4] text-[#171E2D] sm:text-[22px]">
-                Q. {qa.q}
-              </h2>
-              <p className="mt-3 text-[15px] leading-[1.8] text-[#3A4356] md:text-[16px]">{qa.a}</p>
+          {c.story.map((section, i) => (
+            <section key={section.title}>
+              <h2 className="text-[19px] font-bold leading-[1.4] text-[#171E2D] sm:text-[22px]">{section.title}</h2>
+              <p className="mt-3 text-[15px] leading-[1.8] text-[#3A4356] md:text-[16px]">{section.body}</p>
 
-              {/* 첫 번째 답변 뒤에 대표 인용구 (pull quote) */}
-              {i === 0 && (
+              {/* 실제 고객 인용구가 확보된 경우에만 첫 섹션 뒤에 노출 */}
+              {i === 0 && c.quote && (
                 <blockquote className="mt-8 border-l-4 border-[#E8590C] bg-[#FFF6EF] px-5 py-5 md:px-7">
                   <p className="text-[17px] font-semibold leading-[1.6] text-[#171E2D] sm:text-[19px]">“{c.quote}”</p>
                   <footer className="mt-3 text-[13px] text-[#8A93A5]">{c.quoteBy}</footer>
                 </blockquote>
               )}
 
-              {/* 두 번째 답변 뒤에 작업물 갤러리 */}
+              {/* 두 번째 섹션 뒤에 작업물 갤러리 */}
               {i === 1 && c.images.length > 0 && (
                 <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {c.images.map((src) => (
@@ -109,6 +97,7 @@ export default function CaseDetailPage({ params }: { params: { slug: string } })
       </article>
 
       <ContactCTA />
+      <SiteFooter />
     </main>
   );
 }

@@ -37,7 +37,7 @@ const FEATURED: Testimonial[] = [
     quote: "구독형이라 예산 관리가 편하고, 필요할 때 바로 인원을 늘릴 수 있어요. 반값에 이 퀄리티는 처음입니다.",
     name: "한O O",
     role: "OO커머스 · COO",
-    metric: "채용비 50% 절감",
+    metric: "인건비 50% 절감",
   },
 ];
 
@@ -47,18 +47,6 @@ const SMALL: Testimonial[] = [
 ];
 
 const ROTATE_MS = 3500;
-
-function Stars() {
-  return (
-    <div className="flex gap-0.5" aria-label="별점 5점">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} width="16" height="16" viewBox="0 0 24 24" fill="#E8590C" aria-hidden="true">
-          <path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 18.9 6.1 20.5l1.2-6.5L2.5 9.4l6.6-.9L12 2.5Z" />
-        </svg>
-      ))}
-    </div>
-  );
-}
 
 function Author({ name, role }: { name: string; role: string }) {
   return (
@@ -112,9 +100,8 @@ export default function Testimonials() {
           {/* 대표 후기 (4개 자동 전환) */}
           <div className="flex min-h-[300px] flex-col justify-between rounded-2xl border border-[#EAEDF2] bg-white p-6 shadow-[0_20px_60px_-40px_rgba(10,18,32,0.5)] sm:min-h-[340px] sm:p-8 md:p-10">
             <div key={active} className="animate-testimonial">
-              <Stars />
               {t.metric && (
-                <span className="mt-5 inline-block rounded-full bg-[#FFF1E8] px-3 py-1 text-[13px] font-bold text-[#E8590C]">{t.metric}</span>
+                <span className="inline-block rounded-full bg-[#FFF1E8] px-3 py-1 text-[13px] font-bold text-[#E8590C]">{t.metric}</span>
               )}
               <p className="mt-4 text-[18px] font-semibold leading-[1.5] text-[#171E2D] sm:text-[22px] md:text-[26px]">“{t.quote}”</p>
             </div>

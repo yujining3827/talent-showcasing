@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { InlineField } from "./ui";
 import { inputClass, type PricingForm } from "./types";
 
@@ -47,6 +48,22 @@ export default function StepTwo({ form, patch, jdFile, setJdFile, onPrev, submit
           </label>
         </div>
       </InlineField>
+
+      {/* 개인정보 수집·이용 동의 (필수) — 연락처를 받는 폼이므로 법정 필수 */}
+      <label className="flex cursor-pointer items-start gap-2.5 rounded-md bg-[#FAFBFC] px-4 py-3.5">
+        <input
+          type="checkbox"
+          checked={form.consent}
+          onChange={(e) => patch({ consent: e.target.checked })}
+          className="mt-[3px] h-4 w-4 shrink-0 cursor-pointer accent-[#E8590C]"
+        />
+        <span className="text-[13.5px] leading-[1.6] text-[#3A4356]">
+          <span className="font-semibold">[필수]</span> 인재 추천 상담을 위한 개인정보(성함·기업명·연락처) 수집·이용에 동의합니다.{" "}
+          <Link href="/privacy" target="_blank" className="font-medium text-[#8A93A5] underline underline-offset-2 transition hover:text-[#E8590C]">
+            자세히 보기
+          </Link>
+        </span>
+      </label>
 
       {/* Navigation — 이전 / 제출 */}
       <div className="mt-1 flex items-center gap-3">

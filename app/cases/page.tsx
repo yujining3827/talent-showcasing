@@ -1,5 +1,7 @@
 import Link from "next/link";
 import ContactCTA from "@/app/components/ContactCTA";
+import SiteHeader from "@/app/components/SiteHeader";
+import SiteFooter from "@/app/components/SiteFooter";
 import { CASE_STUDIES } from "@/lib/caseStudies";
 
 export const metadata = {
@@ -11,22 +13,12 @@ export const metadata = {
 export default function CasesPage() {
   return (
     <main className="min-h-screen bg-white text-[#171E2D]">
-      {/* 헤더 (pricing 페이지와 동일 패턴) */}
-      <header className="sticky top-0 z-50 border-b border-[#EEF1F5] bg-white/90 backdrop-blur">
-        <div className="mx-auto flex h-[60px] max-w-[1100px] items-center justify-between px-5 sm:h-[72px]">
-          <Link href="/" className="flex items-center" aria-label="공고마감 by LIKELION">
-            <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-8 w-auto sm:h-9" />
-          </Link>
-          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-6 sm:py-3 sm:text-[15px]">
-            바로 채용하기
-          </Link>
-        </div>
-      </header>
+      <SiteHeader />
 
       <div className="mx-auto max-w-[1100px] px-5 py-12 md:py-20">
         {/* 타이틀 */}
         <div className="max-w-[680px]">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">Customer stories</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">고객 사례</p>
           <h1 className="mt-3 text-[28px] font-bold leading-[1.3] sm:text-[36px] md:text-[44px]">
             베트남 인재가
             <br />
@@ -37,12 +29,12 @@ export default function CasesPage() {
           </p>
         </div>
 
-        {/* 핵심 지표 3블록 — ⚠️ 실제 수치 확정 시 교체 */}
+        {/* 핵심 지표 3블록 — 랜딩 히어로와 동일한 검증된 수치만 사용 */}
         <div className="mt-10 grid grid-cols-1 gap-4 border-y border-[#EEF1F5] py-8 sm:grid-cols-3 md:mt-14">
           {[
-            { value: "N주", label: "평균 프로젝트 착수까지" },
+            { value: "2만+", label: "검증된 베트남 인재 풀" },
+            { value: "91%", label: "명문대 출신 인재" },
             { value: "50%", label: "국내 대비 인건비 절감" },
-            { value: "N개", label: "완료된 프로젝트" },
           ].map((m) => (
             <div key={m.label}>
               <p className="text-[26px] font-bold text-[#E8590C] sm:text-[32px]">{m.value}</p>
@@ -91,6 +83,7 @@ export default function CasesPage() {
       </div>
 
       <ContactCTA />
+      <SiteFooter />
     </main>
   );
 }
