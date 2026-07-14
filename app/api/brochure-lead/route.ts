@@ -4,7 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 export const dynamic = "force-dynamic";
 
 /* 서비스 소개서 다운로드 리드 접수
- *  - brochure_leads(기업명·담당자·연락처) 저장 (pricing 프로젝트 우선, 없으면 메인 DB)
+ *  - brochure_leads(기업명·담당자·연락처) 저장 (메인 DB)
  *  - Slack 알림 + 소개서 PDF 공개 URL 반환 (클라이언트가 다운로드)
  *  ⚠️ 테이블 SQL은 파일 하단 주석 참고 */
 type Body = {
@@ -35,8 +35,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "기업명·담당자·연락처·동의는 필수입니다." }, { status: 400 });
   }
 
-  const sbUrl = process.env.PRICING_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const sbKey = process.env.PRICING_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  // brochure_leads 는 메인 DB에 저장 (테이블도 메인 프로젝트에 생성돼 있음)
+  const sbUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const sbKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
   const supabase = createClient(sbUrl, sbKey);
 
   // 1) 저장
@@ -81,7 +82,7 @@ export async function POST(req: Request) {
 }
 
 /* ----------------------------------------------------------------------------
- *  테이블 SQL (pricing 프로젝트 SQL Editor에서 1회 실행)
+ *  테이블 SQL (메인 프로젝트 SQL Editor에서 1회 실행)
  *  create table if not exists public.brochure_leads (
  *    id uuid primary key default gen_random_uuid(),
  *    company text not null,
