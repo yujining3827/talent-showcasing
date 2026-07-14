@@ -287,7 +287,7 @@ function Hero({
             세상에 없던 안심매칭
           </p>
           <h1 className="mt-7 text-[40px] font-bold leading-[1.08] tracking-normal text-[#111827] sm:text-[48px] md:text-[58px]">
-            인건비 50%
+            인건비 최대 60%
             <br />
             역량은 그대로.
             <br />
