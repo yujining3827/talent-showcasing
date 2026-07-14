@@ -13,6 +13,28 @@ function getSupabaseAdmin() {
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
+// 새 채팅방 생성 시 Slack Incoming Webhook 알림 (실패해도 채팅 흐름은 막지 않음)
+async function notifyNewChat(firstMessage: string, originPath: string | null) {
+  const webhook = process.env.SLACK_WEBHOOK_URL;
+  if (!webhook) return;
+  const base = process.env.NEXT_PUBLIC_BASE_URL || "https://ktc-support.vercel.app";
+  const lines = [
+    "💬 *새 채팅 문의가 시작됐어요*",
+    `• *첫 메시지:* ${firstMessage}`,
+    originPath ? `• *유입 페이지:* ${originPath}` : null,
+    `• *관리:* ${base}/admin/chats`,
+  ].filter(Boolean);
+  try {
+    await fetch(webhook, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: lines.join("\n") }),
+    });
+  } catch (e) {
+    console.error("[chat] slack error:", e);
+  }
+}
+
 // 방문자 소유 검증: threadId + visitorId(localStorage 비밀값) 쌍이 맞아야 접근 허용
 async function getOwnedThread(supabase: ReturnType<typeof getSupabaseAdmin>, threadId: string, visitorId: string) {
   const { data } = await supabase
@@ -37,6 +59,7 @@ export async function POST(req: NextRequest) {
   const supabase = getSupabaseAdmin();
   let thread = threadId && UUID_RE.test(threadId) ? await getOwnedThread(supabase, threadId, visitorId) : null;
 
+  let isNewThread = false;
   if (!thread) {
     const { data: created, error } = await supabase
       .from("chat_threads")
@@ -47,6 +70,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error?.message || "thread create failed" }, { status: 500 });
     }
     thread = created;
+    isNewThread = true;
   }
   if (!thread) return NextResponse.json({ error: "thread not found" }, { status: 404 });
 
@@ -56,6 +80,11 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
   if (msgErr) return NextResponse.json({ error: msgErr.message }, { status: 500 });
+
+  // 새 채팅방이 처음 생성될 때 Slack 알림
+  if (isNewThread) {
+    await notifyNewChat(text, typeof path === "string" ? path : null);
+  }
 
   // 종료된 방에 다시 말 걸면 재오픈
   const nextStatus = thread.status === "closed" ? (thread.assigned_admin ? "assigned" : "open") : thread.status;
