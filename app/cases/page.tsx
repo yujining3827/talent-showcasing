@@ -29,7 +29,7 @@ export default async function CasesPage() {
             실제로 만든 결과물입니다
           </h1>
           <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">
-            공고마감으로 채용한 기업들의 생생한 작업 사례를 확인해보세요.
+            공고마감으로 채용한 기업과 인재들의 생생한 작업 사례를 확인해보세요.
           </p>
         </div>
 
