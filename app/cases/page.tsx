@@ -2,15 +2,19 @@ import Link from "next/link";
 import ContactCTA from "@/app/components/ContactCTA";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
-import { CASE_STUDIES } from "@/lib/caseStudies";
+import { getAllCaseStudies } from "@/lib/caseStudies.server";
 
 export const metadata = {
   title: "고객 사례 — 공고마감 by LIKELION",
   description: "베트남 인재가 실제로 작업한 고객 사례를 확인해보세요.",
 };
 
+// 정적 + DB 사례 병합 → 요청 시 렌더 (어드민 추가분 즉시 반영)
+export const dynamic = "force-dynamic";
+
 /* 고객 사례 리스트 — 그리팅HR customer-stories 양식 참고한 와꾸 */
-export default function CasesPage() {
+export default async function CasesPage() {
+  const CASE_STUDIES = await getAllCaseStudies();
   return (
     <main className="min-h-screen bg-white text-[#171E2D]">
       <SiteHeader />

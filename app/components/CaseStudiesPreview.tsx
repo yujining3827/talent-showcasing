@@ -1,9 +1,23 @@
-import Link from "next/link";
-import { CASE_STUDIES } from "@/lib/caseStudies";
+"use client";
 
-/* 랜딩 — 고객 사례 미리보기 (상위 3개). 공개 사례 없으면 섹션 숨김. */
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import { CASE_STUDIES, type CaseStudy } from "@/lib/caseStudies";
+
+/* 랜딩 — 고객 사례 미리보기 (상위 3개). 정적 + DB(어드민 추가분) 병합. */
 export default function CaseStudiesPreview() {
-  const cases = CASE_STUDIES.slice(0, 3);
+  // 정적 사례로 즉시 렌더 후, DB 병합본으로 교체 (깜빡임 방지)
+  const [cases, setCases] = useState<CaseStudy[]>(CASE_STUDIES.slice(0, 3));
+
+  useEffect(() => {
+    fetch("/api/cases")
+      .then((r) => r.json())
+      .then((d) => {
+        if (Array.isArray(d.cases)) setCases((d.cases as CaseStudy[]).slice(0, 3));
+      })
+      .catch(() => {});
+  }, []);
+
   if (cases.length === 0) return null;
 
   return (

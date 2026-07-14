@@ -3,15 +3,14 @@ import { notFound } from "next/navigation";
 import ContactCTA from "@/app/components/ContactCTA";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
-import { CASE_STUDIES, getCaseBySlug } from "@/lib/caseStudies";
+import { getCaseBySlug } from "@/lib/caseStudies.server";
 
-export function generateStaticParams() {
-  return CASE_STUDIES.map((c) => ({ slug: c.slug }));
-}
+// 정적 사례 + DB 사례를 함께 읽으므로 요청 시 렌더 (어드민 추가분 즉시 반영)
+export const dynamic = "force-dynamic";
 
 /* 고객 사례 상세 — 회사 시점 스토리 서술 + (확보 시) 고객 인용구 + 갤러리 */
-export default function CaseDetailPage({ params }: { params: { slug: string } }) {
-  const c = getCaseBySlug(params.slug);
+export default async function CaseDetailPage({ params }: { params: { slug: string } }) {
+  const c = await getCaseBySlug(params.slug);
   if (!c) notFound();
 
   return (
