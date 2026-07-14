@@ -108,6 +108,10 @@ export default function StepOne({ form, patch, jdFile, setJdFile, onNext, canNex
   const [activeCategory, setActiveCategory] = useState(ROLE_CATEGORIES[0].label);
   const currentCategory = ROLE_CATEGORIES.find((c) => c.label === activeCategory) ?? ROLE_CATEGORIES[0];
 
+  // 선택 조건(근무형태·시점·업종·JD) 토글 — 이미 입력한 값이 있으면 펼친 채로 시작
+  const optionalFilledCount = [form.workType, form.startTime, form.industry, form.jdUrl.trim() || jdFile].filter(Boolean).length;
+  const [showOptional, setShowOptional] = useState(optionalFilledCount > 0);
+
   // 2뎁스(선택)에서 하나라도 입력·선택했는지 → 버튼 라벨 건너뛰기/제출하기
   const hasInput =
     form.roles.length > 0 ||
@@ -198,50 +202,73 @@ export default function StepOne({ form, patch, jdFile, setJdFile, onNext, canNex
         </ChipGroup>
       </Field>
 
-      {/* Divider — 아래 필드는 전부 선택 사항임을 명시 (체감 부담 줄이기) */}
-      <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-[#EEF1F5]" />
-        <span className="text-[12px] text-[#AEB6C4]">아래는 선택 사항 — 남겨주시면 추천이 더 정확해져요</span>
-        <div className="h-px flex-1 bg-[#EEF1F5]" />
-      </div>
+      {/* 선택 조건 토글 — 접힌 상태에선 폼이 짧아 보이고, 내용물·이점을 트리거에 명시 */}
+      <button
+        type="button"
+        onClick={() => setShowOptional((v) => !v)}
+        aria-expanded={showOptional}
+        className="flex w-full items-center gap-3 rounded-xl border border-dashed border-[#D6DBE3] bg-[#FAFBFC] px-4 py-3.5 text-left transition hover:border-[#FFB27F] hover:bg-[#FFF8F3]"
+      >
+        <span className="min-w-0 flex-1">
+          <span className="flex items-center gap-2">
+            <span className="text-[14px] font-semibold text-[#3A4356]">선택 조건 남기기</span>
+            {optionalFilledCount > 0 && (
+              <span className="rounded-full bg-[#E8590C] px-2 py-0.5 text-[11px] font-bold leading-[1.4] text-white">{optionalFilledCount}</span>
+            )}
+          </span>
+          <span className="mt-0.5 block text-[12px] leading-[1.4] text-[#8A93A5]">
+            근무 형태 · 채용 시점 · 업종 · JD — 남겨주시면 추천이 더 정확해져요
+          </span>
+        </span>
+        <svg
+          width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+          className={`shrink-0 text-[#AEB6C4] transition-transform ${showOptional ? "rotate-180" : ""}`}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </button>
 
-      <Field label="근무 형태">
-        <ChipGroup>
-          {WORKTYPE_OPTIONS.map((v) => (
-            <Chip key={v} label={v} selected={form.workType === v} onClick={() => pickSingle("workType", v)} />
-          ))}
-        </ChipGroup>
-      </Field>
+      {showOptional && (
+        <>
+          <Field label="근무 형태">
+            <ChipGroup>
+              {WORKTYPE_OPTIONS.map((v) => (
+                <Chip key={v} label={v} selected={form.workType === v} onClick={() => pickSingle("workType", v)} />
+              ))}
+            </ChipGroup>
+          </Field>
 
-      <Field label="채용 시점">
-        <ChipGroup>
-          {STARTTIME_OPTIONS.map((v) => (
-            <Chip key={v} label={v} selected={form.startTime === v} onClick={() => pickSingle("startTime", v)} />
-          ))}
-        </ChipGroup>
-      </Field>
+          <Field label="채용 시점">
+            <ChipGroup>
+              {STARTTIME_OPTIONS.map((v) => (
+                <Chip key={v} label={v} selected={form.startTime === v} onClick={() => pickSingle("startTime", v)} />
+              ))}
+            </ChipGroup>
+          </Field>
 
-      <Field label="기업 업종">
-        <Dropdown value={form.industry} onChange={(v) => patch({ industry: v })} options={INDUSTRY_OPTIONS} placeholder="업종 선택" />
-      </Field>
+          <Field label="기업 업종">
+            <Dropdown value={form.industry} onChange={(v) => patch({ industry: v })} options={INDUSTRY_OPTIONS} placeholder="업종 선택" />
+          </Field>
 
-      {/* 인재 JD — URL + PDF 첨부 둘 다 노출 (남겨주시면 맞춤 추천에 활용) */}
-      <Field label="인재 JD" hint="URL 또는 PDF">
-        <div className="flex flex-col gap-3">
-          <input
-            type="url"
-            className={inputClass}
-            value={form.jdUrl}
-            onChange={(e) => patch({ jdUrl: e.target.value })}
-            placeholder="https://notion.so/... 채용공고 · JD 링크"
-          />
-          <label className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-[#D6DBE3] bg-[#FAFBFC] px-4 py-6 text-center transition hover:border-[#E8590C] hover:bg-[#FFF8F3]">
-            <span className="text-[13px] font-semibold text-[#3A4356]">{jdFile ? jdFile.name : "PDF 파일 첨부"}</span>
-            <span className="text-[12px] text-[#AEB6C4]">{jdFile ? "다른 파일로 변경하려면 클릭" : "PDF · 최대 4MB"}</span>
-            <input type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => setJdFile(e.target.files?.[0] ?? null)} />
-          </label>
-        </div>
-      </Field>
+          {/* 인재 JD — URL + PDF 첨부 둘 다 노출 (남겨주시면 맞춤 추천에 활용) */}
+          <Field label="인재 JD" hint="URL 또는 PDF">
+            <div className="flex flex-col gap-3">
+              <input
+                type="url"
+                className={inputClass}
+                value={form.jdUrl}
+                onChange={(e) => patch({ jdUrl: e.target.value })}
+                placeholder="https://notion.so/... 채용공고 · JD 링크"
+              />
+              <label className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-md border border-dashed border-[#D6DBE3] bg-[#FAFBFC] px-4 py-6 text-center transition hover:border-[#E8590C] hover:bg-[#FFF8F3]">
+                <span className="text-[13px] font-semibold text-[#3A4356]">{jdFile ? jdFile.name : "PDF 파일 첨부"}</span>
+                <span className="text-[12px] text-[#AEB6C4]">{jdFile ? "다른 파일로 변경하려면 클릭" : "PDF · 최대 4MB"}</span>
+                <input type="file" accept="application/pdf,.pdf" className="hidden" onChange={(e) => setJdFile(e.target.files?.[0] ?? null)} />
+              </label>
+            </div>
+          </Field>
+        </>
+      )}
 
       {isLast ? (
         <div className="mt-1 flex items-center gap-3">
