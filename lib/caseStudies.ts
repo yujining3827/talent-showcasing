@@ -32,11 +32,11 @@ export type CaseStudy = {
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "doruri",
-    company: "도루리",
+    company: "도르리",
     industry: "F&B · D2C 커머스",
     scope: "브랜드 쇼핑몰 구축 · 운영",
     talentRole: "웹 개발 · 디자인",
-    title: "프리미엄 육포 브랜드 '도루리', 베트남 인재와 자사몰을 완성하다",
+    title: "프리미엄 육포 브랜드 '도르리', 베트남 인재와 자사몰을 완성하다",
     summary: "제품 기획부터 상세페이지·프로모션 운영까지, 베트남 인재가 실제로 구축한 D2C 쇼핑몰 사례입니다.",
     thumbnail: "/cases/doruri/doruri-1.png",
     images: ["/cases/doruri/doruri-2.jpg", "/cases/doruri/doruri-3.jpg"],
@@ -47,7 +47,7 @@ export const CASE_STUDIES: CaseStudy[] = [
     story: [
       {
         title: "프로젝트 배경",
-        body: "도루리는 프리미엄 육포를 만드는 D2C 브랜드입니다. 자사몰을 새로 구축하고 런칭 이후 상세페이지·프로모션까지 이어서 운영할 수 있는 웹 개발·디자인 리소스가 필요했고, 공고마감이 검증된 베트남 인재를 매칭해 프로젝트를 함께 진행했습니다.",
+        body: "도르리는 프리미엄 육포를 만드는 D2C 브랜드입니다. 자사몰을 새로 구축하고 런칭 이후 상세페이지·프로모션까지 이어서 운영할 수 있는 웹 개발·디자인 리소스가 필요했고, 공고마감이 검증된 베트남 인재를 매칭해 프로젝트를 함께 진행했습니다.",
       },
       {
         title: "어떤 작업을 진행했나요",
