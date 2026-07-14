@@ -93,8 +93,9 @@ export async function POST(req: Request) {
   // 1) Supabase 저장
   let saved = false;
   let saveError: string | null = null;
+  let insertedId: string | null = null;
   try {
-    const { error } = await supabase.from("pricing_requests").insert({
+    const { data, error } = await supabase.from("pricing_requests").insert({
       name: name.trim(),
       company: company.trim(),
       contact: contact.trim(),
@@ -118,9 +119,9 @@ export async function POST(req: Request) {
       utm_campaign: utm_campaign || null,
       utm_content: utm_content || null,
       fbclid: fbclid || null,
-    });
+    }).select("id").single();
     if (error) saveError = error.message;
-    else saved = true;
+    else { saved = true; insertedId = data?.id ?? null; }
   } catch (e) {
     saveError = e instanceof Error ? e.message : String(e);
   }
@@ -142,9 +143,9 @@ export async function POST(req: Request) {
         `• *연락처:* ${contact}`,
         slotsText ? `• *희망 면접:* ${slotsText}` : null,
         interviewNote ? `• *면접 요청사항:* ${interviewNote}` : null,
-        `• *관심 직무:* ${roles.length ? roles.join(", ") : "-"}`,
-        `• *근무:* ${workType || "-"} / ${duration || "-"} / ${startTime || "-"}`,
-        `• *업종:* ${industry || "-"}`,
+        roles.length ? `• *관심 직무:* ${roles.join(", ")}` : null,
+        workType || duration || startTime ? `• *근무:* ${workType || "-"} / ${duration || "-"} / ${startTime || "-"}` : null,
+        industry ? `• *업종:* ${industry}` : null,
         jdUrl ? `• *JD URL:* ${jdUrl}` : null,
         jdFileUrl ? `• *JD 파일:* ${jdFileName || "첨부"} — ${jdFileUrl}` : jdFileName ? `• *JD 파일:* ${jdFileName} (업로드 실패)` : null,
         jd ? `• *JD:* ${jd.slice(0, 500)}` : null,
@@ -167,7 +168,85 @@ export async function POST(req: Request) {
   if (!saved && !slackSent) {
     return NextResponse.json({ ok: false, error: saveError || "접수에 실패했습니다." }, { status: 500 });
   }
-  return NextResponse.json({ ok: true, saved, slackSent });
+  return NextResponse.json({ ok: true, saved, slackSent, id: insertedId });
+}
+
+/* PATCH — 1뎁스에서 생성된 리드에 채용 요건(+JD)을 추가 업데이트 + 후속 Slack
+ *  body(json 또는 multipart data): { id, name, company, roles, workType, duration, startTime, industry, jd, jdUrl, jdFileName } */
+export async function PATCH(req: Request) {
+  let body: Body & { id?: string };
+  let jdFile: File | null = null;
+  try {
+    const ct = req.headers.get("content-type") || "";
+    if (ct.includes("multipart/form-data")) {
+      const fd = await req.formData();
+      body = JSON.parse(String(fd.get("data") || "{}"));
+      const f = fd.get("jdFile");
+      if (f && typeof f !== "string") jdFile = f;
+    } else {
+      body = await req.json();
+    }
+  } catch {
+    return NextResponse.json({ ok: false, error: "invalid request" }, { status: 400 });
+  }
+
+  const { id, name, company, roles = [], workType, duration, startTime, industry, jd, jdUrl, jdFileName } = body;
+  if (!id) return NextResponse.json({ ok: false, error: "id required" }, { status: 400 });
+
+  const sbUrl = process.env.PRICING_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const sbKey = process.env.PRICING_SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  const supabase = createClient(sbUrl, sbKey);
+
+  // JD 파일 업로드 (있으면)
+  let jdFileUrl: string | null = null;
+  if (jdFile) {
+    try {
+      const safe = (jdFile.name || "jd.pdf").replace(/[^\w.\-]+/g, "_");
+      const path = `${Date.now()}-${safe}`;
+      const buf = new Uint8Array(await jdFile.arrayBuffer());
+      const { error: upErr } = await supabase.storage.from("pricing-jd").upload(path, buf, { contentType: jdFile.type || "application/pdf", upsert: false });
+      if (!upErr) jdFileUrl = supabase.storage.from("pricing-jd").getPublicUrl(path).data.publicUrl;
+    } catch (e) {
+      console.error("[pricing-request PATCH] JD upload:", e);
+    }
+  }
+
+  // 요건 업데이트 (값 있는 것만)
+  const patch: Record<string, unknown> = {};
+  if (roles.length) patch.roles = roles;
+  if (workType) patch.work_type = workType;
+  if (duration) patch.duration = duration;
+  if (startTime) patch.start_time = startTime;
+  if (industry) patch.industry = industry;
+  if (jd) patch.jd = jd;
+  if (jdUrl) patch.jd_url = jdUrl;
+  if (jdFileName) patch.jd_file_name = jdFileName;
+  if (jdFileUrl) patch.jd_file_url = jdFileUrl;
+
+  if (Object.keys(patch).length > 0) {
+    await supabase.from("pricing_requests").update(patch).eq("id", id);
+  }
+
+  // 후속 Slack (추가된 요건 있을 때만)
+  const webhook = process.env.SLACK_WEBHOOK_URL;
+  if (webhook && Object.keys(patch).length > 0) {
+    const who = [name, company].filter(Boolean).join(" · ");
+    const lines = [
+      `📝 *위 문의에 채용 요건이 추가되었습니다*${who ? ` (${who})` : ""}`,
+      roles.length ? `• *관심 직무:* ${roles.join(", ")}` : null,
+      workType || duration || startTime ? `• *근무:* ${workType || "-"} / ${duration || "-"} / ${startTime || "-"}` : null,
+      industry ? `• *업종:* ${industry}` : null,
+      jdUrl ? `• *JD URL:* ${jdUrl}` : null,
+      jdFileUrl ? `• *JD 파일:* ${jdFileName || "첨부"} — ${jdFileUrl}` : null,
+    ].filter(Boolean);
+    try {
+      await fetch(webhook, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text: lines.join("\n") }) });
+    } catch (e) {
+      console.error("[pricing-request PATCH] slack:", e);
+    }
+  }
+
+  return NextResponse.json({ ok: true });
 }
 
 /* ----------------------------------------------------------------------------

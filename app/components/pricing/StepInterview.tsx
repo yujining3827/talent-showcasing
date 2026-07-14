@@ -6,7 +6,8 @@ import type { HeroTalent } from "@/lib/heroTalents";
 type Props = {
   form: PricingForm;
   patch: (p: Partial<PricingForm>) => void;
-  onProceed: () => void; // 제출하기 → 채용 요건(2뎁스, 선택)으로 이동
+  onProceed: () => void; // 제출하기 → 리드 접수 + 채용 요건(2뎁스, 선택)으로 이동
+  submitting?: boolean;
   canSubmit: boolean;
   talentName?: string;
   talentRole?: string;
@@ -58,7 +59,7 @@ function TalentSummaryCard({ t }: { t: HeroTalent }) {
 }
 
 /* Step 1 (인재 특정 문의) — 인재 요약 + 담당자 정보(성함·기업명·연락처·동의) */
-export default function StepInterview({ form, patch, onProceed, canSubmit, talentName, talentRole, talentData }: Props) {
+export default function StepInterview({ form, patch, onProceed, submitting, canSubmit, talentName, talentRole, talentData }: Props) {
   const name = talentData?.name || talentName;
   const role = talentData?.role || talentRole;
 
@@ -118,10 +119,10 @@ export default function StepInterview({ form, patch, onProceed, canSubmit, talen
       <button
         type="button"
         onClick={onProceed}
-        disabled={!canSubmit}
+        disabled={!canSubmit || submitting}
         className="mt-1 inline-flex items-center justify-center rounded-md bg-[#E8590C] px-6 py-4 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
       >
-        제출하기
+        {submitting ? "접수 중…" : "제출하기"}
       </button>
     </div>
   );

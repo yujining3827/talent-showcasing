@@ -22,6 +22,8 @@ export default function PricingPage() {
   const [step, setStep] = useState(1);
   const [jdFile, setJdFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [proceeding, setProceeding] = useState(false);
+  const [leadId, setLeadId] = useState<string | null>(null); // 1뎁스 제출 시 생성된 리드 id
   const [done, setDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   // 상세 페이지 "이 인재 채용 문의하기"로 진입 시 talent 정보(쿼리) → 맨 앞 면접일정 스텝 추가
@@ -70,8 +72,42 @@ export default function PricingPage() {
     setForm(EMPTY_FORM);
     setJdFile(null);
     setStep(1);
+    setLeadId(null);
     setDone(false);
     setSubmitError(null);
+  }
+
+  // 1뎁스(인재 문의) 제출하기 → 담당자 정보로 리드 즉시 생성 + Slack 접수 알림 → 2뎁스(요건)로 이동
+  // (2뎁스에서 이탈해도 리드는 이미 접수됨)
+  async function handleProceed() {
+    if (!contactOk || proceeding) return;
+    setProceeding(true);
+    setSubmitError(null);
+    try {
+      const payload = {
+        name: form.name,
+        company: form.company,
+        contact: form.contact,
+        consent: form.consent,
+        talentId: talent?.id ?? null,
+        talentName: talent?.name ?? null,
+        talentRole: talent?.role ?? null,
+        ...getStoredUtm(),
+      };
+      const res = await fetch("/api/pricing-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (res.ok && d.id) setLeadId(d.id);
+      gtmPush("lead_submit", { is_talent_inquiry: true, talent_id: talent?.id ?? null });
+    } catch {
+      /* 생성 실패해도 2뎁스로 진행 — 최종 제출에서 재시도(POST) */
+    } finally {
+      setProceeding(false);
+      setStep((s) => s + 1);
+    }
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -84,24 +120,46 @@ export default function PricingPage() {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      // 폼 데이터 + JD PDF 파일을 multipart 로 전송 (파일은 서버가 Storage 에 업로드)
-      const payload = {
-        ...form,
-        jdFileName: jdFile?.name ?? null,
-        talentId: talent?.id ?? null,
-        talentName: talent?.name ?? null,
-        talentRole: talent?.role ?? null,
-        interviewSlots: isTalentInquiry ? form.interviewSlots.filter((s) => s.date && s.times.length > 0) : [],
-        ...getStoredUtm(), // utm_source/medium/campaign/content, fbclid
-      };
-      const fd = new FormData();
-      fd.append("data", JSON.stringify(payload));
-      if (jdFile) fd.append("jdFile", jdFile);
-
-      const res = await fetch("/api/pricing-request", { method: "POST", body: fd }); // Content-Type 은 브라우저가 자동 설정
-      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
-      setDone(true);
-      gtmPush("lead_submit", { is_talent_inquiry: !!talent, talent_id: talent?.id ?? null });
+      if (leadId) {
+        // 1뎁스에서 이미 접수된 리드 → 채용 요건(+JD)만 업데이트(PATCH)
+        const payload = {
+          id: leadId,
+          name: form.name,
+          company: form.company,
+          roles: form.roles,
+          workType: form.workType,
+          duration: form.duration,
+          startTime: form.startTime,
+          industry: form.industry,
+          jd: form.jd,
+          jdUrl: form.jdUrl,
+          jdFileName: jdFile?.name ?? null,
+        };
+        const fd = new FormData();
+        fd.append("data", JSON.stringify(payload));
+        if (jdFile) fd.append("jdFile", jdFile);
+        const res = await fetch("/api/pricing-request", { method: "PATCH", body: fd });
+        if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
+        setDone(true);
+      } else {
+        // 일반 플로우(또는 1뎁스 생성 실패) → 전체 POST (DB + Slack)
+        const payload = {
+          ...form,
+          jdFileName: jdFile?.name ?? null,
+          talentId: talent?.id ?? null,
+          talentName: talent?.name ?? null,
+          talentRole: talent?.role ?? null,
+          interviewSlots: isTalentInquiry ? form.interviewSlots.filter((s) => s.date && s.times.length > 0) : [],
+          ...getStoredUtm(),
+        };
+        const fd = new FormData();
+        fd.append("data", JSON.stringify(payload));
+        if (jdFile) fd.append("jdFile", jdFile);
+        const res = await fetch("/api/pricing-request", { method: "POST", body: fd });
+        if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
+        setDone(true);
+        gtmPush("lead_submit", { is_talent_inquiry: !!talent, talent_id: talent?.id ?? null });
+      }
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "제출 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.");
     } finally {
@@ -209,7 +267,8 @@ export default function PricingPage() {
                   <StepInterview
                     form={form}
                     patch={patch}
-                    onProceed={() => setStep(step + 1)}
+                    onProceed={handleProceed}
+                    submitting={proceeding}
                     canSubmit={canSubmit}
                     talentName={talent?.name}
                     talentRole={talent?.role}
