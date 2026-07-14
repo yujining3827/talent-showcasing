@@ -82,58 +82,6 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   );
 }
 
-// 숫자 카운트업 — run이 true가 되면 0 → target까지 easeOutExpo로 빠르게 올라가다 멈춤
-function useCountUp(target: number, run: boolean, duration = 2000) {
-  const [val, setVal] = useState(0);
-  useEffect(() => {
-    if (!run) return;
-    if (typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) {
-      setVal(target);
-      return;
-    }
-    let raf = 0;
-    let t0: number | null = null;
-    const ease = (t: number) => (t >= 1 ? 1 : 1 - Math.pow(2, -10 * t)); // easeOutExpo
-    const tick = (now: number) => {
-      if (t0 === null) t0 = now;
-      const p = Math.min((now - t0) / duration, 1);
-      setVal(target * ease(p));
-      if (p < 1) raf = requestAnimationFrame(tick);
-      else setVal(target);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [target, run, duration]);
-  return val;
-}
-
-function StatBlock({
-  value,
-  label,
-  accent = false,
-  countTo,
-  format,
-}: {
-  value: string;
-  label: string;
-  accent?: boolean;
-  countTo?: number; // 지정 시 0 → countTo 카운트업 후 format으로 렌더
-  format?: (n: number) => string;
-}) {
-  const animated = countTo !== undefined && format !== undefined;
-  const [run, setRun] = useState(false);
-  useEffect(() => setRun(true), []); // 첫 렌더(사이트 접속) 후 시작
-  const n = useCountUp(countTo ?? 0, run && animated);
-  return (
-    <div>
-      <p className={`text-[24px] font-bold tabular-nums sm:text-[28px] ${accent ? "text-[#E8590C]" : "text-[#171E2D]"}`}>
-        {animated ? format!(n) : value}
-      </p>
-      <p className="mt-1 text-[12px] text-[#59657A]">{label}</p>
-    </div>
-  );
-}
-
 function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
   return (
     <Link
@@ -334,15 +282,19 @@ function Hero({
     <section className="relative isolate overflow-hidden bg-white text-[#192133]">
       <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-5 px-5 pb-12 pt-8 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-12">
         <div className="z-10 max-w-[640px]">
-          <div className="mb-5 inline-flex items-center gap-1.5 rounded-full border border-[#FAD9C6] bg-[#FFF1E8] px-3 py-1.5 text-[13px] font-semibold text-[#E8590C]">
+          <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
             <VerifiedIcon color="#E8590C" />
-            세상에 없던 안심매칭
-          </div>
-          <h1 className="text-[36px] font-bold leading-[1.3] tracking-normal text-[#171E2D] sm:text-[44px] md:text-[52px]">
-            인건비 50%<br />역량은 그대로.<br />최상위 글로벌 인재 구독
+            검증 완료 후보만 쇼트리스트
+          </p>
+          <h1 className="mt-7 text-[40px] font-bold leading-[1.08] tracking-normal text-[#111827] sm:text-[54px] md:text-[68px]">
+            베트남 인재를
+            <br />
+            채용 가능한
+            <br />
+            후보로 받으세요
           </h1>
-          <p className="mt-5 max-w-[640px] text-[18px] leading-[1.65] text-[#30394C] sm:text-[20px] md:mt-6 md:text-[24px]">
-            국내 최다 보유 베트남 인재 안심 매칭
+          <p className="mt-6 max-w-[560px] text-[17px] leading-[1.75] text-[#4B5565] md:text-[20px]">
+            이력서 더미가 아니라 경력, 어학, 포트폴리오, 근무 조건까지 먼저 걸러낸 후보 리스트를 전달합니다.
           </p>
           {/* 모바일: 인재 카드를 첫 화면(헤드라인 바로 아래)에 노출 */}
           {featured && (
@@ -350,23 +302,27 @@ function Hero({
               <FeaturedCandidatePanel talent={featured} />
             </div>
           )}
-          <div className="mt-8 grid max-w-[440px] grid-cols-2 gap-5 border-t border-[#BCC5D4] pt-6">
-            <StatBlock
-              value="2만+"
-              label="검증된 베트남 인재 풀"
-              accent
-              countTo={20000}
-              format={(n) => (n >= 20000 ? "2만+" : `${(n / 10000).toFixed(1)}만`)}
-            />
-            <StatBlock value="91%" label="명문대 출신 인재" countTo={91} format={(n) => `${Math.round(n)}%`} />
-          </div>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-5 md:mt-11">
-            <CtaLink href="/pricing" location="hero" className="inline-flex h-14 w-full items-center justify-center rounded-sm bg-[#E8590C] px-6 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto sm:min-w-[15rem] sm:px-11">
-              인재 추천받기
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <CtaLink href="/pricing" location="hero" className="inline-flex h-14 items-center justify-center rounded-md bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A]">
+              후보 추천 요청하기
             </CtaLink>
-            <a href="#portfolio" className="inline-flex h-14 w-full items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-6 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60 sm:w-auto sm:min-w-[15rem] sm:px-11">
-              포트폴리오 미리보기
+            <a href="#portfolio" className="inline-flex h-14 items-center justify-center rounded-md border border-[#CFC7BB] bg-white/70 px-8 text-[16px] font-semibold text-[#1F2937] transition hover:bg-white">
+              작업물 먼저 보기
             </a>
+          </div>
+          <div className="mt-10 grid max-w-[560px] grid-cols-3 divide-x divide-[#DED4C8] border-y border-[#DED4C8] py-5">
+            <div className="pr-5">
+              <p className="text-[28px] font-bold text-[#E8590C]">2만+</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">검증 인재 풀</p>
+            </div>
+            <div className="px-5">
+              <p className="text-[28px] font-bold text-[#111827]">91%</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">상위권 대학 출신</p>
+            </div>
+            <div className="pl-5">
+              <p className="text-[28px] font-bold text-[#111827]">3주</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">평균 추천 리드타임</p>
+            </div>
           </div>
         </div>
 
