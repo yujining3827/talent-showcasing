@@ -1,4 +1,3 @@
-import Link from "next/link";
 import CtaLink from "./CtaLink";
 
 /* 하단 CTA(푸터) — 랜딩/상세 등 여러 페이지 공용 */
