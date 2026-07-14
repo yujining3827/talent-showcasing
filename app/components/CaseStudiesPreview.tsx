@@ -4,16 +4,19 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CASE_STUDIES, type CaseStudy } from "@/lib/caseStudies";
 
-/* 랜딩 — 고객 사례 미리보기 (상위 3개). 정적 + DB(어드민 추가분) 병합. */
+// 랜딩 미리보기는 '기업 후기'만 3개 고정 (인재 후기는 노출 안 함)
+const companyOnly = (list: CaseStudy[]) => list.filter((c) => (c.type || "company") === "company").slice(0, 3);
+
+/* 랜딩 — 고객 사례 미리보기 (기업 후기 상위 3개). 정적 + DB(어드민 추가분) 병합. */
 export default function CaseStudiesPreview() {
   // 정적 사례로 즉시 렌더 후, DB 병합본으로 교체 (깜빡임 방지)
-  const [cases, setCases] = useState<CaseStudy[]>(CASE_STUDIES.slice(0, 3));
+  const [cases, setCases] = useState<CaseStudy[]>(companyOnly(CASE_STUDIES));
 
   useEffect(() => {
     fetch("/api/cases")
       .then((r) => r.json())
       .then((d) => {
-        if (Array.isArray(d.cases)) setCases((d.cases as CaseStudy[]).slice(0, 3));
+        if (Array.isArray(d.cases)) setCases(companyOnly(d.cases as CaseStudy[]));
       })
       .catch(() => {});
   }, []);
