@@ -431,6 +431,14 @@ const { data: { subscription } } = supabase.auth.onAuthStateChange(
                 </div>
               </div>
 
+              {(profile.role === "admin" || profile.role === "super_admin") && (
+                <Link
+                  href="/admin/chats"
+                  className="block w-full py-3.5 mb-4 bg-gray-900 text-white rounded-2xl text-[15px] font-medium hover:bg-gray-800 active:scale-[0.98] transition text-center"
+                >
+                  관리자 대시보드 열기
+                </Link>
+              )}
               <button
                 onClick={handleSignOut}
                 className="w-full py-3.5 bg-white border-[0.5px] border-gray-200/60 rounded-2xl text-[14px] text-gray-500 hover:bg-gray-50 transition-colors"
