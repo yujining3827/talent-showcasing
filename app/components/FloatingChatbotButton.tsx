@@ -17,10 +17,19 @@ export default function FloatingChatbotButton() {
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    // 페이지 로드(새로고침)마다 자동 노출
+    // 페이지 로드 시 자동 노출 + 이후 9초마다 3초씩 살짝살짝 다시 노출
     setAutoShow(true);
-    const t = setTimeout(() => setAutoShow(false), 3500);
-    return () => clearTimeout(t);
+    const hide = setTimeout(() => setAutoShow(false), 3500);
+    let inner: ReturnType<typeof setTimeout>;
+    const cycle = setInterval(() => {
+      setAutoShow(true);
+      inner = setTimeout(() => setAutoShow(false), 3000);
+    }, 9000);
+    return () => {
+      clearTimeout(hide);
+      clearInterval(cycle);
+      clearTimeout(inner);
+    };
   }, []);
 
   const bubbleVisible = (autoShow || hovered) && !chatOpen;
