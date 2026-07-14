@@ -5,6 +5,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
+import BrochureModal from "@/app/components/BrochureModal";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
@@ -276,10 +277,12 @@ function Hero({
 }) {
   const heroTalents = talents.slice(0, 10);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [brochureOpen, setBrochureOpen] = useState(false);
   const featured = heroTalents.find((t) => t.id === selectedId) || heroTalents[0] || null;
 
   return (
     <section className="relative isolate overflow-hidden bg-white text-[#192133]">
+      <BrochureModal open={brochureOpen} onClose={() => setBrochureOpen(false)} />
       <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-5 px-5 pb-12 pt-8 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-12">
         <div className="z-10 max-w-[640px]">
           <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
@@ -306,9 +309,9 @@ function Hero({
             <CtaLink href="/pricing" location="hero" className="inline-flex h-14 items-center justify-center rounded-md bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A]">
               인재 추천받기
             </CtaLink>
-            <a href="/cases" className="inline-flex h-14 items-center justify-center rounded-md border border-[#CFC7BB] bg-white/70 px-8 text-[16px] font-semibold text-[#1F2937] transition hover:bg-white">
-              실제 사례 확인하기
-            </a>
+            <button type="button" onClick={() => setBrochureOpen(true)} className="inline-flex h-14 items-center justify-center rounded-md border border-[#CFC7BB] bg-white/70 px-8 text-[16px] font-semibold text-[#1F2937] transition hover:bg-white">
+              서비스 소개서 받아보기
+            </button>
           </div>
           <div className="mt-10 grid max-w-[560px] grid-cols-3 divide-x divide-[#DED4C8] border-y border-[#DED4C8] py-5">
             <div className="pr-5">
