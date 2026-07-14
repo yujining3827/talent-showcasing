@@ -36,6 +36,7 @@ export async function POST(req: Request) {
 
   const row = {
     slug,
+    type: b.type === "talent" ? "talent" : "company",
     company,
     industry: String(b.industry || "").trim() || null,
     scope: String(b.scope || "").trim() || null,

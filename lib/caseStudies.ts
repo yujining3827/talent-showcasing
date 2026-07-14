@@ -16,8 +16,11 @@ export type ContentBlock =
   | { type: "text"; title?: string; body: string }
   | { type: "image"; url: string; caption?: string };
 
+export type CaseType = "company" | "talent"; // 기업 후기 / 인재 후기
+
 export type CaseStudy = {
   slug: string;
+  type: CaseType; // 후기 유형 (기본 company)
   company: string; // 고객사 이름
   industry: string; // 업종
   scope: string; // 작업 범위 (예: D2C 쇼핑몰 구축)
@@ -38,6 +41,7 @@ export type CaseStudy = {
 export const CASE_STUDIES: CaseStudy[] = [
   {
     slug: "doruri",
+    type: "company",
     company: "도르리",
     industry: "F&B · D2C 커머스",
     scope: "브랜드 쇼핑몰 구축 · 운영",

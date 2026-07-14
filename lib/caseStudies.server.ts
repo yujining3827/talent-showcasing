@@ -15,6 +15,7 @@ function admin() {
 
 type DbRow = {
   slug: string;
+  type: string | null;
   company: string;
   industry: string | null;
   scope: string | null;
@@ -35,6 +36,7 @@ type DbRow = {
 function fromRow(r: DbRow): CaseStudy {
   return {
     slug: r.slug,
+    type: r.type === "talent" ? "talent" : "company",
     company: r.company,
     industry: r.industry || "",
     scope: r.scope || "",

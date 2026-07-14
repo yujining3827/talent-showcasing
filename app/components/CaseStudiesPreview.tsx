@@ -66,7 +66,7 @@ export default function CaseStudiesPreview() {
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[#FFF1E8] px-2.5 py-0.5 text-[11px] font-semibold text-[#E8590C]">{c.company}</span>
+                  <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${c.type === "talent" ? "bg-[#E6F7EE] text-[#12A150]" : "bg-[#FFF1E8] text-[#E8590C]"}`}>{c.company}</span>
                   <span className="text-[12px] text-[#8A93A5]">{c.industry}</span>
                 </div>
                 <p className="mt-2.5 text-[17px] font-semibold leading-[1.45] text-[#171E2D]">{c.title}</p>

@@ -3,6 +3,37 @@ import ContactCTA from "@/app/components/ContactCTA";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
 import { getAllCaseStudies } from "@/lib/caseStudies.server";
+import type { CaseStudy } from "@/lib/caseStudies";
+
+/* 사례 카드 — 유형별 칩 색 구분(기업=주황 / 인재=초록) */
+function CaseCard({ c }: { c: CaseStudy }) {
+  const isTalent = c.type === "talent";
+  return (
+    <Link href={`/cases/${c.slug}`} className="group flex flex-col overflow-hidden rounded-xl border border-[#E4E8EF] bg-white transition-shadow hover:shadow-[0_20px_50px_-30px_rgba(10,18,32,0.45)]">
+      <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F1F3F7]">
+        {c.thumbnail ? (
+          <img src={c.thumbnail} alt={c.company} className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]" />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#F1F3F7] to-[#DDE3EC]">
+            <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#AEB6C4]">사례 준비 중</span>
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${isTalent ? "bg-[#E6F7EE] text-[#12A150]" : "bg-[#FFF1E8] text-[#E8590C]"}`}>{c.company}</span>
+          <span className="text-[12px] text-[#8A93A5]">{c.industry}</span>
+        </div>
+        <p className="mt-2.5 text-[17px] font-semibold leading-[1.45] text-[#171E2D]">{c.title}</p>
+        <p className="mt-2 text-[13px] leading-[1.6] text-[#5B667A]">{c.summary}</p>
+        <span className="mt-auto inline-flex items-center gap-1 pt-4 text-[13px] font-semibold text-[#E8590C]">
+          사례 자세히 보기
+          <span aria-hidden>→</span>
+        </span>
+      </div>
+    </Link>
+  );
+}
 
 export const metadata = {
   title: "고객 사례 — 공고마감 by LIKELION",
@@ -47,43 +78,24 @@ export default async function CasesPage() {
           ))}
         </div>
 
-        {/* 사례 카드 그리드 → 상세 라우트 */}
-        <div className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2 md:mt-14 lg:grid-cols-3">
-          {CASE_STUDIES.map((c) => (
-            <Link
-              key={c.slug}
-              href={`/cases/${c.slug}`}
-              className="group flex flex-col overflow-hidden rounded-xl border border-[#E4E8EF] bg-white transition-shadow hover:shadow-[0_20px_50px_-30px_rgba(10,18,32,0.45)]"
-            >
-              {/* 썸네일 */}
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-[#F1F3F7]">
-                {c.thumbnail ? (
-                  <img
-                    src={c.thumbnail}
-                    alt={c.company}
-                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05]"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#F1F3F7] to-[#DDE3EC]">
-                    <span className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#AEB6C4]">사례 준비 중</span>
-                  </div>
-                )}
+        {/* 유형별 섹션 — 기업 후기 / 인재 후기 */}
+        {([
+          { type: "company", title: "기업 후기" },
+          { type: "talent", title: "인재 후기" },
+        ] as const).map(({ type, title }) => {
+          const items = CASE_STUDIES.filter((c) => (c.type || "company") === type);
+          if (items.length === 0) return null;
+          return (
+            <section key={type} className="mt-12 md:mt-16">
+              <h2 className="text-[20px] font-bold text-[#171E2D] sm:text-[24px]">{title}</h2>
+              <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {items.map((c) => (
+                  <CaseCard key={c.slug} c={c} />
+                ))}
               </div>
-              <div className="flex flex-1 flex-col p-5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-[#FFF1E8] px-2.5 py-0.5 text-[11px] font-semibold text-[#E8590C]">{c.company}</span>
-                  <span className="text-[12px] text-[#8A93A5]">{c.industry}</span>
-                </div>
-                <p className="mt-2.5 text-[17px] font-semibold leading-[1.45] text-[#171E2D]">{c.title}</p>
-                <p className="mt-2 text-[13px] leading-[1.6] text-[#5B667A]">{c.summary}</p>
-                <span className="mt-auto inline-flex items-center gap-1 pt-4 text-[13px] font-semibold text-[#E8590C]">
-                  사례 자세히 보기
-                  <span aria-hidden>→</span>
-                </span>
-              </div>
-            </Link>
-          ))}
-        </div>
+            </section>
+          );
+        })}
       </div>
 
       <ContactCTA />

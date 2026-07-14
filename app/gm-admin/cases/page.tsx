@@ -10,6 +10,7 @@ type Block =
 
 type CaseRow = {
   slug: string;
+  type: string | null;
   company: string;
   title: string;
   industry: string | null;
@@ -44,6 +45,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
 
 const EMPTY = {
   slug: "",
+  type: "company" as "company" | "talent",
   company: "",
   industry: "",
   scope: "",
@@ -88,6 +90,7 @@ export default function GmAdminCases() {
           ];
     setForm({
       slug: c.slug,
+      type: c.type === "talent" ? "talent" : "company",
       company: c.company,
       industry: c.industry || "",
       scope: c.scope || "",
@@ -228,8 +231,27 @@ export default function GmAdminCases() {
           )}
         </div>
 
+        {/* 후기 유형 */}
+        <div className="mt-4">
+          <p className="mb-1.5 text-[13px] font-semibold text-[#3A4356]">후기 유형</p>
+          <div className="inline-flex rounded-md border border-[#E1E5EC] p-0.5">
+            {([["company", "기업 후기"], ["talent", "인재 후기"]] as const).map(([v, label]) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => set({ type: v })}
+                className={`rounded px-4 py-1.5 text-[13px] font-semibold transition ${
+                  form.type === v ? (v === "talent" ? "bg-[#12A150] text-white" : "bg-[#E8590C] text-white") : "text-[#59657A] hover:text-[#171E2D]"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Field label="고객사명" hint="필수"><input className={inputCls} value={form.company} onChange={(e) => set({ company: e.target.value })} placeholder="도루리" /></Field>
+          <Field label={form.type === "talent" ? "인재명" : "고객사명"} hint="필수"><input className={inputCls} value={form.company} onChange={(e) => set({ company: e.target.value })} placeholder={form.type === "talent" ? "예: Trần Minh Hưng" : "도루리"} /></Field>
           <Field label="slug" hint="URL, 비우면 자동"><input className={inputCls} value={form.slug} onChange={(e) => set({ slug: e.target.value })} placeholder="doruri" /></Field>
           <Field label="업종"><input className={inputCls} value={form.industry} onChange={(e) => set({ industry: e.target.value })} placeholder="F&B · D2C 커머스" /></Field>
           <Field label="작업 범위"><input className={inputCls} value={form.scope} onChange={(e) => set({ scope: e.target.value })} placeholder="브랜드 쇼핑몰 구축 · 운영" /></Field>
