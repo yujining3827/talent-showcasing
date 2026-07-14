@@ -287,14 +287,14 @@ function Hero({
             세상에 없던 안심매칭
           </p>
           <h1 className="mt-7 text-[40px] font-bold leading-[1.08] tracking-normal text-[#111827] sm:text-[48px] md:text-[58px]">
-            인건비 최대 60%
+            인건비 최대 60% 절감
             <br />
             역량은 그대로.
             <br />
             최상위 글로벌 인재 구독
           </h1>
           <p className="mt-6 max-w-[560px] text-[17px] leading-[1.75] text-[#4B5565] md:text-[20px]">
-            국내 최다 보유 베트남 인재 안심 매칭
+            검증된 글로벌 인재를 평균 3주 만에, 월 구독으로 부담 없이 채용하세요.
           </p>
           {/* 모바일: 인재 카드를 첫 화면(헤드라인 바로 아래)에 노출 */}
           {featured && (
