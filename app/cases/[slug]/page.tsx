@@ -52,7 +52,32 @@ export default async function CaseDetailPage({ params }: { params: { slug: strin
           </div>
         )}
 
-        {/* 본문 — 스토리 서술 */}
+        {/* 본문 — blocks(신규, 순서 배치) 우선, 없으면 story+images(레거시) */}
+        {c.blocks && c.blocks.length > 0 ? (
+          <div className="mt-12 flex flex-col gap-10 md:mt-16">
+            {c.blocks.map((b, i) =>
+              b.type === "image" ? (
+                <figure key={i}>
+                  <div className="overflow-hidden rounded-xl bg-[#F1F3F7]">
+                    <img src={b.url} alt={b.caption || `${c.company} 작업물`} className="w-full object-cover" />
+                  </div>
+                  {b.caption && <figcaption className="mt-2 text-[13px] text-[#8A93A5]">{b.caption}</figcaption>}
+                </figure>
+              ) : (
+                <section key={i}>
+                  {b.title && <h2 className="text-[19px] font-bold leading-[1.4] text-[#171E2D] sm:text-[22px]">{b.title}</h2>}
+                  <p className={`${b.title ? "mt-3" : ""} whitespace-pre-line text-[15px] leading-[1.8] text-[#3A4356] md:text-[16px]`}>{b.body}</p>
+                </section>
+              )
+            )}
+            {c.quote && (
+              <blockquote className="border-l-4 border-[#E8590C] bg-[#FFF6EF] px-5 py-5 md:px-7">
+                <p className="text-[17px] font-semibold leading-[1.6] text-[#171E2D] sm:text-[19px]">“{c.quote}”</p>
+                {c.quoteBy && <footer className="mt-3 text-[13px] text-[#8A93A5]">{c.quoteBy}</footer>}
+              </blockquote>
+            )}
+          </div>
+        ) : (
         <div className="mt-12 flex flex-col gap-10 md:mt-16">
           {c.story.map((section, i) => (
             <section key={section.title}>
@@ -80,6 +105,7 @@ export default async function CaseDetailPage({ params }: { params: { slug: strin
             </section>
           ))}
         </div>
+        )}
 
         {/* 실제 사이트 링크 */}
         {c.siteUrl && (

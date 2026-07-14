@@ -25,6 +25,7 @@ type DbRow = {
   images: string[] | null;
   metrics: CaseStudy["metrics"] | null;
   story: CaseStudy["story"] | null;
+  blocks: CaseStudy["blocks"] | null;
   quote: string | null;
   quote_by: string | null;
   interview: CaseStudy["interview"] | null;
@@ -44,6 +45,7 @@ function fromRow(r: DbRow): CaseStudy {
     images: Array.isArray(r.images) ? r.images : [],
     metrics: Array.isArray(r.metrics) ? r.metrics : [],
     story: Array.isArray(r.story) ? r.story : [],
+    blocks: Array.isArray(r.blocks) && r.blocks.length ? r.blocks : undefined,
     quote: r.quote || undefined,
     quoteBy: r.quote_by || undefined,
     interview: Array.isArray(r.interview) && r.interview.length ? r.interview : undefined,

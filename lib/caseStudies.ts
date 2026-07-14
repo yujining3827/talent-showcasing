@@ -11,6 +11,11 @@ export type CaseMetric = { value: string; label: string };
 export type CaseQA = { q: string; a: string };
 export type CaseSection = { title: string; body: string };
 
+// 본문 블록 — 텍스트/이미지를 원하는 순서로 배치 (어드민 작성분)
+export type ContentBlock =
+  | { type: "text"; title?: string; body: string }
+  | { type: "image"; url: string; caption?: string };
+
 export type CaseStudy = {
   slug: string;
   company: string; // 고객사 이름
@@ -22,7 +27,8 @@ export type CaseStudy = {
   thumbnail: string; // 대표 이미지
   images: string[]; // 상세 본문 갤러리
   metrics: CaseMetric[]; // 핵심 지표 (0~3개, 실측만)
-  story: CaseSection[]; // 본문 — 프로젝트 서술 (회사 시점)
+  story: CaseSection[]; // 본문(레거시) — 프로젝트 서술. blocks 없을 때 사용
+  blocks?: ContentBlock[]; // 본문(신규) — 텍스트/이미지 순서 배치. 있으면 이걸 우선 렌더
   quote?: string; // 대표 인용구 — 실제 고객 코멘트 확보 시에만
   quoteBy?: string;
   interview?: CaseQA[]; // 실제 인터뷰 확보 시에만

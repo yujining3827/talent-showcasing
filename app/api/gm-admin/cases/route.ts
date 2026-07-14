@@ -46,6 +46,7 @@ export async function POST(req: Request) {
     images: Array.isArray(b.images) ? b.images : [],
     metrics: Array.isArray(b.metrics) ? b.metrics : [],
     story: Array.isArray(b.story) ? b.story : [],
+    blocks: Array.isArray(b.blocks) ? b.blocks : [],
     quote: String(b.quote || "").trim() || null,
     quote_by: String(b.quoteBy || "").trim() || null,
     interview: Array.isArray(b.interview) && b.interview.length ? b.interview : null,
