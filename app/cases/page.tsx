@@ -37,7 +37,7 @@ export default async function CasesPage() {
         <div className="mt-10 grid grid-cols-1 gap-4 border-y border-[#EEF1F5] py-8 sm:grid-cols-3 md:mt-14">
           {[
             { value: "2만+", label: "검증된 베트남 인재 풀" },
-            { value: "91%", label: "명문대 출신 인재" },
+            { value: "32%", label: "명문대 출신 인재" },
             { value: "50%", label: "국내 대비 인건비 절감" },
           ].map((m) => (
             <div key={m.label}>

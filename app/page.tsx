@@ -284,17 +284,17 @@ function Hero({
         <div className="z-10 max-w-[640px]">
           <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
             <VerifiedIcon color="#E8590C" />
-            검증 완료 후보만 쇼트리스트
+            세상에 없던 안심매칭
           </p>
-          <h1 className="mt-7 text-[40px] font-bold leading-[1.08] tracking-normal text-[#111827] sm:text-[54px] md:text-[68px]">
-            베트남 인재를
+          <h1 className="mt-7 text-[40px] font-bold leading-[1.08] tracking-normal text-[#111827] sm:text-[48px] md:text-[58px]">
+            인건비 50%
             <br />
-            채용 가능한
+            역량은 그대로.
             <br />
-            후보로 받으세요
+            최상위 글로벌 인재 구독
           </h1>
           <p className="mt-6 max-w-[560px] text-[17px] leading-[1.75] text-[#4B5565] md:text-[20px]">
-            이력서 더미가 아니라 경력, 어학, 포트폴리오, 근무 조건까지 먼저 걸러낸 후보 리스트를 전달합니다.
+            국내 최다 보유 베트남 인재 안심 매칭
           </p>
           {/* 모바일: 인재 카드를 첫 화면(헤드라인 바로 아래)에 노출 */}
           {featured && (
@@ -304,10 +304,10 @@ function Hero({
           )}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <CtaLink href="/pricing" location="hero" className="inline-flex h-14 items-center justify-center rounded-md bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A]">
-              후보 추천 요청하기
+              인재 추천받기
             </CtaLink>
-            <a href="#portfolio" className="inline-flex h-14 items-center justify-center rounded-md border border-[#CFC7BB] bg-white/70 px-8 text-[16px] font-semibold text-[#1F2937] transition hover:bg-white">
-              작업물 먼저 보기
+            <a href="/cases" className="inline-flex h-14 items-center justify-center rounded-md border border-[#CFC7BB] bg-white/70 px-8 text-[16px] font-semibold text-[#1F2937] transition hover:bg-white">
+              실제 사례 확인하기
             </a>
           </div>
           <div className="mt-10 grid max-w-[560px] grid-cols-3 divide-x divide-[#DED4C8] border-y border-[#DED4C8] py-5">
@@ -316,7 +316,7 @@ function Hero({
               <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">검증 인재 풀</p>
             </div>
             <div className="px-5">
-              <p className="text-[28px] font-bold text-[#111827]">91%</p>
+              <p className="text-[28px] font-bold text-[#111827]">32%</p>
               <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">상위권 대학 출신</p>
             </div>
             <div className="pl-5">

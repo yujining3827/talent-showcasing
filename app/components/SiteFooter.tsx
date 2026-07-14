@@ -30,12 +30,7 @@ export default function SiteFooter() {
         </div>
         <div className="mt-10 flex flex-col gap-2 border-t border-[#E7EBF1] pt-6 text-[12.5px] text-[#9AA3B2] sm:flex-row sm:items-center sm:justify-between">
           <p>문의 · ceo_office@likelion.net</p>
-          <div className="flex items-center gap-4">
-            <p>© {new Date().getFullYear()} LIKELION. All rights reserved.</p>
-            <Link href="/admin/chats" className="transition hover:text-[#5B667A]">
-              관리자
-            </Link>
-          </div>
+          <p>© {new Date().getFullYear()} LIKELION. All rights reserved.</p>
         </div>
       </div>
     </footer>
