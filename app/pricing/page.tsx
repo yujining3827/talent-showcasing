@@ -66,18 +66,20 @@ export default function PricingPage() {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const res = await fetch("/api/pricing-request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...form,
-          jdFileName: jdFile?.name ?? null,
-          talentId: talent?.id ?? null,
-          talentName: talent?.name ?? null,
-          talentRole: talent?.role ?? null,
-          interviewSlots: isTalentInquiry ? form.interviewSlots.filter((s) => s.date && s.times.length > 0) : [],
-        }),
-      });
+      // 폼 데이터 + JD PDF 파일을 multipart 로 전송 (파일은 서버가 Storage 에 업로드)
+      const payload = {
+        ...form,
+        jdFileName: jdFile?.name ?? null,
+        talentId: talent?.id ?? null,
+        talentName: talent?.name ?? null,
+        talentRole: talent?.role ?? null,
+        interviewSlots: isTalentInquiry ? form.interviewSlots.filter((s) => s.date && s.times.length > 0) : [],
+      };
+      const fd = new FormData();
+      fd.append("data", JSON.stringify(payload));
+      if (jdFile) fd.append("jdFile", jdFile);
+
+      const res = await fetch("/api/pricing-request", { method: "POST", body: fd }); // Content-Type 은 브라우저가 자동 설정
       if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
       setDone(true);
     } catch (err) {
