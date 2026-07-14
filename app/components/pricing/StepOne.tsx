@@ -23,6 +23,16 @@ export default function StepOne({ form, patch, jdFile, setJdFile, onNext, canNex
     patch({ roles: form.roles.includes(r) ? form.roles.filter((x) => x !== r) : [...form.roles, r] });
   const pickSingle = (key: "workType" | "duration" | "startTime", v: string) => patch({ [key]: form[key] === v ? "" : v });
 
+  // 2뎁스(선택)에서 하나라도 입력·선택했는지 → 버튼 라벨 건너뛰기/제출하기
+  const hasInput =
+    form.roles.length > 0 ||
+    !!form.workType ||
+    !!form.duration ||
+    !!form.startTime ||
+    !!form.industry ||
+    !!form.jdUrl.trim() ||
+    !!jdFile;
+
   return (
     <div className="flex flex-col gap-6">
       <div>
@@ -127,7 +137,7 @@ export default function StepOne({ form, patch, jdFile, setJdFile, onNext, canNex
             disabled={!canSubmit || submitting}
             className="inline-flex flex-1 items-center justify-center rounded-md bg-[#E8590C] px-6 py-4 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {submitting ? "제출 중…" : "건너뛰기"}
+            {submitting ? "제출 중…" : hasInput ? "제출하기" : "건너뛰기"}
           </button>
         </div>
       ) : (
