@@ -187,8 +187,8 @@ export default function PricingPage() {
                   <StepInterview
                     form={form}
                     patch={patch}
-                    onNext={() => canGoNext && setStep(step + 1)}
-                    canNext={canGoNext}
+                    onProceed={() => setStep(step + 1)}
+                    canSubmit={canSubmit}
                     talentName={talent?.name}
                     talentRole={talent?.role}
                     talentData={talentData}
@@ -221,10 +221,12 @@ export default function PricingPage() {
                 <p className="mt-4 rounded-md bg-[#FEF3F2] px-3.5 py-2.5 text-[13px] font-medium text-[#D92D20]">{submitError}</p>
               )}
 
-              {/* 진행률 */}
-              <div className="mt-8 border-t border-[#F1F3F7] pt-6">
-                <ProgressBar step={step} total={total} />
-              </div>
+              {/* 진행률 — 일반 플로우에서만 (talent 문의는 1뎁스 제출이라 생략) */}
+              {!isTalentInquiry && (
+                <div className="mt-8 border-t border-[#F1F3F7] pt-6">
+                  <ProgressBar step={step} total={total} />
+                </div>
+              )}
             </form>
         </div>
       </div>

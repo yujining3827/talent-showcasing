@@ -6,8 +6,8 @@ import type { HeroTalent } from "@/lib/heroTalents";
 type Props = {
   form: PricingForm;
   patch: (p: Partial<PricingForm>) => void;
-  onNext: () => void;
-  canNext: boolean;
+  onProceed: () => void; // 제출하기 → 채용 요건(2뎁스, 선택)으로 이동
+  canSubmit: boolean;
   talentName?: string;
   talentRole?: string;
   talentData?: HeroTalent | null;
@@ -23,18 +23,30 @@ function TalentSummaryCard({ t }: { t: HeroTalent }) {
         </div>
       )}
       <div className="min-w-0 flex-1">
-        <p className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">{t.role || "테크 전문가"}</p>
-        <p className="mt-0.5 text-[17px] font-bold text-[#171E2D]">{t.name}</p>
-        {t.headline && (
-          <p className="mt-0.5 text-[13px] leading-[1.5] text-[#5B667A]">{t.headline.replace(/\s*\/n\s*/g, " ")}</p>
-        )}
-        <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-[#59657A]">
-          <span className="font-semibold text-[#3A4356]">{t.yoeYears ? `${t.yoeYears}년차` : "신입"}{t.company ? ` · ${t.company}` : ""}</span>
-          {t.school && <span>· {t.school}</span>}
-          {t.language && <span>· {t.language}</span>}
+        {/* 직책(헤드라인) 강조 */}
+        <p className="text-[17px] font-bold leading-[1.35] text-[#171E2D] sm:text-[18px]">
+          {(t.headline ? t.headline.replace(/\s*\/n\s*/g, " ") : t.role) || "테크 전문가"}
+        </p>
+        <p className="mt-1 text-[13px] font-medium text-[#8A93A5]">{t.name}</p>
+
+        {/* 경력 · 어학 — 한 줄씩 (대학 제외) */}
+        <div className="mt-3 flex flex-col gap-1.5 text-[12.5px]">
+          <div className="flex gap-2">
+            <span className="w-9 shrink-0 text-[#9AA3B2]">경력</span>
+            <span className="font-semibold text-[#3A4356]">
+              {t.yoeYears ? `${t.yoeYears}년차` : "신입"}{t.company ? ` · ${t.company}` : ""}
+            </span>
+          </div>
+          {t.language && (
+            <div className="flex gap-2">
+              <span className="w-9 shrink-0 text-[#9AA3B2]">어학</span>
+              <span className="font-medium text-[#3A4356]">{t.language}</span>
+            </div>
+          )}
         </div>
+
         {t.skills && t.skills.length > 0 && (
-          <div className="mt-2.5 flex flex-wrap gap-1.5">
+          <div className="mt-3 flex flex-wrap gap-1.5">
             {t.skills.slice(0, 5).map((s) => (
               <span key={s} className="rounded-full bg-white px-2.5 py-1 text-[11px] font-medium text-[#5B667A] ring-1 ring-inset ring-[#E7EBF1]">{s}</span>
             ))}
@@ -46,7 +58,7 @@ function TalentSummaryCard({ t }: { t: HeroTalent }) {
 }
 
 /* Step 1 (인재 특정 문의) — 인재 요약 + 담당자 정보(성함·기업명·연락처·동의) */
-export default function StepInterview({ form, patch, onNext, canNext, talentName, talentRole, talentData }: Props) {
+export default function StepInterview({ form, patch, onProceed, canSubmit, talentName, talentRole, talentData }: Props) {
   const name = talentData?.name || talentName;
   const role = talentData?.role || talentRole;
 
@@ -105,11 +117,11 @@ export default function StepInterview({ form, patch, onNext, canNext, talentName
 
       <button
         type="button"
-        onClick={onNext}
-        disabled={!canNext}
+        onClick={onProceed}
+        disabled={!canSubmit}
         className="mt-1 inline-flex items-center justify-center rounded-md bg-[#E8590C] px-6 py-4 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
       >
-        다음 →
+        제출하기
       </button>
     </div>
   );

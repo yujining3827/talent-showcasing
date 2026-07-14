@@ -26,16 +26,34 @@ export default function StepOne({ form, patch, jdFile, setJdFile, onNext, canNex
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="text-[19px] font-bold text-[#171E2D]">채용 요건</h2>
+        <h2 className="text-[19px] font-bold text-[#171E2D]">
+          {isLast ? (
+            <>
+              <span className="text-[#E8590C]">(선택)</span> 이런 인재를 찾고 있어요
+            </>
+          ) : (
+            "채용 요건"
+          )}
+        </h2>
         <p className="mt-1 text-[14px] leading-[1.5] text-[#8A93A5]">
-          어떤 인재를 찾으시나요?
-          <br />
-          핵심 조건만 먼저 선택해주세요.
+          {isLast ? (
+            <>
+              찾고 계신 인재 정보를 남겨주시면,
+              <br />
+              요건에 맞는 인재를 함께 추천드립니다
+            </>
+          ) : (
+            <>
+              어떤 인재를 찾으시나요?
+              <br />
+              핵심 조건만 먼저 선택해주세요.
+            </>
+          )}
         </p>
       </div>
 
       {/* 핵심 조건 (항상 노출) */}
-      <Field label="관심 직무" required hint="복수 선택 가능">
+      <Field label="관심 직무" required={!isLast} hint="복수 선택 가능">
         <ChipGroup>
           {ROLE_OPTIONS.map((r) => (
             <Chip key={r} label={r} selected={form.roles.includes(r)} onClick={() => toggleRole(r)} />
@@ -55,13 +73,7 @@ export default function StepOne({ form, patch, jdFile, setJdFile, onNext, canNex
       <div className="border-t border-[#EEF1F5]" />
 
       {/* 추가 조건 (아코디언) */}
-      <Accordion
-        title={
-          <>
-            추가 조건 <span className="font-normal text-[#8A93A5]">(선택)</span>
-          </>
-        }
-      >
+      <Accordion title="추가 조건">
         <Field label="근무 형태">
           <ChipGroup>
             {WORKTYPE_OPTIONS.map((v) => (
@@ -115,7 +127,7 @@ export default function StepOne({ form, patch, jdFile, setJdFile, onNext, canNex
             disabled={!canSubmit || submitting}
             className="inline-flex flex-1 items-center justify-center rounded-md bg-[#E8590C] px-6 py-4 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {submitting ? "제출 중…" : "제출하기"}
+            {submitting ? "제출 중…" : "건너뛰기"}
           </button>
         </div>
       ) : (
