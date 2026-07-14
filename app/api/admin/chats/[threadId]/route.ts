@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { requireAdmin } from "@/lib/admin-chat-auth";
 
 export const dynamic = "force-dynamic";
 
-function getSupabaseAdmin() {
-  return createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { persistSession: false, autoRefreshToken: false } }
-  );
-}
-
 // GET: 스레드 메시지 전체 + 방문자 메시지 읽음 처리
-export async function GET(_req: NextRequest, { params }: { params: { threadId: string } }) {
-  const supabase = getSupabaseAdmin();
+export async function GET(req: NextRequest, { params }: { params: { threadId: string } }) {
+  const { supabase, fail } = await requireAdmin(req);
+  if (fail) return fail;
 
   const { data: thread } = await supabase
     .from("chat_threads")
@@ -43,13 +36,15 @@ export async function GET(_req: NextRequest, { params }: { params: { threadId: s
 
 // POST: 어드민 답장 — 미배정 스레드면 답장한 어드민에게 자동 배정
 export async function POST(req: NextRequest, { params }: { params: { threadId: string } }) {
-  const { body, adminId } = await req.json();
+  const { supabase, adminId, fail } = await requireAdmin(req);
+  if (fail) return fail;
+
+  const { body } = await req.json();
   const text = typeof body === "string" ? body.trim().slice(0, 2000) : "";
-  if (!text || !adminId) {
-    return NextResponse.json({ error: "body, adminId required" }, { status: 400 });
+  if (!text) {
+    return NextResponse.json({ error: "body required" }, { status: 400 });
   }
 
-  const supabase = getSupabaseAdmin();
   const { data: thread } = await supabase
     .from("chat_threads")
     .select("id, assigned_admin, status")
@@ -76,13 +71,14 @@ export async function POST(req: NextRequest, { params }: { params: { threadId: s
   return NextResponse.json({ message: msg });
 }
 
-// PATCH: { action: "assign" | "close", adminId }
+// PATCH: { action: "assign" | "close" } — assign은 토큰 유저에게 배정
 export async function PATCH(req: NextRequest, { params }: { params: { threadId: string } }) {
-  const { action, adminId } = await req.json();
-  const supabase = getSupabaseAdmin();
+  const { supabase, adminId, fail } = await requireAdmin(req);
+  if (fail) return fail;
+
+  const { action } = await req.json();
 
   if (action === "assign") {
-    if (!adminId) return NextResponse.json({ error: "adminId required" }, { status: 400 });
     const { error } = await supabase
       .from("chat_threads")
       .update({ assigned_admin: adminId, status: "assigned" })

@@ -33,6 +33,12 @@ type ChatMessage = {
 
 type Tab = "all" | "unassigned" | "mine" | "closed";
 
+// 어드민 API 인증 헤더 — 구글 로그인 세션의 access token (없으면 null)
+async function authHeaders(): Promise<Record<string, string> | null> {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session ? { Authorization: `Bearer ${session.access_token}` } : null;
+}
+
 function visitorLabel(t: ThreadRow) {
   return t.visitor_name || `방문자 #${t.id.slice(0, 4)}`;
 }
@@ -72,7 +78,9 @@ export default function AdminChatsPage() {
   }, []);
 
   const fetchThreads = useCallback(async () => {
-    const res = await fetch("/api/admin/chats");
+    const headers = await authHeaders();
+    if (!headers) return;
+    const res = await fetch("/api/admin/chats", { headers });
     if (!res.ok) return;
     const data = await res.json();
     setThreads(data.threads || []);
@@ -80,7 +88,9 @@ export default function AdminChatsPage() {
 
   const fetchMessages = useCallback(
     async (threadId: string) => {
-      const res = await fetch(`/api/admin/chats/${threadId}`);
+      const headers = await authHeaders();
+      if (!headers) return;
+      const res = await fetch(`/api/admin/chats/${threadId}`, { headers });
       if (!res.ok) return;
       const data = await res.json();
       if (selectedIdRef.current !== threadId) return; // 다른 방으로 이동한 경우 무시
@@ -139,15 +149,25 @@ export default function AdminChatsPage() {
 
   async function sendReply() {
     const text = reply.trim();
-    if (!text || !selectedId || !adminId || sending) return;
+    if (!text || !selectedId || sending) return;
     setSending(true);
     try {
+      const headers = await authHeaders();
+      if (!headers) {
+        alert("로그인 세션을 확인할 수 없습니다. 다시 로그인해주세요.");
+        window.location.href = "/login";
+        return;
+      }
       const res = await fetch(`/api/admin/chats/${selectedId}`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: text, adminId }),
+        headers: { "Content-Type": "application/json", ...headers },
+        body: JSON.stringify({ body: text }),
       });
-      if (!res.ok) return;
+      if (!res.ok) {
+        const err = await res.json().catch(() => null);
+        alert(`전송에 실패했습니다 (${res.status})${err?.error ? `: ${err.error}` : ""}`);
+        return;
+      }
       setReply("");
       await fetchMessages(selectedId);
       fetchThreads();
@@ -157,12 +177,23 @@ export default function AdminChatsPage() {
   }
 
   async function patchThread(action: "assign" | "close") {
-    if (!selectedId || !adminId) return;
-    await fetch(`/api/admin/chats/${selectedId}`, {
+    if (!selectedId) return;
+    const headers = await authHeaders();
+    if (!headers) {
+      alert("로그인 세션을 확인할 수 없습니다. 다시 로그인해주세요.");
+      window.location.href = "/login";
+      return;
+    }
+    const res = await fetch(`/api/admin/chats/${selectedId}`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action, adminId }),
+      headers: { "Content-Type": "application/json", ...headers },
+      body: JSON.stringify({ action }),
     });
+    if (!res.ok) {
+      const err = await res.json().catch(() => null);
+      alert(`처리에 실패했습니다 (${res.status})${err?.error ? `: ${err.error}` : ""}`);
+      return;
+    }
     fetchThreads();
   }
 
