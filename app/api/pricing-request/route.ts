@@ -33,6 +33,12 @@ type Body = {
   talentRole?: string | null;
   interviewSlots?: { date: string; times: string[] }[];
   interviewNote?: string;
+  // 유입 추적 (UTM / 광고 클릭 ID)
+  utm_source?: string | null;
+  utm_medium?: string | null;
+  utm_campaign?: string | null;
+  utm_content?: string | null;
+  fbclid?: string | null;
 };
 
 export async function POST(req: Request) {
@@ -53,7 +59,8 @@ export async function POST(req: Request) {
   }
 
   const { name, company, contact, roles = [], workType, duration, startTime, industry, jd, jdUrl, jdFileName, consent,
-    talentId, talentName, talentRole, interviewSlots = [], interviewNote } = body;
+    talentId, talentName, talentRole, interviewSlots = [], interviewNote,
+    utm_source, utm_medium, utm_campaign, utm_content, fbclid } = body;
 
   // 필수: 담당자·기업·연락처·동의
   if (!name?.trim() || !company?.trim() || !contact?.trim() || !consent) {
@@ -106,6 +113,11 @@ export async function POST(req: Request) {
       talent_role: talentRole || null,
       interview_slots: interviewSlots.length ? interviewSlots : null,
       interview_note: interviewNote || null,
+      utm_source: utm_source || null,
+      utm_medium: utm_medium || null,
+      utm_campaign: utm_campaign || null,
+      utm_content: utm_content || null,
+      fbclid: fbclid || null,
     });
     if (error) saveError = error.message;
     else saved = true;
@@ -136,6 +148,7 @@ export async function POST(req: Request) {
         jdUrl ? `• *JD URL:* ${jdUrl}` : null,
         jdFileUrl ? `• *JD 파일:* ${jdFileName || "첨부"} — ${jdFileUrl}` : jdFileName ? `• *JD 파일:* ${jdFileName} (업로드 실패)` : null,
         jd ? `• *JD:* ${jd.slice(0, 500)}` : null,
+        utm_source || utm_campaign ? `• *유입:* ${utm_source || "-"} / ${utm_medium || "-"} / ${utm_campaign || "-"}` : null,
         !saved ? "⚠️ (DB 저장 실패 — Slack으로만 접수됨)" : null,
       ].filter(Boolean);
 
@@ -188,7 +201,12 @@ export async function POST(req: Request) {
  *    add column if not exists talent_role text,
  *    add column if not exists interview_slots jsonb,
  *    add column if not exists interview_note text,
- *    add column if not exists jd_file_url text;
+ *    add column if not exists jd_file_url text,
+ *    add column if not exists utm_source text,
+ *    add column if not exists utm_medium text,
+ *    add column if not exists utm_campaign text,
+ *    add column if not exists utm_content text,
+ *    add column if not exists fbclid text;
  *
  *  -- JD PDF 업로드용 Storage 버킷 정책 (버킷 있는 프로젝트 = NEXT_PUBLIC DB 의 SQL Editor)
  *  --   버킷 'pricing-jd' (public) 는 생성되어 있어야 함

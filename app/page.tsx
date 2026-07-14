@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
+import CtaLink from "@/app/components/CtaLink";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
@@ -360,9 +361,9 @@ function Hero({
             <StatBlock value="91%" label="명문대 출신 인재" countTo={91} format={(n) => `${Math.round(n)}%`} />
           </div>
           <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:gap-5 md:mt-11">
-            <Link href="/pricing" className="inline-flex h-14 w-full items-center justify-center rounded-sm bg-[#E8590C] px-6 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto sm:min-w-[15rem] sm:px-11">
+            <CtaLink href="/pricing" location="hero" className="inline-flex h-14 w-full items-center justify-center rounded-sm bg-[#E8590C] px-6 text-[17px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto sm:min-w-[15rem] sm:px-11">
               인재 추천받기
-            </Link>
+            </CtaLink>
             <a href="#portfolio" className="inline-flex h-14 w-full items-center justify-center rounded-sm border border-[#AEB8CA] bg-white/30 px-6 text-[16px] font-semibold text-[#1D2638] transition hover:bg-white/60 sm:w-auto sm:min-w-[15rem] sm:px-11">
               포트폴리오 미리보기
             </a>

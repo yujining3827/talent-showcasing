@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CtaLink from "./CtaLink";
 
 /* 공용 상단 헤더 — 랜딩/고객사례/상세 등 마케팅 페이지에서 동일하게 사용
  * 앵커 링크는 "/#..." 형태라 서브페이지에서도 랜딩 해당 섹션으로 이동한다. */
@@ -18,9 +19,9 @@ export default function SiteHeader() {
               고객 사례
             </Link>
           </nav>
-          <Link href="/pricing" className="rounded-sm bg-[#E8590C] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-6 sm:py-3 sm:text-[15px]">
+          <CtaLink href="/pricing" location="header" className="rounded-sm bg-[#E8590C] px-4 py-2.5 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-6 sm:py-3 sm:text-[15px]">
             인재 추천받기
-          </Link>
+          </CtaLink>
         </div>
       </div>
     </header>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { EMPTY_FORM, type PricingForm } from "@/app/components/pricing/types";
 import ProgressBar from "@/app/components/pricing/ProgressBar";
 import StepInterview from "@/app/components/pricing/StepInterview";
@@ -10,6 +10,7 @@ import StepTwo from "@/app/components/pricing/StepTwo";
 import SiteFooter from "@/app/components/SiteFooter";
 import SiteHeader from "@/app/components/SiteHeader";
 import { HERO_TALENTS, type HeroTalent } from "@/lib/heroTalents";
+import { gtmPush, getStoredUtm } from "@/lib/gtm";
 
 /* ============================================================================
  *  가격 알아보기 / 인재 추천 요청 — 2-step 위저드
@@ -32,7 +33,24 @@ export default function PricingPage() {
     if (id) setTalent({ id, name: p.get("talentName") || "", role: p.get("talentRole") || "" });
   }, []);
 
-  const patch = (p: Partial<PricingForm>) => setForm((prev) => ({ ...prev, ...p }));
+  // 폼 첫 입력·선택 시 lead_form_open 1회 발화
+  const formOpenedRef = useRef(false);
+  const patch = (p: Partial<PricingForm>) => {
+    if (!formOpenedRef.current) {
+      formOpenedRef.current = true;
+      gtmPush("lead_form_open", { is_talent_inquiry: !!talent });
+    }
+    setForm((prev) => ({ ...prev, ...p }));
+  };
+
+  // Step 2 진입 시 lead_form_step2 1회 발화
+  const step2FiredRef = useRef(false);
+  useEffect(() => {
+    if (step === 2 && !step2FiredRef.current) {
+      step2FiredRef.current = true;
+      gtmPush("lead_form_step2", { is_talent_inquiry: !!talent });
+    }
+  }, [step, talent]);
 
   // 진입 경로에 따라 스텝 구성 (talent 문의: 면접일정→채용요건→담당자 / 일반: 채용요건→담당자)
   const isTalentInquiry = !!talent;
@@ -74,6 +92,7 @@ export default function PricingPage() {
         talentName: talent?.name ?? null,
         talentRole: talent?.role ?? null,
         interviewSlots: isTalentInquiry ? form.interviewSlots.filter((s) => s.date && s.times.length > 0) : [],
+        ...getStoredUtm(), // utm_source/medium/campaign/content, fbclid
       };
       const fd = new FormData();
       fd.append("data", JSON.stringify(payload));
@@ -82,6 +101,7 @@ export default function PricingPage() {
       const res = await fetch("/api/pricing-request", { method: "POST", body: fd }); // Content-Type 은 브라우저가 자동 설정
       if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
       setDone(true);
+      gtmPush("lead_submit", { is_talent_inquiry: !!talent, talent_id: talent?.id ?? null });
     } catch (err) {
       setSubmitError(err instanceof Error ? err.message : "제출 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.");
     } finally {

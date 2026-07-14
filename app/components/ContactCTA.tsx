@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CtaLink from "./CtaLink";
 
 /* 하단 CTA(푸터) — 랜딩/상세 등 여러 페이지 공용 */
 export default function ContactCTA() {
@@ -15,12 +16,13 @@ export default function ContactCTA() {
             검증된 후보 프로필을 확인하고, 2주 안에 실제 후보자를 제안받아 보세요.
           </p>
         </div>
-        <Link
+        <CtaLink
           href="/pricing"
+          location="contact-cta"
           className="inline-flex h-14 w-full flex-shrink-0 items-center justify-center rounded-sm bg-[#E8590C] px-9 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:w-auto"
         >
           인재 추천받기
-        </Link>
+        </CtaLink>
       </div>
     </section>
   );
