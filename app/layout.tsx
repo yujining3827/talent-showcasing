@@ -6,7 +6,7 @@ import Analytics from "./components/Analytics";
 
 export const metadata: Metadata = {
   title: "공고마감 by LIKELION",
-  description: "검증된 IT 인재를 채용비 50%로. 상위 대학·전 직장 출신 인재를 빠르게 만나보세요.",
+  description: "인건비 최대 60% 절감, 역량은 그대로. 최상위 글로벌 인재 구독.",
 };
 
 // GTM 컨테이너 ID — Vercel/.env 에 NEXT_PUBLIC_GTM_ID 설정 시에만 로드
