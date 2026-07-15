@@ -324,7 +324,7 @@ function Hero({
             </div>
             <div className="pl-5">
               <p className="text-[28px] font-bold text-[#111827]">단 3주</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">평균 추천 리드타임</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">평균 채용 리드타임</p>
             </div>
           </div>
         </div>
