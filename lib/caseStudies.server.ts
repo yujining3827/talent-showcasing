@@ -69,11 +69,26 @@ async function fetchDbCases(): Promise<CaseStudy[]> {
   }
 }
 
+// 인재 사례(type: "talent") 공통 링크 — 모두 salary-fyi로 연결
+const TALENT_CASE_URL = "https://salary-fyi.com/";
+
 export async function getAllCaseStudies(): Promise<CaseStudy[]> {
   const db = await fetchDbCases();
   const seen = new Set(db.map((c) => c.slug));
   // DB(최신) 먼저, 그다음 정적 중 slug 중복 아닌 것
-  return [...db, ...CASE_STUDIES.filter((c) => !seen.has(c.slug))];
+  const merged = [...db, ...CASE_STUDIES.filter((c) => !seen.has(c.slug))];
+  // 카드는 모두 유지. 링크(siteUrl)만 정리:
+  //  - 인재 사례는 salary-fyi로 통일
+  //  - 그 외에는 정상 http(s) URL만 남기고, 아니면 null → 상세 하단 "보러가기" 버튼 숨김
+  return merged.map((c) => {
+    const siteUrl =
+      c.type === "talent"
+        ? TALENT_CASE_URL
+        : c.siteUrl && /^https?:\/\//i.test(c.siteUrl)
+          ? c.siteUrl
+          : null;
+    return { ...c, siteUrl };
+  });
 }
 
 export async function getCaseBySlug(slug: string): Promise<CaseStudy | null> {
