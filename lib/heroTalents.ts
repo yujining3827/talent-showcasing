@@ -136,7 +136,7 @@ export const HERO_TALENTS: HeroTalent[] = [
     name: "Thai Bao Tran",
     role: "Growth Marketing",
     headline: "Mondelez·MoMo 출신 /n 그로스 마케터",
-    photo_url: "/Tran.avif",
+    photo_url: "/Thai_Bao_Tran.png",
     school: "Western Sydney University",
     schoolElite: false,
     schoolTier: null,
