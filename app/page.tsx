@@ -289,15 +289,16 @@ function Hero({
             <VerifiedIcon color="#E8590C" />
             세상에 없던 안심매칭
           </p>
-          <h1 className="mt-7 text-[40px] font-bold leading-[1.08] tracking-normal text-[#111827] sm:text-[48px] md:text-[58px]">
-            인건비 최대 60%↓
+          {/* 위계: 조건(회색·세미볼드) → 숫자(오렌지)·오퍼(진검정 엑스트라볼드)만 강조 */}
+          <h1 className="mt-7 text-[32px] font-semibold leading-[1.24] tracking-[-0.01em] text-[#3A4356] sm:text-[38px] md:text-[46px]">
+            인건비 최대 <span className="font-extrabold text-[#E8590C]">60%↓</span>
             <br />
             역량은 그대로.
             <br />
-            최상위 글로벌 인재 구독
+            <span className="font-extrabold text-[#111827]">최상위 글로벌 인재 구독</span>
           </h1>
           <p className="mt-6 max-w-[560px] text-[17px] leading-[1.75] text-[#4B5565] md:text-[20px]">
-            검증된 글로벌 인재를 평균 3주 만에, 월 구독으로 부담 없이 채용하세요.
+            검증된 글로벌 인재를 월 구독으로, 필요할 때 부담 없이 채용하세요.
           </p>
           {/* 모바일: 인재 카드를 첫 화면(헤드라인 바로 아래)에 노출 */}
           {featured && (
@@ -320,11 +321,11 @@ function Hero({
             </div>
             <div className="px-5">
               <p className="text-[28px] font-bold text-[#111827]">32%</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">상위권 대학 출신</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">최상위권 대학 출신</p>
             </div>
             <div className="pl-5">
-              <p className="text-[28px] font-bold text-[#111827]">단 3주</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">평균 채용 리드타임</p>
+              <p className="text-[28px] font-bold text-[#111827]">주 40시간</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">풀타임 단독 채용</p>
             </div>
           </div>
         </div>
