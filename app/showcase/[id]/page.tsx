@@ -80,6 +80,9 @@ export default function TalentDetailPage() {
   const gen = (GENERATED as unknown as Record<string, { detail?: TalentDetail; resumeUrl?: string | null }>)[id];
   const detail: TalentDetail | undefined = TALENT_DETAILS[id] ?? gen?.detail;
 
+  // 메인 인재(hero-1) 외 hero 인재는 이력서 원본 대신 '준비중' 페이지로 유도
+  const resumeBlocked = id !== "hero-1" && HERO_TALENTS.some((t) => t.id === id);
+
   useEffect(() => {
     if (!id) return;
     const hero = HERO_TALENTS.find((t) => t.id === id);
@@ -369,19 +372,31 @@ export default function TalentDetailPage() {
                       </section>
                     )}
 
-                    {/* 실제 이력서 원본 보기 */}
+                    {/* 실제 이력서 원본 보기 — 메인 인재 외에는 '준비중' 페이지로 유도 */}
                     {detail.resumeUrl && (
-                      <a
-                        href={detail.resumeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex w-fit items-center gap-2 rounded-sm border-2 border-[#E8590C] px-8 py-3.5 text-[15px] font-semibold text-[#E8590C] transition hover:bg-[#FFF6EF]"
-                      >
-                        이력서 · 포트폴리오 원본 보기
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                          <path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      </a>
+                      resumeBlocked ? (
+                        <Link
+                          href="/coming-soon"
+                          className="inline-flex w-fit items-center gap-2 rounded-sm border-2 border-[#E8590C] px-8 py-3.5 text-[15px] font-semibold text-[#E8590C] transition hover:bg-[#FFF6EF]"
+                        >
+                          이력서 · 포트폴리오 원본 보기
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </Link>
+                      ) : (
+                        <a
+                          href={detail.resumeUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex w-fit items-center gap-2 rounded-sm border-2 border-[#E8590C] px-8 py-3.5 text-[15px] font-semibold text-[#E8590C] transition hover:bg-[#FFF6EF]"
+                        >
+                          이력서 · 포트폴리오 원본 보기
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M7 17 17 7M17 7H9M17 7v8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        </a>
+                      )
                     )}
                   </div>
                 </div>
