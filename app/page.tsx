@@ -316,7 +316,7 @@ function Hero({
           <div className="mt-10 grid max-w-[560px] grid-cols-3 divide-x divide-[#DED4C8] border-y border-[#DED4C8] py-5">
             <div className="pr-5">
               <p className="text-[28px] font-bold text-[#E8590C]">20,000+</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">베트남 인재 네트워크</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">베트남 현지 네트워크</p>
             </div>
             <div className="px-5">
               <p className="text-[28px] font-bold text-[#111827]">32%</p>
