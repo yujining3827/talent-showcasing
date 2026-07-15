@@ -161,11 +161,10 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
 }
 
 
-function TalentStripCard({ talent, selected, onSelect }: { talent: ShowcaseTalent; selected: boolean; onSelect: () => void }) {
+function TalentStripCard({ talent, selected }: { talent: ShowcaseTalent; selected: boolean }) {
   return (
     <Link
       href={`/showcase/${talent.id}`}
-      onClick={onSelect}
       className={`grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border bg-white p-0 text-left transition hover:border-[#E8590C] hover:shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)] ${
         selected ? "border-[#E8590C] shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)]" : "border-[#D8DEE8]"
       }`}
@@ -200,11 +199,9 @@ function ChevronIcon({ direction }: { direction: "left" | "right" }) {
 function TalentStrip({
   talents,
   selectedId,
-  onSelect,
 }: {
   talents: ShowcaseTalent[];
   selectedId: string | null;
-  onSelect: (id: string) => void;
 }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
@@ -243,7 +240,6 @@ function TalentStrip({
                 key={talent.id}
                 talent={talent}
                 selected={talent.id === selectedId}
-                onSelect={() => onSelect(talent.id)}
               />
             ))
           : Array.from({ length: 3 }).map((_, index) => (
@@ -276,9 +272,9 @@ function Hero({
   talents: ShowcaseTalent[];
 }) {
   const heroTalents = talents.slice(0, 10);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [brochureOpen, setBrochureOpen] = useState(false);
-  const featured = heroTalents.find((t) => t.id === selectedId) || heroTalents[0] || null;
+  // 큰 카드는 항상 최상위 인재 고정. 스트립 카드 클릭은 상세로 바로 이동(선택 반영 없음)
+  const featured = heroTalents[0] || null;
 
   return (
     <section className="relative isolate overflow-hidden bg-white text-[#192133]">
@@ -333,7 +329,7 @@ function Hero({
         <div className="hidden md:block">{featured ? <FeaturedCandidatePanel talent={featured} /> : null}</div>
 
         <div className="z-20 mt-4 md:col-span-2 md:mt-8">
-          <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} onSelect={setSelectedId} />
+          <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} />
         </div>
       </div>
     </section>
