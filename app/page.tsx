@@ -163,8 +163,8 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
 
 function TalentStripCard({ talent, selected, onSelect }: { talent: ShowcaseTalent; selected: boolean; onSelect: () => void }) {
   return (
-    <button
-      type="button"
+    <Link
+      href={`/showcase/${talent.id}`}
       onClick={onSelect}
       className={`grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border bg-white p-0 text-left transition hover:border-[#E8590C] hover:shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)] ${
         selected ? "border-[#E8590C] shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)]" : "border-[#D8DEE8]"
@@ -185,7 +185,7 @@ function TalentStripCard({ talent, selected, onSelect }: { talent: ShowcaseTalen
           {talent.company ? ` · ${talent.company}` : ""}
         </p>
       </div>
-    </button>
+    </Link>
   );
 }
 
