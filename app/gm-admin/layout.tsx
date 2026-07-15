@@ -4,9 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
-  { href: "/gm-admin", label: "상담 리드" },
-  { href: "/gm-admin/cases", label: "고객 사례" },
   { href: "/gm-admin/chats", label: "1:1 채팅" },
+  { href: "/gm-admin/cases", label: "고객 사례" },
+  { href: "/gm-admin/leads", label: "상담 리드" },
 ];
 
 export default function GmAdminLayout({ children }: { children: React.ReactNode }) {
