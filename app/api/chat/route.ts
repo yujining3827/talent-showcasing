@@ -14,21 +14,26 @@ function getSupabaseAdmin() {
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // 새 채팅방 생성 시 Slack Incoming Webhook 알림 (실패해도 채팅 흐름은 막지 않음)
-async function notifyNewChat(firstMessage: string, originPath: string | null) {
+async function notifyNewChat(firstMessage: string, _originPath: string | null) {
   const webhook = process.env.SLACK_WEBHOOK_URL;
   if (!webhook) return;
-  const base = process.env.NEXT_PUBLIC_BASE_URL || "https://ktc-support.vercel.app";
-  const lines = [
-    "💬 *새 채팅 문의가 시작됐어요*",
-    `• *첫 메시지:* ${firstMessage}`,
-    originPath ? `• *유입 페이지:* ${originPath}` : null,
-    `• *관리:* ${base}/admin/chats`,
-  ].filter(Boolean);
+  const base = process.env.NEXT_PUBLIC_BASE_URL || "https://ggmg.ai.kr";
+  // header 블록 = 첫 줄을 크게(볼드). 본문은 section(mrkdwn).
+  const blocks = [
+    { type: "header", text: { type: "plain_text", text: "💬 새 채팅 문의가 시작됐어요", emoji: true } },
+    {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: [`• *첫 메시지:* ${firstMessage}`, `• *관리:* ${base}/gm-admin/chats`].join("\n"),
+      },
+    },
+  ];
   try {
     await fetch(webhook, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: lines.join("\n") }),
+      body: JSON.stringify({ text: "💬 새 채팅 문의가 시작됐어요", blocks }),
     });
   } catch (e) {
     console.error("[chat] slack error:", e);
