@@ -25,7 +25,7 @@ export default function GmAdminLayout({ children }: { children: React.ReactNode 
       <header className="sticky top-0 z-40 border-b border-[#EAEDF2] bg-white">
         <div className="mx-auto flex h-[60px] max-w-[1100px] items-center justify-between px-6">
           <div className="flex items-center gap-6">
-            <Link href="/gm-admin" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <img src="/logo-wordmark.png" alt="공고마감" className="h-7 w-auto" />
             </Link>
             <nav className="flex items-center gap-1">
