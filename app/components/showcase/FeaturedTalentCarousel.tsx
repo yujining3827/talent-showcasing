@@ -34,7 +34,8 @@ export const FEATURED_TALENTS: FeaturedTalent[] = [
   { id: "ft-fullstack", role: "Full-stack Developer", title: "SaaS 어드민 대시보드 구축", category: "개발", skills: ["React", "Node.js", "TypeScript"], image: "/portfolio/fullstack.png", link: null },
   { id: "ft-uiux", role: "UX/UI Designer", title: "커머스 앱 UX/UI 리디자인", category: "디자인", skills: ["Figma", "Wireframing", "Design System"], image: "/portfolio/uiux.png", link: null },
   { id: "ft-senior-uiux", role: "Senior UX/UI Designer", title: "핀테크 앱 FinMate UX/UI 디자인", category: "디자인", skills: ["Figma", "Design System", "Prototyping"], image: "/portfolio/senior_uiux.png", link: null },
-  { id: "ft-graphic", role: "Graphic Designer", title: "문화·F&B 브랜드·포스터 그래픽", category: "디자인", skills: ["Branding", "Editorial", "Print"], image: "/portfolio/poster_design.png", link: null },
+  // 잠시 숨김 처리 (추후 복구 시 주석 해제)
+  // { id: "ft-graphic", role: "Graphic Designer", title: "문화·F&B 브랜드·포스터 그래픽", category: "디자인", skills: ["Branding", "Editorial", "Print"], image: "/portfolio/poster_design.png", link: null },
   { id: "ft-cardnews", role: "Content Designer", title: "이벤트·리테일 SNS 카드뉴스·포스터", category: "디자인", skills: ["Social Media", "Card News", "Poster"], image: "/portfolio/cardnews_design.png", link: null },
   { id: "ft-housing", role: "Product Designer", title: "부동산 플랫폼 nhapho123 UX/UI", category: "디자인", skills: ["Figma", "Web Design", "Mobile App"], image: "/portfolio/housing_service_design.png", link: null },
   { id: "ft-package", role: "Package Designer", title: "그루밍 브랜드 LE NORD 패키지 디자인", category: "디자인", skills: ["Packaging", "Branding", "Print"], image: "/portfolio/package_design.png", link: null },
