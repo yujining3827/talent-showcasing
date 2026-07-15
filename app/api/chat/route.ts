@@ -14,7 +14,7 @@ function getSupabaseAdmin() {
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // 새 채팅방 생성 시 Slack Incoming Webhook 알림 (실패해도 채팅 흐름은 막지 않음)
-async function notifyNewChat(firstMessage: string, _originPath: string | null) {
+async function notifyNewChat(firstMessage: string, originPath: string | null) {
   const webhook = process.env.SLACK_WEBHOOK_URL;
   if (!webhook) return;
   const base = process.env.NEXT_PUBLIC_BASE_URL || "https://ggmg.ai.kr";
@@ -25,7 +25,11 @@ async function notifyNewChat(firstMessage: string, _originPath: string | null) {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: [`• *첫 메시지:* ${firstMessage}`, `• *관리:* ${base}/gm-admin/chats`].join("\n"),
+        text: [
+          `• *첫 메시지:* ${firstMessage}`,
+          ...(originPath ? [`• *시작 페이지:* ${base}${originPath}`] : []),
+          `• *관리:* ${base}/gm-admin/chats`,
+        ].join("\n"),
       },
     },
   ];
