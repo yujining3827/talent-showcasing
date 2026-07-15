@@ -315,15 +315,15 @@ function Hero({
           </div>
           <div className="mt-10 grid max-w-[560px] grid-cols-3 divide-x divide-[#DED4C8] border-y border-[#DED4C8] py-5">
             <div className="pr-5">
-              <p className="text-[28px] font-bold text-[#E8590C]">2만+</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">검증 인재 풀</p>
+              <p className="text-[28px] font-bold text-[#E8590C]">20,000+</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">베트남 인재 네트워크</p>
             </div>
             <div className="px-5">
               <p className="text-[28px] font-bold text-[#111827]">32%</p>
               <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">상위권 대학 출신</p>
             </div>
             <div className="pl-5">
-              <p className="text-[28px] font-bold text-[#111827]">3주</p>
+              <p className="text-[28px] font-bold text-[#111827]">단 3주</p>
               <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">평균 추천 리드타임</p>
             </div>
           </div>
