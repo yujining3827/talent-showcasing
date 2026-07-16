@@ -168,7 +168,7 @@ function Hero({
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
         </p>
-        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#3182F6] px-12 text-[18px] font-bold text-white transition hover:bg-[#1B64DA] sm:w-auto">
+        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-12 items-center justify-center rounded-lg bg-[#3182F6] px-8 text-[16px] font-semibold text-white transition hover:bg-[#1B64DA] sm:h-[52px] sm:px-10 sm:text-[17px]">
           무료 트라이얼 시작하기
         </CtaLink>
       </div>
