@@ -145,11 +145,9 @@ function Hero({
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-60px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
-          우리는 <span className="text-[#FF7A2F]">20,000여 명</span>의
+          우리가 보유한 20,000명의
           <RotatingLogo />
-          출신 베트남 인재가 있습니다
-          <br />
-          2주일 공짜로 써보세요
+          출신 인재를 <span className="text-[#FF7A2F]">2주일 무료</span>로 써보세요
         </h1>
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
