@@ -66,14 +66,14 @@ function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
 // 배경 없이 화이트 단색으로 다크 위에 직접. 슬롯 크기 고정이라 교체 시 들썩이지 않는다
 // h: 워드마크마다 시각적 무게가 달라 개별 보정
 const ROTATING_LOGOS: { name: string; src: string; h: string }[] = [
-  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-[0.34em]" },
-  { name: "구글", src: "/google.png", h: "h-[0.5em]" },
-  { name: "Grab", src: "/Grab.png", h: "h-[0.44em]" },
-  { name: "FPT Software", src: "/FPT%20Software.webp", h: "h-[0.6em]" },
-  { name: "VNG", src: "/VNG.webp", h: "h-[0.5em]" },
-  { name: "KPMG", src: "/KPMG.webp", h: "h-[0.42em]" },
-  { name: "Prudential", src: "/Prudential.webp", h: "h-[0.5em]" },
-  { name: "Mondelez", src: "/Mondelez.png", h: "h-[0.58em]" },
+  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-[0.42em]" },
+  { name: "구글", src: "/google.png", h: "h-[0.62em]" },
+  { name: "Grab", src: "/Grab.png", h: "h-[0.55em]" },
+  { name: "FPT Software", src: "/FPT%20Software.webp", h: "h-[0.75em]" },
+  { name: "VNG", src: "/VNG.webp", h: "h-[0.62em]" },
+  { name: "KPMG", src: "/KPMG.webp", h: "h-[0.52em]" },
+  { name: "Prudential", src: "/Prudential.webp", h: "h-[0.62em]" },
+  { name: "Mondelez", src: "/Mondelez.png", h: "h-[0.72em]" },
 ];
 
 function RotatingLogo() {
@@ -86,7 +86,7 @@ function RotatingLogo() {
 
   const logo = ROTATING_LOGOS[index];
   return (
-    <span className="inline-flex h-[0.7em] w-[2em] items-center justify-center align-[-0.04em]">
+    <span className="inline-flex h-[0.8em] w-[2.5em] items-center justify-center align-[-0.06em]">
       <img
         key={logo.name}
         src={logo.src}
