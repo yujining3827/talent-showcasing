@@ -65,19 +65,19 @@ function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
 // 히어로 로고 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
 // 배경 없이 화이트 단색으로 다크 위에 직접. 슬롯 크기 고정이라 교체 시 들썩이지 않는다
 // h: 워드마크마다 시각적 무게가 달라 개별 보정
-// h: 슬롯 높이 대비 % (워드마크마다 시각적 무게가 달라 개별 보정)
+// h: 헤드라인 폰트 대비 em (워드마크마다 시각적 무게가 달라 개별 보정)
 const ROTATING_LOGOS: { name: string; src: string; h: string }[] = [
-  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-[58%]" },
-  { name: "구글", src: "/google.png", h: "h-[85%]" },
-  { name: "Grab", src: "/Grab.png", h: "h-[75%]" },
-  { name: "FPT Software", src: "/FPT%20Software.webp", h: "h-full" },
-  { name: "VNG", src: "/VNG.webp", h: "h-[85%]" },
-  { name: "KPMG", src: "/KPMG.webp", h: "h-[70%]" },
-  { name: "Prudential", src: "/Prudential.webp", h: "h-[85%]" },
-  { name: "Mondelez", src: "/Mondelez.png", h: "h-[95%]" },
+  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-[0.55em]" },
+  { name: "구글", src: "/google.png", h: "h-[0.8em]" },
+  { name: "Grab", src: "/Grab.png", h: "h-[0.7em]" },
+  { name: "FPT Software", src: "/FPT%20Software.webp", h: "h-[0.95em]" },
+  { name: "VNG", src: "/VNG.webp", h: "h-[0.8em]" },
+  { name: "KPMG", src: "/KPMG.webp", h: "h-[0.66em]" },
+  { name: "Prudential", src: "/Prudential.webp", h: "h-[0.8em]" },
+  { name: "Mondelez", src: "/Mondelez.png", h: "h-[0.9em]" },
 ];
 
-// 헤드라인 위에 별도 층으로 크게 — 로고가 텍스트보다 주인공
+// 문장 속 인라인 — 구어체 흐름을 깨지 않으면서 글자만큼 굵직하게
 function RotatingLogo() {
   const [index, setIndex] = useState(0);
 
@@ -88,12 +88,12 @@ function RotatingLogo() {
 
   const logo = ROTATING_LOGOS[index];
   return (
-    <span className="mb-5 flex h-14 w-full items-center justify-center sm:h-20 md:mb-7 md:h-24">
+    <span className="inline-flex h-[0.95em] w-[2.9em] items-center justify-center align-[-0.1em]">
       <img
         key={logo.name}
         src={logo.src}
         alt={logo.name}
-        className={`${logo.h} animate-logo-in w-auto max-w-[80%] object-contain brightness-0 invert drop-shadow-[0_4px_30px_rgba(255,255,255,0.3)]`}
+        className={`${logo.h} animate-logo-in w-auto max-w-full object-contain brightness-0 invert drop-shadow-[0_2px_20px_rgba(255,255,255,0.28)]`}
       />
     </span>
   );
@@ -145,8 +145,9 @@ function Hero({
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-60px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
-          <RotatingLogo />
-          출신 베트남 인재 <span className="text-[#FF7A2F]">20,000여 명</span>,
+          우리는 <span className="text-[#FF7A2F]">20,000여 명</span>의
+          <br />
+          <RotatingLogo /> 출신 베트남 인재가 있습니다
           <br />
           2주일 공짜로 써보세요
         </h1>
