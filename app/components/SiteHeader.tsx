@@ -19,7 +19,7 @@ export default function SiteHeader() {
               고객 사례
             </Link>
           </nav>
-          <CtaLink href="/pricing" location="header" className="rounded-md bg-[#E8590C] px-3.5 py-2 text-[13px] font-semibold text-white transition hover:bg-[#C74E0A] sm:px-4 sm:text-[14px]">
+          <CtaLink href="/pricing" location="header" className="rounded-md border border-[#D8DEE8] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#1F2937] transition hover:border-[#E8590C] hover:text-[#E8590C] sm:px-4 sm:text-[14px]">
             인재 추천받기
           </CtaLink>
         </div>
