@@ -87,7 +87,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
   return (
     <Link
       href={`/showcase/${talent.id}`}
-      className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)] transition-shadow duration-300 hover:shadow-[0_30px_80px_-38px_rgba(232,89,12,0.4)] sm:flex-row"
+      className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_30px_90px_-30px_rgba(232,89,12,0.35)] ring-1 ring-white/10 transition-shadow duration-300 hover:shadow-[0_36px_100px_-30px_rgba(232,89,12,0.55)] sm:flex-row"
     >
       <div className="relative h-[300px] w-full sm:h-auto sm:w-[42%]">
         <TalentPhoto talent={talent} large />
@@ -114,7 +114,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
             </div>
           );
         })()}
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 추천 가능</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 트라이얼 가능</p>
         <p className="mt-2 pr-[156px] text-[19px] font-semibold leading-[1.4] text-[#171E2D]">
           {(talent.headline || `검증된 ${talent.role || "테크"} 전문가`).split("/n").map((line, i) => (
             <span key={i} className="block">
@@ -277,35 +277,37 @@ function Hero({
   const featured = heroTalents[0] || null;
 
   return (
-    <section className="relative isolate overflow-hidden bg-white text-[#192133]">
+    <section className="relative isolate overflow-hidden bg-[#0B1120] text-white">
       <BrochureModal open={brochureOpen} onClose={() => setBrochureOpen(false)} />
-      {/* 센터 원컬럼 퍼널: 키메시지 → CTA → 인재 카드(상품샷) → 롤링. 좌우 2단·통계 밴드 제거 */}
-      <div className="mx-auto flex max-w-[880px] flex-col items-center px-5 pt-10 text-center md:pt-16">
-        <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
-          <VerifiedIcon color="#E8590C" />
-          베트남 검증 인재 · 채용 결정 전까지 비용 0원
+      {/* 다크 히어로 + 상단 오렌지 글로우 — 흰 인재 카드가 상품샷처럼 떠오르게 */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(90%_55%_at_50%_-8%,rgba(232,89,12,0.32),transparent_62%)]" />
+      <div className="mx-auto flex max-w-[880px] flex-col items-center px-5 pt-9 text-center md:pt-12">
+        <p className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-2 text-[13px] font-semibold text-[#FFB98A]">
+          <VerifiedIcon color="#FF7A2F" />
+          베트남 검증 인재 · 1주 무료 트라이얼
         </p>
-        {/* 주장(도발) → 의심 인정 → 무료 검증 초대. "왜?"는 절반이라는 숫자가 답한다 */}
-        <h1 className="mt-6 break-keep text-[28px] font-extrabold leading-[1.25] tracking-[-0.01em] text-[#111827] sm:text-[44px] md:text-[56px]">
-          인건비는 절반.
+        {/* 오퍼가 곧 헤드라인 — 프로세스(추천)가 아니라 결과물(일주일치 일)을 준다 */}
+        <h1 className="mt-5 break-keep text-[28px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[44px] md:text-[56px]">
+          삼성 출신 베트남 인재에게
           <br />
-          <span className="text-[#E8590C]">실력은 삼성 출신.</span>
+          <span className="text-[#FF7A2F]">1주일, 공짜로 일 시켜보세요</span>
         </h1>
-        <p className="mt-5 max-w-[560px] break-keep text-[16px] leading-[1.7] text-[#4B5565] md:text-[19px]">
-          못 믿기시는 게 정상입니다. 그래서 추천도 면접도 공짜입니다.
+        <p className="mt-4 max-w-[600px] break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
+          진짜 업무를 맡겨보고, 마음에 들 때만 채용하세요. 인건비는 한국의 절반입니다.
           <br className="hidden sm:block" />
-          베트남 검증 인재를 직접 확인하고, 마음에 들 때만 채용하세요.
+          아니면 그냥 헤어지면 됩니다 — 비용도, 조건도 없습니다.
         </p>
-        <CtaLink href="/pricing" location="hero" className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-md bg-[#E8590C] px-10 text-[17px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A] sm:w-auto">
-          무료로 후보 받아보기
+        <CtaLink href="/pricing" location="hero" className="mt-7 inline-flex h-14 w-full items-center justify-center rounded-md bg-[#E8590C] px-10 text-[17px] font-semibold text-white shadow-[0_22px_60px_-18px_rgba(232,89,12,0.75)] transition hover:bg-[#C74E0A] sm:w-auto">
+          1주 무료 트라이얼 시작하기
         </CtaLink>
-        <button type="button" onClick={() => setBrochureOpen(true)} className="mt-4 text-[14px] font-medium text-[#6B7280] underline underline-offset-4 transition hover:text-[#1F2937]">
+        <p className="mt-3 text-[13px] text-[#8A93A5]">신청 1분 · 결제 정보 필요 없음</p>
+        <button type="button" onClick={() => setBrochureOpen(true)} className="mt-2 text-[14px] font-medium text-[#8A93A5] underline underline-offset-4 transition hover:text-white">
           서비스 소개서 받아보기
         </button>
       </div>
       {/* 상품 = 사람. 인재 카드가 곧 히어로 이미지 */}
       {featured && (
-        <div className="mx-auto mt-10 w-full max-w-[880px] px-5 text-left md:mt-12">
+        <div className="mx-auto mt-8 w-full max-w-[880px] px-5 text-left md:mt-10">
           <FeaturedCandidatePanel talent={featured} />
         </div>
       )}
@@ -316,11 +318,11 @@ function Hero({
   );
 }
 
-// H1의 "리스크 없이"를 구조로 증명 — 비용이 언제 발생하는지 3스텝
+// 트라이얼 오퍼를 구조로 증명 — 비용이 언제 발생하는지 3스텝
 function RiskFreeSteps() {
   const steps = [
-    { n: 1, title: "채용 요건 남기기", desc: "1분이면 끝납니다" },
-    { n: 2, title: "후보 추천 · 면접", desc: "여기까지 비용 0원" },
+    { n: 1, title: "채용 요건 남기기", desc: "신청 1분이면 끝납니다" },
+    { n: 2, title: "후보 면접 → 1주 트라이얼", desc: "진짜 업무를 맡겨보세요. 여기까지 0원" },
     { n: 3, title: "마음에 들 때만 채용", desc: "채용을 결정할 때만 비용 발생" },
   ];
   return (
@@ -346,7 +348,7 @@ function MobileStickyCta() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#EFE6DA] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          무료로 후보 받아보기
+          1주 무료 트라이얼 시작하기
         </CtaLink>
       </div>
     </div>
