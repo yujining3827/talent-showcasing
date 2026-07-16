@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV = [
+  { href: "/gm-admin/clarity", label: "Clarity 요약" },
   { href: "/gm-admin/chats", label: "1:1 채팅" },
   { href: "/gm-admin/cases", label: "고객 사례" },
   { href: "/gm-admin/leads", label: "상담 리드" },
@@ -15,11 +16,6 @@ export default function GmAdminLayout({ children }: { children: React.ReactNode 
 
   // 로그인 페이지는 셸(헤더/네비) 없이 그대로
   if (pathname === "/gm-admin/login") return <>{children}</>;
-
-  async function logout() {
-    await fetch("/api/gm-admin/login", { method: "DELETE" });
-    window.location.href = "/gm-admin/login";
-  }
 
   return (
     <div className="min-h-screen bg-[#F7F8FA]">
@@ -46,9 +42,14 @@ export default function GmAdminLayout({ children }: { children: React.ReactNode 
               })}
             </nav>
           </div>
-          <button onClick={logout} className="text-[13px] font-medium text-[#8A93A5] transition hover:text-[#E8590C]">
-            로그아웃
-          </button>
+          <a
+            href="https://b2bvntr.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 text-[13px] font-medium text-[#8A93A5] transition hover:text-[#E8590C]"
+          >
+            베타 광고 대시보드 ↗
+          </a>
         </div>
       </header>
       {children}
