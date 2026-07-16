@@ -7,6 +7,7 @@ const NAV = [
   { href: "/gm-admin/chats", label: "1:1 채팅" },
   { href: "/gm-admin/cases", label: "고객 사례" },
   { href: "/gm-admin/leads", label: "상담 리드" },
+  { href: "/gm-admin/brochure", label: "소개서 관리" },
 ];
 
 export default function GmAdminLayout({ children }: { children: React.ReactNode }) {
