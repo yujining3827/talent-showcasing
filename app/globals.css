@@ -294,6 +294,15 @@ body {
   .animate-hero-wall { animation: none; }
 }
 
+/* 히어로 로고 교체 페이드인 */
+@keyframes logoIn {
+  from { opacity: 0; transform: translateY(22%); }
+  to { opacity: 1; transform: none; }
+}
+.animate-logo-in {
+  animation: logoIn 0.35s ease-out;
+}
+
 /* 히어로 CTA 펄스 (글로우가 숨쉬듯 커졌다 작아짐) */
 @keyframes ctaPulse {
   0%, 100% { box-shadow: 0 22px 60px -18px rgba(232, 89, 12, 0.8); transform: scale(1); }

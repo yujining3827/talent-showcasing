@@ -51,6 +51,19 @@ function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?
   );
 }
 
+// 출신사 로고 풀 — 히어로 하단 마퀴에 사용 (전부 인재 풀에 실존하는 출신 기업)
+const TRUST_LOGOS: { name: string; src: string }[] = [
+  { name: "Samsung", src: "/samsung.svg" },
+  { name: "FPT Software", src: "/FPT%20Software.webp" },
+  { name: "Grab", src: "/Grab.png" },
+  { name: "Google", src: "/google.png" },
+  { name: "VNG", src: "/VNG.webp" },
+  { name: "KPMG", src: "/KPMG.webp" },
+  { name: "Prudential", src: "/Prudential.webp" },
+  { name: "Mondelez", src: "/Mondelez.png" },
+  { name: "NAB", src: "/NAB.svg" },
+];
+
 // 배경 월 타일 — 사진만. 카드 UI 없이 미디어 레이어로만 기능한다
 function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
   return (
@@ -63,39 +76,35 @@ function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
 }
 
 // 히어로 로고 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
-// 다크 배경 위 화이트 단색 처리(brightness-0 invert), 페이드+슬라이드 교체
+// 배경 없이 화이트 단색으로 다크 위에 직접. 슬롯 크기 고정이라 교체 시 들썩이지 않는다
+// h: 워드마크마다 시각적 무게가 달라 개별 보정
 const ROTATING_LOGOS: { name: string; src: string; h: string }[] = [
-  { name: "삼성", src: "/samsung.svg", h: "h-[0.72em]" },
-  { name: "구글", src: "/google.png", h: "h-[0.82em]" },
-  { name: "Grab", src: "/Grab.png", h: "h-[0.74em]" },
-  { name: "VNG", src: "/VNG.webp", h: "h-[0.82em]" },
-  { name: "KPMG", src: "/KPMG.webp", h: "h-[0.72em]" },
+  { name: "삼성", src: "/samsung.svg", h: "h-[0.52em]" },
+  { name: "구글", src: "/google.png", h: "h-[0.62em]" },
+  { name: "Grab", src: "/Grab.png", h: "h-[0.55em]" },
+  { name: "FPT Software", src: "/FPT%20Software.webp", h: "h-[0.75em]" },
+  { name: "VNG", src: "/VNG.webp", h: "h-[0.62em]" },
+  { name: "KPMG", src: "/KPMG.webp", h: "h-[0.52em]" },
+  { name: "Prudential", src: "/Prudential.webp", h: "h-[0.62em]" },
+  { name: "Mondelez", src: "/Mondelez.png", h: "h-[0.72em]" },
 ];
 
 function RotatingLogo() {
   const [index, setIndex] = useState(0);
-  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const cycle = setInterval(() => {
-      setVisible(false);
-      setTimeout(() => {
-        setIndex((i) => (i + 1) % ROTATING_LOGOS.length);
-        setVisible(true);
-      }, 320);
-    }, 2400);
+    const cycle = setInterval(() => setIndex((i) => (i + 1) % ROTATING_LOGOS.length), 2400);
     return () => clearInterval(cycle);
   }, []);
 
   const logo = ROTATING_LOGOS[index];
   return (
-    <span className="inline-flex items-center align-[-0.1em]">
+    <span className="inline-flex h-[0.8em] w-[2.5em] items-center justify-center align-[-0.06em]">
       <img
+        key={logo.name}
         src={logo.src}
         alt={logo.name}
-        className={`${logo.h} w-auto brightness-0 invert transition-all duration-300 ease-out ${
-          visible ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
-        }`}
+        className={`${logo.h} animate-logo-in w-auto max-w-full object-contain brightness-0 invert drop-shadow-[0_2px_18px_rgba(255,255,255,0.25)]`}
       />
     </span>
   );
@@ -157,6 +166,23 @@ function Hero({
         <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white transition hover:bg-[#C74E0A] sm:w-auto">
           무료 트라이얼 시작하기
         </CtaLink>
+        {/* 출신사 로고 마퀴 — 히어로 첫 화면 안에서 신뢰 증거까지 끝낸다 (화이트 톤으로 채도 절제) */}
+        <div aria-hidden="true" className="pointer-events-none relative left-1/2 mt-14 w-screen -translate-x-1/2 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+          <div className="flex">
+            {[0, 1].map((dup) => (
+              <div key={dup} className="animate-marquee flex shrink-0 items-center">
+                {TRUST_LOGOS.map((logo) => (
+                  <img
+                    key={`${logo.name}-${dup}`}
+                    src={logo.src}
+                    alt={logo.name}
+                    className="mr-12 h-6 w-auto object-contain opacity-50 brightness-0 invert sm:mr-16 sm:h-8"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -172,44 +198,6 @@ function MobileStickyCta() {
         </CtaLink>
       </div>
     </div>
-  );
-}
-
-function TrustLogos() {
-  // ⚠️ 로고 이미지: public/에 파일 넣고 src 채우면 이미지로, null이면 텍스트로 표시
-  const logos: { name: string; src: string | null }[] = [
-    { name: "Samsung", src: "/samsung.svg" },
-    { name: "FPT Software", src: "/FPT%20Software.webp" },
-    { name: "Grab", src: "/Grab.png" },
-    { name: "Google", src: "/google.png" },
-    { name: "VNG", src: "/VNG.webp" },
-    { name: "KPMG", src: "/KPMG.webp" },
-  ];
-  return (
-    <section className="bg-white">
-      <div className="pt-14 pb-16">
-        {/* 섹션 의미를 로고보다 먼저 — "고객사 로고"로 오독되지 않도록 라벨 선행 */}
-        <p className="mb-10 px-5 text-center text-[15px] font-semibold text-[#3A4356] sm:text-[17px]">
-          이런 기업에서 일했던 인재를 제안합니다
-        </p>
-        {/* 무한 마퀴: 동일 트랙 2개를 나란히 두고 각자 -100% 이동 → 끊김 없이 이어짐 */}
-        <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_7%,black_93%,transparent)]">
-          {[0, 1].map((dup) => (
-            <div key={dup} className="animate-marquee flex shrink-0 items-center" aria-hidden={dup === 1}>
-              {logos.map((logo) => (
-                <div key={logo.name} className="flex shrink-0 items-center pr-14 sm:pr-24">
-                  {logo.src ? (
-                    <img src={logo.src} alt={logo.name} className="h-10 w-auto object-contain sm:h-16" />
-                  ) : (
-                    <span className="whitespace-nowrap text-[16px] font-semibold text-[#3A4356] sm:text-[19px]">{logo.name}</span>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
   );
 }
 
@@ -268,7 +256,6 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
       <SiteHeader />
       <Hero talents={heroTalents} />
-      <TrustLogos />
       <FeaturedTalentCarousel />
       <TalentPreview talents={premiumTalents} />
       <CaseStudiesPreview />
