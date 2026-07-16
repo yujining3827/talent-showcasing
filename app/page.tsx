@@ -114,7 +114,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
             </div>
           );
         })()}
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">이달의 검증 인재</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 추천 가능</p>
         <p className="mt-2 pr-[156px] text-[19px] font-semibold leading-[1.4] text-[#171E2D]">
           {(talent.headline || `검증된 ${talent.role || "테크"} 전문가`).split("/n").map((line, i) => (
             <span key={i} className="block">
@@ -122,7 +122,7 @@ function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
             </span>
           ))}
         </p>
-        <p className="mt-1 text-[13px] text-[#59657A]">경력과 실무 역량을 먼저 확인합니다.</p>
+        <p className="mt-1 text-[13px] text-[#59657A]">경력·어학·포트폴리오 검증을 마친 후보입니다.</p>
         {/* 경력·어학(강조·주황 값) / 기술·학력(보조·회색) — 간격/패딩 균일 */}
         <div className="mt-8 flex flex-col gap-6">
           <div className="flex items-start justify-between gap-4 px-4">
@@ -283,18 +283,18 @@ function Hero({
         <div className="z-10 max-w-[640px]">
           <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
             <VerifiedIcon color="#E8590C" />
-            세상에 없던 안심매칭
+            채용 결정 전까지 비용 0원
           </p>
-          {/* 위계: 조건(회색·세미볼드) → 숫자(오렌지)·오퍼(진검정 엑스트라볼드)만 강조 */}
+          {/* 위계: 누구를(진검정 엑스트라볼드) → 어떻게(회색) → 행동(오렌지 엑스트라볼드) */}
           <h1 className="mt-7 text-[32px] font-semibold leading-[1.24] tracking-[-0.01em] text-[#3A4356] sm:text-[38px] md:text-[46px]">
-            인건비 최대 <span className="font-extrabold text-[#E8590C]">60%↓</span>
+            <span className="font-extrabold text-[#111827]">삼성 출신 베트남 인재</span>를
             <br />
-            역량은 그대로.
+            아무 리스크 없이
             <br />
-            <span className="font-extrabold text-[#111827]">최상위 글로벌 인재 구독</span>
+            <span className="font-extrabold text-[#E8590C]">바로 한번 써보세요</span>
           </h1>
           <p className="mt-6 max-w-[560px] text-[17px] leading-[1.75] text-[#4B5565] md:text-[20px]">
-            검증된 글로벌 인재를 월 구독으로, 필요할 때 부담 없이 채용하세요.
+            지금 보이는 인재를 바로 추천받을 수 있습니다. 추천부터 면접까지 비용이 들지 않습니다.
           </p>
           {/* 모바일: 인재 카드를 첫 화면(헤드라인 바로 아래)에 노출 */}
           {featured && (
@@ -302,11 +302,12 @@ function Hero({
               <FeaturedCandidatePanel talent={featured} />
             </div>
           )}
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <CtaLink href="/pricing" location="hero" className="inline-flex h-14 items-center justify-center rounded-md bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A]">
-              인재 추천받기
+          {/* CTA는 하나만 크게 — 소개서는 텍스트 링크로 강등해 선택 부담 제거 */}
+          <div className="mt-8 flex flex-col items-start gap-4">
+            <CtaLink href="/pricing" location="hero" className="inline-flex h-14 w-full items-center justify-center rounded-md bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A] sm:w-auto">
+              무료로 인재 추천받기
             </CtaLink>
-            <button type="button" onClick={() => setBrochureOpen(true)} className="inline-flex h-14 items-center justify-center rounded-md border border-[#CFC7BB] bg-white/70 px-8 text-[16px] font-semibold text-[#1F2937] transition hover:bg-white">
+            <button type="button" onClick={() => setBrochureOpen(true)} className="text-[14px] font-medium text-[#6B7280] underline underline-offset-4 transition hover:text-[#1F2937]">
               서비스 소개서 받아보기
             </button>
           </div>
@@ -321,7 +322,7 @@ function Hero({
             </div>
             <div className="pl-5">
               <p className="text-[28px] font-bold text-[#111827]">주 40시간</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">풀타임 단독 채용</p>
+              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">겸직 없이 우리 회사에만 전념</p>
             </div>
           </div>
         </div>
