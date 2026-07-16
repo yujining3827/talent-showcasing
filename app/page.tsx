@@ -279,61 +279,74 @@ function Hero({
   return (
     <section className="relative isolate overflow-hidden bg-white text-[#192133]">
       <BrochureModal open={brochureOpen} onClose={() => setBrochureOpen(false)} />
-      <div className="relative mx-auto grid max-w-[1360px] grid-cols-1 gap-5 px-5 pb-12 pt-8 md:grid-cols-[1fr_1.15fr] md:items-center md:gap-8 md:pb-20 md:pt-12">
-        <div className="z-10 max-w-[640px]">
-          <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
-            <VerifiedIcon color="#E8590C" />
-            채용 결정 전까지 비용 0원
-          </p>
-          {/* 위계: 누구를(진검정 엑스트라볼드) → 어떻게(회색) → 행동(오렌지 엑스트라볼드) */}
-          <h1 className="mt-7 text-[32px] font-semibold leading-[1.24] tracking-[-0.01em] text-[#3A4356] sm:text-[38px] md:text-[46px]">
-            <span className="font-extrabold text-[#111827]">삼성 출신 베트남 인재</span>를
-            <br />
-            아무 리스크 없이
-            <br />
-            <span className="font-extrabold text-[#E8590C]">바로 한번 써보세요</span>
-          </h1>
-          <p className="mt-6 max-w-[560px] text-[17px] leading-[1.75] text-[#4B5565] md:text-[20px]">
-            지금 보이는 인재를 바로 추천받을 수 있습니다. 추천부터 면접까지 비용이 들지 않습니다.
-          </p>
-          {/* 모바일: 인재 카드를 첫 화면(헤드라인 바로 아래)에 노출 */}
-          {featured && (
-            <div className="mt-6 md:hidden">
-              <FeaturedCandidatePanel talent={featured} />
-            </div>
-          )}
-          {/* CTA는 하나만 크게 — 소개서는 텍스트 링크로 강등해 선택 부담 제거 */}
-          <div className="mt-8 flex flex-col items-start gap-4">
-            <CtaLink href="/pricing" location="hero" className="inline-flex h-14 w-full items-center justify-center rounded-md bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A] sm:w-auto">
-              무료로 인재 추천받기
-            </CtaLink>
-            <button type="button" onClick={() => setBrochureOpen(true)} className="text-[14px] font-medium text-[#6B7280] underline underline-offset-4 transition hover:text-[#1F2937]">
-              서비스 소개서 받아보기
-            </button>
-          </div>
-          <div className="mt-10 grid max-w-[560px] grid-cols-3 divide-x divide-[#DED4C8] border-y border-[#DED4C8] py-5">
-            <div className="pr-5">
-              <p className="text-[28px] font-bold text-[#E8590C]">20,000+</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">베트남 현지 네트워크</p>
-            </div>
-            <div className="px-5">
-              <p className="text-[28px] font-bold text-[#111827]">32%</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">최상위권 대학 출신</p>
-            </div>
-            <div className="pl-5">
-              <p className="text-[28px] font-bold text-[#111827]">주 40시간</p>
-              <p className="mt-1 text-[12px] leading-[1.4] text-[#6B7280]">겸직 없이 우리 회사에만 전념</p>
-            </div>
-          </div>
+      {/* 센터 원컬럼 퍼널: 키메시지 → CTA → 인재 카드(상품샷) → 롤링. 좌우 2단·통계 밴드 제거 */}
+      <div className="mx-auto flex max-w-[880px] flex-col items-center px-5 pt-10 text-center md:pt-16">
+        <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
+          <VerifiedIcon color="#E8590C" />
+          채용 결정 전까지 비용 0원
+        </p>
+        <h1 className="mt-6 break-keep text-[28px] font-extrabold leading-[1.25] tracking-[-0.01em] text-[#111827] sm:text-[44px] md:text-[56px]">
+          삼성 출신 베트남 인재를
+          <br />
+          <span className="text-[#E8590C]">리스크 없이 바로 써보세요</span>
+        </h1>
+        <p className="mt-5 max-w-[560px] text-[16px] leading-[1.7] text-[#4B5565] md:text-[19px]">
+          추천도 면접도 무료입니다. 채용을 결정할 때만 비용이 발생합니다.
+        </p>
+        <CtaLink href="/pricing" location="hero" className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-md bg-[#E8590C] px-10 text-[17px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A] sm:w-auto">
+          무료로 인재 추천받기
+        </CtaLink>
+        <button type="button" onClick={() => setBrochureOpen(true)} className="mt-4 text-[14px] font-medium text-[#6B7280] underline underline-offset-4 transition hover:text-[#1F2937]">
+          서비스 소개서 받아보기
+        </button>
+      </div>
+      {/* 상품 = 사람. 인재 카드가 곧 히어로 이미지 */}
+      {featured && (
+        <div className="mx-auto mt-10 w-full max-w-[880px] px-5 text-left md:mt-12">
+          <FeaturedCandidatePanel talent={featured} />
         </div>
-
-        <div className="hidden md:block">{featured ? <FeaturedCandidatePanel talent={featured} /> : null}</div>
-
-        <div className="z-20 mt-4 md:col-span-2 md:mt-8">
-          <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} />
-        </div>
+      )}
+      <div className="mx-auto mt-6 max-w-[1360px] px-5 pb-12 md:mt-8 md:pb-16">
+        <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} />
       </div>
     </section>
+  );
+}
+
+// H1의 "리스크 없이"를 구조로 증명 — 비용이 언제 발생하는지 3스텝
+function RiskFreeSteps() {
+  const steps = [
+    { n: 1, title: "채용 요건 남기기", desc: "1분이면 끝납니다" },
+    { n: 2, title: "후보 추천 · 면접", desc: "여기까지 비용 0원" },
+    { n: 3, title: "마음에 들 때만 채용", desc: "채용을 결정할 때만 비용 발생" },
+  ];
+  return (
+    <section className="bg-[#FFF8F2]">
+      <div className="mx-auto grid max-w-[1080px] grid-cols-1 gap-6 px-5 py-10 sm:grid-cols-3 md:py-14">
+        {steps.map((step) => (
+          <div key={step.n} className="flex items-start gap-4 sm:flex-col sm:items-center sm:text-center">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E8590C] text-[15px] font-bold text-white">{step.n}</span>
+            <div>
+              <p className="text-[16px] font-semibold text-[#171E2D]">{step.title}</p>
+              <p className="mt-1 text-[14px] text-[#A05A2C]">{step.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// 모바일 하단 고정 CTA — 우측 72px은 채팅 FAB(bottom-4 right-4) 자리
+function MobileStickyCta() {
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#EFE6DA] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
+      <div className="mr-[72px]">
+        <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
+          무료로 인재 추천받기
+        </CtaLink>
+      </div>
+    </div>
   );
 }
 
@@ -427,14 +440,16 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white pb-[76px] md:pb-0">
       <SiteHeader />
       <Hero talents={heroTalents} />
+      <RiskFreeSteps />
       <TrustLogos />
       <FeaturedTalentCarousel />
       <TalentPreview talents={premiumTalents} />
       <CaseStudiesPreview />
       <SiteFooter />
+      <MobileStickyCta />
     </main>
   );
 }
