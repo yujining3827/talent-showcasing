@@ -112,15 +112,22 @@ function TalentWallColumn({
 }
 
 // 히어로 타이핑 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
-const ROTATING_COMPANIES = ["삼성", "구글", "Grab", "VNG", "KPMG"];
+// color: 각 사 브랜드 컬러 (다크 배경 가독성 위해 밝기만 보정)
+const ROTATING_COMPANIES: { name: string; color: string }[] = [
+  { name: "삼성", color: "#4D6BFF" },
+  { name: "구글", color: "#4285F4" },
+  { name: "Grab", color: "#00B14F" },
+  { name: "VNG", color: "#F26F21" },
+  { name: "KPMG", color: "#5A8DEE" },
+];
 
 function TypingCompany() {
-  const [text, setText] = useState(ROTATING_COMPANIES[0]);
+  const [text, setText] = useState(ROTATING_COMPANIES[0].name);
   const [companyIndex, setCompanyIndex] = useState(0);
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
-    const word = ROTATING_COMPANIES[companyIndex];
+    const word = ROTATING_COMPANIES[companyIndex].name;
     let delay = deleting ? 70 : 140;
     if (!deleting && text === word) delay = 1800;
     if (deleting && text === "") delay = 300;
@@ -138,10 +145,36 @@ function TypingCompany() {
   }, [text, deleting, companyIndex]);
 
   return (
-    <span className="whitespace-nowrap text-[#FF7A2F]">
+    <span className="whitespace-nowrap" style={{ color: ROTATING_COMPANIES[companyIndex].color }}>
       {text}
-      <span className="animate-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.08em] rounded-sm bg-[#FF7A2F]" aria-hidden="true" />
+      <span className="animate-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.08em] rounded-sm bg-current" aria-hidden="true" />
     </span>
+  );
+}
+
+// 모바일/태블릿(<xl) 풀블리드 배경 월 — 카드가 화면 전체에서 흐르고 텍스트가 그 위에 뜬다
+function MobileWallBackdrop({ talents }: { talents: ShowcaseTalent[] }) {
+  const cols = [talents.filter((_, i) => i % 2 === 0), talents.filter((_, i) => i % 2 === 1)];
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 xl:hidden">
+      <div className="grid h-full grid-cols-2 gap-3 px-3">
+        {cols.map((col, i) => (
+          <div key={i} className="overflow-hidden">
+            <div
+              className="animate-hero-wall flex flex-col gap-3"
+              style={{ animationDuration: i ? "58s" : "44s", animationDirection: i ? "reverse" : "normal" }}
+            >
+              {[...col, ...col].map((talent, j) => (
+                <WallCard key={`${talent.id}-${j}`} talent={talent} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* 가독성 오버레이 — 중앙(텍스트 뒤)이 가장 어둡고 가장자리는 카드가 비친다 */}
+      <div className="absolute inset-0 bg-[#0B1120]/55" />
+      <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_50%_50%,rgba(11,17,32,0.9),rgba(11,17,32,0.3))]" />
+    </div>
   );
 }
 
@@ -160,6 +193,7 @@ function Hero({
       <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(90%_55%_at_50%_-8%,rgba(232,89,12,0.3),transparent_62%)]" />
       <TalentWallColumn talents={leftWall} duration="52s" className="left-6 2xl:left-16" />
       <TalentWallColumn talents={rightWall} duration="64s" reverse className="right-6 2xl:right-16" />
+      <MobileWallBackdrop talents={heroTalents} />
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
@@ -170,21 +204,9 @@ function Hero({
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           마음에 들 때만 채용하세요. 인건비는 절반입니다.
         </p>
-        <CtaLink href="/pricing" location="hero" className="mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white shadow-[0_22px_60px_-18px_rgba(232,89,12,0.8)] transition hover:bg-[#C74E0A] sm:w-auto">
+        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white transition hover:bg-[#C74E0A] sm:w-auto">
           무료 트라이얼 시작하기
         </CtaLink>
-        {/* 데스크톱 월이 없는 화면(<xl)에선 카드가 수평으로 흐른다 — 첫 화면 안에서 */}
-        <div aria-hidden="true" className="pointer-events-none mt-12 flex w-full overflow-hidden xl:hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
-          {[0, 1].map((dup) => (
-            <div key={dup} className="animate-marquee flex shrink-0 gap-3 pr-3">
-              {heroTalents.map((talent) => (
-                <div key={`${talent.id}-${dup}`} className="w-[160px]">
-                  <WallCard talent={talent} />
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   );
