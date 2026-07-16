@@ -1,12 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import nodemailer from "nodemailer";
 
 export const dynamic = "force-dynamic";
 
 /* 서비스 소개서 접수 → 이메일로 PDF 첨부 발송
  *  - brochure_leads(기업명·담당자·이메일) 저장 (메인 DB, 이메일은 contact 컬럼)
- *  - 입력한 이메일로 소개서 PDF 첨부 발송 (Gmail/nodemailer)
+ *  - 입력한 이메일로 소개서 PDF 첨부 발송 (Resend)
  *  - Slack 알림
  *  ⚠️ 테이블 SQL은 파일 하단 주석 참고 */
 type Body = {
@@ -29,10 +28,8 @@ const ACTIVE_MARKER = "_active.json";
 const DEFAULT_PDF_PATH = "gonggomagam-service-brochure.pdf"; // 마커 없을 때 폴백
 const DEFAULT_PDF_NAME = "공고마감_베트남인재채용_서비스소개서.pdf";
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
-});
+// 발신 주소 — Resend에서 도메인 인증 후 우리 도메인 사용 (인증 전엔 onboarding@resend.dev로 본인에게만 테스트 가능)
+const RESEND_FROM = process.env.RESEND_FROM || "공고마감 <onboarding@resend.dev>";
 
 export async function POST(req: Request) {
   let body: Body;
@@ -95,29 +92,86 @@ export async function POST(req: Request) {
       /* 마커 없음 → 기본 파일 사용 */
     }
 
-    const { data: pdfBlob, error: dlErr } = await supabase.storage.from(BROCHURE_BUCKET).download(pdfPath);
-    if (dlErr || !pdfBlob) throw new Error(dlErr?.message || "PDF download failed");
-    const pdfBuffer = Buffer.from(await pdfBlob.arrayBuffer());
+    // PDF는 용량이 커서 첨부 대신 다운로드 링크로 발송 (메일 첨부 한도/수신 제한 회피)
+    const downloadUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${BROCHURE_BUCKET}/${encodeURIComponent(pdfPath)}?download=${encodeURIComponent(pdfName)}`;
+    const siteUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://ggmg.ai.kr";
 
-    await transporter.sendMail({
-      from: `"공고마감" <${process.env.GMAIL_USER}>`,
-      to,
-      subject: "[공고마감] 요청하신 서비스 소개서를 보내드립니다",
-      html: `
-        <div style="font-family: 'Apple SD Gothic Neo', 'Pretendard', sans-serif; max-width: 480px; margin: 0 auto; padding: 32px 20px; color: #191F28;">
-          <h2 style="font-size: 20px; margin: 0 0 12px;">${name.trim()}님, 안녕하세요.</h2>
-          <p style="font-size: 15px; line-height: 1.7; color: #4E5968; margin: 0 0 20px;">
-            요청하신 <strong>공고마감 서비스 소개서</strong>를 첨부해 보내드립니다.<br />
-            검토하시고 궁금한 점은 회신 주시면 담당자가 안내드리겠습니다.
-          </p>
-          <div style="background: #F9FAFB; border-radius: 12px; padding: 14px 16px; font-size: 14px; color: #6B7684;">
-            📎 첨부: ${pdfName}
-          </div>
-          <p style="font-size: 13px; color: #8B95A1; margin: 24px 0 0;">공고마감 by LIKELION</p>
-        </div>
-      `,
-      attachments: [{ filename: pdfName, content: pdfBuffer, contentType: "application/pdf" }],
+    const html = `
+      <div style="margin:0;padding:0;background:#F4F5F7;font-family:'Apple SD Gothic Neo','Pretendard',-apple-system,BlinkMacSystemFont,sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F5F7;padding:40px 12px;">
+          <tr><td align="center">
+            <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="width:100%;max-width:560px;background:#ffffff;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px -30px rgba(10,18,32,0.35);">
+              <tr><td style="height:5px;background:#E8590C;line-height:5px;font-size:0;">&nbsp;</td></tr>
+              <tr><td align="center" style="padding:34px 32px 0;">
+                <img src="https://ggmg.ai.kr/logo-wordmark.png" alt="공고마감" height="26" style="height:26px;display:block;border:0;" />
+              </td></tr>
+              <tr><td align="center" style="padding:26px 44px 0;">
+                <p style="margin:0;font-size:12px;font-weight:700;letter-spacing:0.14em;color:#E8590C;text-transform:uppercase;">Service Brochure</p>
+                <h1 style="margin:12px 0 0;font-size:25px;line-height:1.35;font-weight:800;color:#171E2D;">${name.trim()}님,<br />요청하신 소개서를 보내드립니다</h1>
+                <p style="margin:16px 0 0;font-size:15px;line-height:1.75;color:#5B667A;">검증된 글로벌 인재를 <strong style="color:#171E2D;">인건비 최대 60% 절감</strong>으로.<br />공고마감 서비스 소개서를 확인해보세요.</p>
+              </td></tr>
+              <tr><td style="padding:28px 44px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#FAFAFB;border:1px solid #EEF0F3;border-radius:14px;">
+                  <tr><td style="padding:16px 22px;">
+                    <p style="margin:0;padding:7px 0;font-size:14.5px;color:#3A4356;"><span style="color:#E8590C;font-weight:800;">✓</span>&nbsp;&nbsp;인건비 최대 60% 절감, 역량은 그대로</p>
+                    <p style="margin:0;padding:7px 0;font-size:14.5px;color:#3A4356;"><span style="color:#E8590C;font-weight:800;">✓</span>&nbsp;&nbsp;상위 대학·전 직장 검증 인재</p>
+                    <p style="margin:0;padding:7px 0;font-size:14.5px;color:#3A4356;"><span style="color:#E8590C;font-weight:800;">✓</span>&nbsp;&nbsp;월 구독형 · 평균 3주 내 채용</p>
+                  </td></tr>
+                </table>
+              </td></tr>
+              <tr><td align="center" style="padding:32px 44px 4px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                  <tr><td align="center" style="border-radius:12px;background:#E8590C;box-shadow:0 10px 24px -10px rgba(232,89,12,0.6);">
+                    <a href="${downloadUrl}" style="display:inline-block;padding:16px 42px;font-size:16px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:12px;">서비스 소개서 다운로드 →</a>
+                  </td></tr>
+                </table>
+              </td></tr>
+              <tr><td style="padding:30px 44px 0;">
+                <div style="border-top:1px solid #EEF0F3;"></div>
+              </td></tr>
+              <tr><td align="center" style="padding:24px 44px 0;">
+                <p style="margin:0 0 16px;font-size:14.5px;line-height:1.7;color:#5B667A;">인재 채용이 필요하거나 궁금한 점이 있으신가요?</p>
+                <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
+                  <tr>
+                    <td align="center" style="border-radius:12px;border:1.5px solid #E8590C;background:#ffffff;">
+                      <a href="${siteUrl}/pricing" style="display:inline-block;padding:12px 24px;font-size:14.5px;font-weight:700;color:#E8590C;text-decoration:none;border-radius:12px;white-space:nowrap;">인재 추천받기</a>
+                    </td>
+                    <td style="width:10px;line-height:1px;font-size:1px;">&nbsp;</td>
+                    <td align="center" style="border-radius:12px;border:1.5px solid #E8590C;background:#ffffff;">
+                      <a href="${siteUrl}/?chat=1" style="display:inline-block;padding:12px 24px;font-size:14.5px;font-weight:700;color:#E8590C;text-decoration:none;border-radius:12px;white-space:nowrap;">1:1 상담하기</a>
+                    </td>
+                  </tr>
+                </table>
+              </td></tr>
+              <tr><td style="padding:28px 44px 34px;">
+                <div style="border-top:1px solid #EEF0F3;padding-top:20px;text-align:center;">
+                  <p style="margin:0;font-size:13px;font-weight:700;color:#171E2D;">공고마감 <span style="color:#8A95A1;font-weight:500;">by LIKELION</span></p>
+                  <p style="margin:7px 0 0;font-size:12px;color:#AEB6C4;">검증된 글로벌 인재 구독 · <a href="https://ggmg.ai.kr" style="color:#8A95A1;text-decoration:underline;">ggmg.ai.kr</a></p>
+                </div>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </div>
+      `;
+
+    const resendRes = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: RESEND_FROM,
+        to: [to],
+        subject: "[공고마감] 요청하신 서비스 소개서를 보내드립니다",
+        html,
+      }),
     });
+    if (!resendRes.ok) {
+      const detail = await resendRes.text().catch(() => "");
+      throw new Error(`Resend ${resendRes.status}: ${detail.slice(0, 200)}`);
+    }
     sent = true;
   } catch (e) {
     console.error("[brochure-lead] mail error:", e);
