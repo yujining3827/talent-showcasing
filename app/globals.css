@@ -282,6 +282,18 @@ body {
   .animate-marquee { animation: none; }
 }
 
+/* 히어로 인재 월 (수직 무한 스크롤 — 트랙 2배 복제 전제, -50%가 한 사이클) */
+@keyframes heroWallScroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+.animate-hero-wall {
+  animation: heroWallScroll 56s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-wall { animation: none; }
+}
+
 /* Pricing 2-step 위저드 스텝 전환 */
 @keyframes stepIn {
   from { opacity: 0; transform: translateX(20px); }

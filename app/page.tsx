@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProfileCard } from "@/app/components/showcase/ProfileCard";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
@@ -28,27 +27,6 @@ type ShowcaseTalent = {
   // 어학/소통 능력 (예: "영어 업무 가능 · 한국어 초급", "TOEIC 850"). 데이터 없으면 "조사 중" 노출
   language?: string | null;
 };
-
-// 출신 회사 → 로고 파일(public/). 파일 있는 회사만 카드에 노출.
-// className: 로고별 크기 오버라이드 (여백/비율 달라서 개별 조정, 기본 h-5)
-const COMPANY_LOGOS: Record<string, { src: string; className?: string }> = {
-  samsung: { src: "/samsung.svg" },
-  vng: { src: "/VNG.webp" },
-  "fpt software": { src: "/FPT%20Software.webp", className: "h-[52px]" },
-  fpt: { src: "/FPT%20Software.webp", className: "h-[52px]" },
-  grab: { src: "/Grab.png" },
-  google: { src: "/google.png" },
-  kpmg: { src: "/KPMG.webp" },
-  nab: { src: "/NAB.svg" },
-  mondelez: { src: "/Mondelez.png", className: "h-14" },
-  prudential: { src: "/Prudential.webp" },
-  moatable: { src: "/Moatable.png" },
-  "moatable inc.": { src: "/Moatable.png" },
-};
-function companyLogo(company: string | null): { src: string; className?: string } | null {
-  if (!company) return null;
-  return COMPANY_LOGOS[company.trim().toLowerCase()] ?? null;
-}
 
 function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?: boolean }) {
   const [failed, setFailed] = useState(false);
@@ -82,185 +60,53 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   );
 }
 
-function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
+// 인재 월 카드 — 장식용(클릭 없음). 사진이 크고 정보는 세 줄만
+function WallCard({ talent }: { talent: ShowcaseTalent }) {
   return (
-    <Link
-      href={`/showcase/${talent.id}`}
-      className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_30px_90px_-30px_rgba(232,89,12,0.35)] ring-1 ring-white/10 transition-shadow duration-300 hover:shadow-[0_36px_100px_-30px_rgba(232,89,12,0.55)] sm:flex-row"
-    >
-      <div className="relative h-[300px] w-full sm:h-auto sm:w-[42%]">
-        <TalentPhoto talent={talent} large />
-        <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#E8590C]">
-          <VerifiedIcon color="#E8590C" />
-          검증됨
-        </div>
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-10">
-          <p className="text-[17px] font-semibold text-white">{talent.name}</p>
-          <p className="mt-0.5 text-[12px] text-white/85">
-            {talent.role}
-            {talent.yoeYears ? ` · ${talent.yoeYears}년차` : ""}
-          </p>
-        </div>
-      </div>
-      <div className="relative flex-1 p-6">
-        {/* 출신 회사 로고 — 헤드라인 라인 우측에 선명하게 (파일 있는 회사만, 세로 중앙 정렬) */}
-        {(() => {
-          const logo = companyLogo(talent.company);
-          if (!logo) return null;
-          return (
-            <div className="absolute right-10 top-[46px] flex h-14 items-center">
-              <img src={logo.src} alt={talent.company ?? ""} className={`w-auto max-w-[150px] object-contain ${logo.className ?? "h-9"}`} />
-            </div>
-          );
-        })()}
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 트라이얼 가능</p>
-        <p className="mt-2 pr-[156px] text-[19px] font-semibold leading-[1.4] text-[#171E2D]">
-          {(talent.headline || `검증된 ${talent.role || "테크"} 전문가`).split("/n").map((line, i) => (
-            <span key={i} className="block">
-              {line.trim()}
-            </span>
-          ))}
-        </p>
-        <p className="mt-1 text-[13px] text-[#59657A]">경력·어학·포트폴리오 검증을 마친 후보입니다.</p>
-        {/* 경력·어학(강조·주황 값) / 기술·학력(보조·회색) — 간격/패딩 균일 */}
-        <div className="mt-8 flex flex-col gap-6">
-          <div className="flex items-start justify-between gap-4 px-4">
-            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">경력</span>
-            <span className="text-right text-[15px] font-bold leading-[1.4] text-[#E8590C]">
-              {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
-              {talent.company ? ` · ${talent.company}` : ""}
-            </span>
-          </div>
-          <div className="flex items-start justify-between gap-4 px-4">
-            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">어학 · 소통</span>
-            <span className="text-right text-[15px] font-bold leading-[1.4] text-[#E8590C]">
-              {talent.language ? talent.language : <span className="font-medium italic text-[#9AA3B2]">조사 중</span>}
-            </span>
-          </div>
-          {talent.skills?.length > 0 && (
-            <div className="flex items-start justify-between gap-4 px-4">
-              <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">기술</span>
-              <div className="flex flex-wrap justify-end gap-1.5">
-                {talent.skills.slice(0, 4).map((skill) => (
-                  <span key={skill} className="rounded-full bg-[#F1F3F7] px-2.5 py-0.5 text-[12px] font-medium text-[#5B667A]">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-          <div className="flex items-start justify-between gap-4 px-4">
-            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">학력</span>
-            <span className="text-right text-[13px] leading-[1.5] text-[#5B667A]">{talent.school || "확인 중"}</span>
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
-
-function TalentStripCard({ talent, selected }: { talent: ShowcaseTalent; selected: boolean }) {
-  return (
-    <Link
-      href={`/showcase/${talent.id}`}
-      className={`grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border bg-white p-0 text-left transition hover:border-[#E8590C] hover:shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)] ${
-        selected ? "border-[#E8590C] shadow-[0_16px_45px_-30px_rgba(232,89,12,0.9)]" : "border-[#D8DEE8]"
-      }`}
-    >
-      <div className="min-h-[132px] bg-[#D8DEE8]">
+    <div className="w-full shrink-0 overflow-hidden rounded-xl bg-white shadow-[0_18px_50px_-28px_rgba(0,0,0,0.8)]">
+      <div className="h-[170px]">
         <TalentPhoto talent={talent} />
       </div>
-      <div className="min-w-0 p-4">
-        <p className="truncate text-[16px] font-semibold text-[#30394C]">{talent.name}</p>
-        <p className="mt-1 flex items-center gap-1 text-[13px] text-[#59657A]">
+      <div className="p-3 text-left">
+        <p className="flex items-center gap-1 text-[14px] font-semibold text-[#171E2D]">
           <VerifiedIcon color="#E8590C" />
-          <span className="min-w-0 truncate">{talent.role}</span>
+          <span className="truncate">{talent.name}</span>
         </p>
-        <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#778195]">경력</p>
-        <p className="mt-1 truncate text-[14px] font-semibold text-[#1B2233]">
+        <p className="mt-0.5 truncate text-[12px] text-[#59657A]">{talent.role}</p>
+        <p className="mt-1 truncate text-[12px] font-bold text-[#E8590C]">
           {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
           {talent.company ? ` · ${talent.company}` : ""}
         </p>
       </div>
-    </Link>
+    </div>
   );
 }
 
-function ChevronIcon({ direction }: { direction: "left" | "right" }) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
-      <path d={direction === "left" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
-    </svg>
-  );
-}
-
-function TalentStrip({
+// 데스크톱 좌/우 인재 월 — 수직 무한 스크롤(트랙 2배 복제 + translateY -50%)
+function TalentWallColumn({
   talents,
-  selectedId,
+  duration,
+  reverse = false,
+  className,
 }: {
   talents: ShowcaseTalent[];
-  selectedId: string | null;
+  duration: string;
+  reverse?: boolean;
+  className: string;
 }) {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [paused, setPaused] = useState(false);
-
-  const scroll = (direction: "left" | "right") => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 8;
-    if (direction === "right" && atEnd) {
-      el.scrollTo({ left: 0, behavior: "smooth" });
-    } else {
-      el.scrollBy({ left: direction === "left" ? -320 : 320, behavior: "smooth" });
-    }
-  };
-
-  useEffect(() => {
-    if (paused || talents.length === 0) return;
-    const id = setInterval(() => scroll("right"), 2800);
-    return () => clearInterval(id);
-  }, [paused, talents.length]);
-
   return (
-    <div className="group relative" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-      <button
-        type="button"
-        aria-label="이전 인재 보기"
-        onClick={() => scroll("left")}
-        className="absolute left-0 top-1/2 z-30 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] transition duration-200 hover:bg-white hover:text-[#E8590C] group-hover:opacity-100 md:flex"
+    <div
+      aria-hidden="true"
+      className={`pointer-events-none absolute inset-y-0 hidden w-[240px] overflow-hidden xl:block ${className} [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]`}
+    >
+      <div
+        className="animate-hero-wall flex flex-col gap-4"
+        style={{ animationDuration: duration, animationDirection: reverse ? "reverse" : "normal" }}
       >
-        <ChevronIcon direction="left" />
-      </button>
-      <div ref={scrollRef} className="flex gap-4 overflow-x-auto scroll-smooth pb-2 scrollbar-hide">
-        {talents.length > 0
-          ? talents.map((talent) => (
-              <TalentStripCard
-                key={talent.id}
-                talent={talent}
-                selected={talent.id === selectedId}
-              />
-            ))
-          : Array.from({ length: 3 }).map((_, index) => (
-              <div key={index} className="grid min-w-[300px] grid-cols-[112px_1fr] overflow-hidden border border-[#D8DEE8] bg-white">
-                <div className="h-[132px] bg-[#D8DEE8]" />
-                <div className="p-4">
-                  <div className="h-4 w-28 bg-[#E5E9F0]" />
-                  <div className="mt-3 h-3 w-20 bg-[#E5E9F0]" />
-                  <div className="mt-6 h-3 w-16 bg-[#E5E9F0]" />
-                  <div className="mt-2 h-4 w-36 bg-[#E5E9F0]" />
-                </div>
-              </div>
-            ))}
+        {[...talents, ...talents].map((talent, index) => (
+          <WallCard key={`${talent.id}-${index}`} talent={talent} />
+        ))}
       </div>
-      <button
-        type="button"
-        aria-label="다음 인재 보기"
-        onClick={() => scroll("right")}
-        className="absolute right-0 top-1/2 z-30 hidden -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white/80 p-2 text-[#8A93A5] opacity-0 shadow-[0_6px_16px_-8px_rgba(10,18,32,0.35)] transition duration-200 hover:bg-white hover:text-[#E8590C] group-hover:opacity-100 md:flex"
-      >
-        <ChevronIcon direction="right" />
-      </button>
     </div>
   );
 }
@@ -271,14 +117,17 @@ function Hero({
   talents: ShowcaseTalent[];
 }) {
   const heroTalents = talents.slice(0, 10);
-  // 큰 카드는 항상 최상위 인재 고정. 스트립 카드 클릭은 상세로 바로 이동(선택 반영 없음)
-  const featured = heroTalents[0] || null;
+  const leftWall = heroTalents.filter((_, i) => i % 2 === 0);
+  const rightWall = heroTalents.filter((_, i) => i % 2 === 1);
 
   return (
     <section className="relative isolate overflow-hidden bg-[#0B1120] text-white">
-      {/* 다크 히어로 + 상단 오렌지 글로우 — 흰 인재 카드가 상품샷처럼 떠오르게 */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(90%_55%_at_50%_-8%,rgba(232,89,12,0.32),transparent_62%)]" />
-      <div className="mx-auto flex max-w-[880px] flex-col items-center px-5 pt-12 text-center md:pt-16">
+      {/* 상단 오렌지 글로우 */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(90%_55%_at_50%_-8%,rgba(232,89,12,0.3),transparent_62%)]" />
+      <TalentWallColumn talents={leftWall} duration="52s" className="left-6 2xl:left-16" />
+      <TalentWallColumn talents={rightWall} duration="64s" reverse className="right-6 2xl:right-16" />
+      {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
+      <div className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
           삼성 출신 베트남 인재,
           <br />
@@ -287,42 +136,21 @@ function Hero({
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           마음에 들 때만 채용하세요. 인건비는 절반입니다.
         </p>
-        <CtaLink href="/pricing" location="hero" className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-md bg-[#E8590C] px-10 text-[17px] font-semibold text-white shadow-[0_22px_60px_-18px_rgba(232,89,12,0.75)] transition hover:bg-[#C74E0A] sm:w-auto">
+        <CtaLink href="/pricing" location="hero" className="mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white shadow-[0_22px_60px_-18px_rgba(232,89,12,0.8)] transition hover:bg-[#C74E0A] sm:w-auto">
           무료 트라이얼 시작하기
         </CtaLink>
-      </div>
-      {/* 상품 = 사람. 인재 카드가 곧 히어로 이미지 */}
-      {featured && (
-        <div className="mx-auto mt-8 w-full max-w-[880px] px-5 text-left md:mt-10">
-          <FeaturedCandidatePanel talent={featured} />
-        </div>
-      )}
-      <div className="mx-auto mt-6 max-w-[1360px] px-5 pb-12 md:mt-8 md:pb-16">
-        <TalentStrip talents={heroTalents} selectedId={featured?.id ?? null} />
-      </div>
-    </section>
-  );
-}
-
-// 트라이얼 오퍼를 구조로 증명 — 비용이 언제 발생하는지 3스텝
-function RiskFreeSteps() {
-  const steps = [
-    { n: 1, title: "요건 남기기", desc: "1분" },
-    { n: 2, title: "면접 → 1주 트라이얼", desc: "0원" },
-    { n: 3, title: "마음에 들 때만 채용", desc: "비용은 이때만" },
-  ];
-  return (
-    <section className="bg-[#FFF8F2]">
-      <div className="mx-auto grid max-w-[1080px] grid-cols-1 gap-6 px-5 py-10 sm:grid-cols-3 md:py-14">
-        {steps.map((step) => (
-          <div key={step.n} className="flex items-start gap-4 sm:flex-col sm:items-center sm:text-center">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#E8590C] text-[15px] font-bold text-white">{step.n}</span>
-            <div>
-              <p className="text-[16px] font-semibold text-[#171E2D]">{step.title}</p>
-              <p className="mt-1 text-[14px] text-[#A05A2C]">{step.desc}</p>
+        {/* 데스크톱 월이 없는 화면(<xl)에선 카드가 수평으로 흐른다 — 첫 화면 안에서 */}
+        <div aria-hidden="true" className="pointer-events-none mt-12 flex w-full overflow-hidden xl:hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+          {[0, 1].map((dup) => (
+            <div key={dup} className="animate-marquee flex shrink-0 gap-3 pr-3">
+              {heroTalents.map((talent) => (
+                <div key={`${talent.id}-${dup}`} className="w-[160px]">
+                  <WallCard talent={talent} />
+                </div>
+              ))}
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -434,7 +262,6 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
       <SiteHeader />
       <Hero talents={heroTalents} />
-      <RiskFreeSteps />
       <TrustLogos />
       <FeaturedTalentCarousel />
       <TalentPreview talents={premiumTalents} />
@@ -444,7 +271,3 @@ export default function LandingPage() {
     </main>
   );
 }
-
-
-
-
