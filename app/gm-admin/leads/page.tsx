@@ -24,6 +24,15 @@ type Lead = {
   created_at: string;
 };
 
+type GaStats = {
+  configured: boolean;
+  error?: string;
+  range?: string;
+  totals?: { activeUsers: number; sessions: number; pageViews: number; newUsers: number };
+  byChannel?: [string, number][];
+  trend?: { label: string; sessions: number }[];
+};
+
 const fmtDate = (iso: string) => {
   const d = new Date(iso);
   return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
@@ -72,6 +81,7 @@ function Breakdown({ title, rows }: { title: string; rows: [string, number][] })
 export default function LeadsDashboard() {
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [ga, setGa] = useState<GaStats | null>(null);
 
   useEffect(() => {
     fetch("/api/gm-admin/leads")
@@ -81,6 +91,11 @@ export default function LeadsDashboard() {
         else setLeads(d.leads as Lead[]);
       })
       .catch((e) => setError(String(e)));
+
+    fetch("/api/gm-admin/ga-stats")
+      .then((r) => r.json())
+      .then((d) => setGa(d as GaStats))
+      .catch(() => setGa({ configured: false }));
   }, []);
 
   const stats = useMemo(() => {
@@ -126,15 +141,74 @@ export default function LeadsDashboard() {
 
   return (
     <div className="mx-auto max-w-[1100px] px-6 py-8">
-      <div className="flex items-baseline justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <h1 className="text-[24px] font-bold text-[#171E2D]">인재 상담 리드</h1>
           <p className="mt-1 text-[13px] text-[#8A93A5]">제출 전환 + UTM 유입 현황 · 접수 후 1시간 내 컨택용</p>
         </div>
-        <a href="/api/gm-admin/leads" target="_blank" rel="noopener noreferrer" className="text-[12px] font-medium text-[#8A93A5] hover:text-[#E8590C]">
-          원본 JSON ↗
-        </a>
+        <div className="flex flex-wrap items-center gap-2">
+          <a
+            href="https://clarity.microsoft.com/projects/view/xn4g70ja06/dashboard"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#E1E5EC] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#3A4356] transition hover:border-[#E8590C] hover:text-[#E8590C]"
+          >
+            Clarity 대시보드 ↗
+          </a>
+          <a
+            href="https://analytics.google.com/analytics/web/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#E1E5EC] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#3A4356] transition hover:border-[#E8590C] hover:text-[#E8590C]"
+          >
+            GA4 대시보드 ↗
+          </a>
+          <a
+            href="https://b2bvntr.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 rounded-md border border-[#E1E5EC] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#3A4356] transition hover:border-[#E8590C] hover:text-[#E8590C]"
+          >
+            베타 광고 대시보드 ↗
+          </a>
+          <a href="/api/gm-admin/leads" target="_blank" rel="noopener noreferrer" className="text-[12px] font-medium text-[#8A93A5] hover:text-[#E8590C]">
+            원본 JSON ↗
+          </a>
+        </div>
       </div>
+
+      {/* 웹 트래픽 (GA4) — 유입 상단 퍼널 */}
+      <section className="mt-6">
+        <div className="flex items-center gap-2">
+          <h2 className="text-[15px] font-bold text-[#171E2D]">웹 트래픽</h2>
+          <span className="text-[12px] text-[#9AA3B2]">GA4 · 최근 7일</span>
+        </div>
+        {ga === null ? (
+          <p className="mt-3 text-[13px] text-[#9AA3B2]">GA4 불러오는 중…</p>
+        ) : !ga.configured ? (
+          <p className="mt-3 rounded-md bg-[#F9FAFB] px-4 py-3 text-[13px] text-[#8A93A5]">
+            GA4 연동 설정이 필요합니다. (환경변수 <span className="font-mono">GA4_PROPERTY_ID</span> + 서비스계정에 GA4 속성 뷰어 권한)
+          </p>
+        ) : ga.error ? (
+          <p className="mt-3 rounded-md bg-[#FEF3F2] px-4 py-3 text-[13px] text-[#D92D20]">GA4 오류: {ga.error}</p>
+        ) : ga.totals ? (
+          <>
+            <div className="mt-3 grid grid-cols-2 gap-4 md:grid-cols-4">
+              <Kpi label="방문자" value={ga.totals.activeUsers} accent />
+              <Kpi label="세션" value={ga.totals.sessions} />
+              <Kpi label="페이지뷰" value={ga.totals.pageViews} />
+              <Kpi label="신규 방문자" value={ga.totals.newUsers} />
+            </div>
+            {ga.byChannel && ga.byChannel.length > 0 && (
+              <div className="mt-4">
+                <Breakdown title="유입 채널 (GA4)" rows={ga.byChannel} />
+              </div>
+            )}
+          </>
+        ) : null}
+      </section>
+
+      <div className="my-6 border-t border-[#EEF1F5]" />
 
       {error && <p className="mt-6 rounded-md bg-[#FEF3F2] px-4 py-3 text-[13px] text-[#D92D20]">불러오기 실패: {error}</p>}
       {!leads && !error && <p className="mt-10 text-center text-[14px] text-[#9AA3B2]">불러오는 중…</p>}
