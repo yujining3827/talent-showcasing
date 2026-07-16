@@ -107,7 +107,7 @@ function RollingRole() {
 
   return (
     <span className="block h-[1.3em] overflow-hidden">
-      <span key={index} className="animate-logo-in block text-[#3182F6]">
+      <span key={index} className="animate-logo-in block text-[#FF7A2F]">
         {ROLLING_ROLES[index]}
       </span>
     </span>
@@ -166,7 +166,7 @@ function Hero({
           <RollingRole />
           2주일 무료로 써보세요
         </h1>
-        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-10 inline-flex h-12 items-center justify-center rounded-lg bg-[#3182F6] px-8 text-[16px] font-semibold text-white transition hover:bg-[#1B64DA] sm:h-[52px] sm:px-10 sm:text-[17px] md:mt-12">
+        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-10 inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px] md:mt-12">
           무료 트라이얼 시작하기
         </CtaLink>
         <p className="mt-7 break-keep text-[14px] leading-[1.7] text-[#C4CEDD] [text-shadow:0_1px_16px_rgba(0,0,0,0.5)] md:mt-8 md:text-[16px]">
@@ -182,7 +182,7 @@ function MobileStickyCta() {
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
       <div className="mr-[72px]">
-        <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#3182F6] text-[15px] font-semibold text-white">
+        <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
           무료 트라이얼 시작하기
         </CtaLink>
       </div>
