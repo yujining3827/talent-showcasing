@@ -148,7 +148,7 @@ function Hero({
           2주일 공짜로 써보세요
         </h1>
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
-          마음에 들 때만 채용하세요. 인건비는 절반입니다.
+          최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
         </p>
         <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white transition hover:bg-[#C74E0A] sm:w-auto">
           2주 무료 트라이얼 시작하기
