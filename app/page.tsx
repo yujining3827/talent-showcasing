@@ -51,61 +51,12 @@ function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?
   );
 }
 
-function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
+// 배경 월 타일 — 사진만. 카드 UI 없이 미디어 레이어로만 기능한다
+function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
   return (
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path d="M12 2.75 14.4 5.2l3.42-.47.58 3.4 3.05 1.58-1.56 3.06 1.56 3.05-3.05 1.58-.58 3.4-3.42-.47L12 21.25 9.6 18.8l-3.42.47-.58-3.4-3.05-1.58 1.56-3.06-1.56-3.05L5.6 6.6l.58-3.4 3.42.47L12 2.75Z" fill={color} />
-      <path d="m8.5 12.2 2.1 2.1 4.9-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-// 인재 월 카드 — 장식용(클릭 없음). 사진이 크고 정보는 세 줄만
-function WallCard({ talent }: { talent: ShowcaseTalent }) {
-  return (
-    <div className="w-full shrink-0 overflow-hidden rounded-xl bg-white shadow-[0_18px_50px_-28px_rgba(0,0,0,0.8)]">
-      <div className="h-[170px]">
+    <div className="w-full shrink-0 overflow-hidden rounded-lg">
+      <div className="aspect-[3/4]">
         <TalentPhoto talent={talent} />
-      </div>
-      <div className="p-3 text-left">
-        <p className="flex items-center gap-1 text-[14px] font-semibold text-[#171E2D]">
-          <VerifiedIcon color="#E8590C" />
-          <span className="truncate">{talent.name}</span>
-        </p>
-        <p className="mt-0.5 truncate text-[12px] text-[#59657A]">{talent.role}</p>
-        <p className="mt-1 truncate text-[12px] font-bold text-[#E8590C]">
-          {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
-          {talent.company ? ` · ${talent.company}` : ""}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-// 데스크톱 좌/우 인재 월 — 수직 무한 스크롤(트랙 2배 복제 + translateY -50%)
-function TalentWallColumn({
-  talents,
-  duration,
-  reverse = false,
-  className,
-}: {
-  talents: ShowcaseTalent[];
-  duration: string;
-  reverse?: boolean;
-  className: string;
-}) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`pointer-events-none absolute inset-y-0 hidden w-[240px] overflow-hidden xl:block ${className} [mask-image:linear-gradient(to_bottom,transparent,black_12%,black_88%,transparent)]`}
-    >
-      <div
-        className="animate-hero-wall flex flex-col gap-4"
-        style={{ animationDuration: duration, animationDirection: reverse ? "reverse" : "normal" }}
-      >
-        {[...talents, ...talents].map((talent, index) => (
-          <WallCard key={`${talent.id}-${index}`} talent={talent} />
-        ))}
       </div>
     </div>
   );
@@ -152,28 +103,35 @@ function TypingCompany() {
   );
 }
 
-// 모바일/태블릿(<xl) 풀블리드 배경 월 — 카드가 화면 전체에서 흐르고 텍스트가 그 위에 뜬다
-function MobileWallBackdrop({ talents }: { talents: ShowcaseTalent[] }) {
-  const cols = [talents.filter((_, i) => i % 2 === 0), talents.filter((_, i) => i % 2 === 1)];
+// 풀블리드 배경 월 — 인재 사진이 영상처럼 화면 전체에서 흐르고, 딤 위에 메시지가 뜬다
+// (레이어: 사진 월 → 플랫 딤 → 비네트 → 텍스트)
+function HeroBackdrop({ talents }: { talents: ShowcaseTalent[] }) {
+  const withPhoto = talents.filter((t) => t.photo_url);
+  const pool = withPhoto.length > 0 ? withPhoto : talents;
+  const columnCount = 5; // md 미만은 CSS로 3열만 노출
+  const durations = ["44s", "58s", "50s", "66s", "47s"];
+  const columns = Array.from({ length: columnCount }, (_, i) => {
+    const rotated = [...pool.slice(i * 2 % pool.length), ...pool.slice(0, i * 2 % pool.length)];
+    return rotated;
+  });
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 xl:hidden">
-      <div className="grid h-full grid-cols-2 gap-3 px-3">
-        {cols.map((col, i) => (
-          <div key={i} className="overflow-hidden">
+    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
+      <div className="grid h-full grid-cols-3 gap-2 md:grid-cols-5 md:gap-3">
+        {columns.map((col, i) => (
+          <div key={i} className={`overflow-hidden ${i >= 3 ? "hidden md:block" : ""}`}>
             <div
-              className="animate-hero-wall flex flex-col gap-3"
-              style={{ animationDuration: i ? "58s" : "44s", animationDirection: i ? "reverse" : "normal" }}
+              className="animate-hero-wall flex flex-col gap-2 md:gap-3"
+              style={{ animationDuration: durations[i], animationDirection: i % 2 ? "reverse" : "normal" }}
             >
               {[...col, ...col].map((talent, j) => (
-                <WallCard key={`${talent.id}-${j}`} talent={talent} />
+                <PhotoTile key={`${talent.id}-${j}`} talent={talent} />
               ))}
             </div>
           </div>
         ))}
       </div>
-      {/* 가독성 오버레이 — 중앙(텍스트 뒤)이 가장 어둡고 가장자리는 카드가 비친다 */}
-      <div className="absolute inset-0 bg-[#0B1120]/55" />
-      <div className="absolute inset-0 bg-[radial-gradient(90%_60%_at_50%_50%,rgba(11,17,32,0.9),rgba(11,17,32,0.3))]" />
+      <div className="absolute inset-0 bg-[#070C18]/72" />
+      <div className="absolute inset-0 bg-[radial-gradient(85%_70%_at_50%_50%,rgba(7,12,24,0.55),rgba(7,12,24,0.9))]" />
     </div>
   );
 }
@@ -184,16 +142,10 @@ function Hero({
   talents: ShowcaseTalent[];
 }) {
   const heroTalents = talents.slice(0, 10);
-  const leftWall = heroTalents.filter((_, i) => i % 2 === 0);
-  const rightWall = heroTalents.filter((_, i) => i % 2 === 1);
 
   return (
-    <section className="relative isolate overflow-hidden bg-[#0B1120] text-white">
-      {/* 상단 오렌지 글로우 */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(90%_55%_at_50%_-8%,rgba(232,89,12,0.3),transparent_62%)]" />
-      <TalentWallColumn talents={leftWall} duration="52s" className="left-6 2xl:left-16" />
-      <TalentWallColumn talents={rightWall} duration="64s" reverse className="right-6 2xl:right-16" />
-      <MobileWallBackdrop talents={heroTalents} />
+    <section className="relative isolate overflow-hidden bg-[#070C18] text-white">
+      <HeroBackdrop talents={heroTalents} />
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
