@@ -283,18 +283,21 @@ function Hero({
       <div className="mx-auto flex max-w-[880px] flex-col items-center px-5 pt-10 text-center md:pt-16">
         <p className="inline-flex items-center gap-2 rounded-full border border-[#E7D8C7] bg-white/70 px-3.5 py-2 text-[13px] font-semibold text-[#A44C16]">
           <VerifiedIcon color="#E8590C" />
-          채용 결정 전까지 비용 0원
+          베트남 검증 인재 · 채용 결정 전까지 비용 0원
         </p>
+        {/* 주장(도발) → 의심 인정 → 무료 검증 초대. "왜?"는 절반이라는 숫자가 답한다 */}
         <h1 className="mt-6 break-keep text-[28px] font-extrabold leading-[1.25] tracking-[-0.01em] text-[#111827] sm:text-[44px] md:text-[56px]">
-          삼성 출신 베트남 인재를
+          인건비는 절반.
           <br />
-          <span className="text-[#E8590C]">리스크 없이 바로 써보세요</span>
+          <span className="text-[#E8590C]">실력은 삼성 출신.</span>
         </h1>
-        <p className="mt-5 max-w-[560px] text-[16px] leading-[1.7] text-[#4B5565] md:text-[19px]">
-          추천도 면접도 무료입니다. 채용을 결정할 때만 비용이 발생합니다.
+        <p className="mt-5 max-w-[560px] break-keep text-[16px] leading-[1.7] text-[#4B5565] md:text-[19px]">
+          못 믿기시는 게 정상입니다. 그래서 추천도 면접도 공짜입니다.
+          <br className="hidden sm:block" />
+          베트남 검증 인재를 직접 확인하고, 마음에 들 때만 채용하세요.
         </p>
         <CtaLink href="/pricing" location="hero" className="mt-8 inline-flex h-14 w-full items-center justify-center rounded-md bg-[#E8590C] px-10 text-[17px] font-semibold text-white shadow-[0_22px_46px_-26px_rgba(232,89,12,0.9)] transition hover:bg-[#C74E0A] sm:w-auto">
-          무료로 인재 추천받기
+          무료로 후보 받아보기
         </CtaLink>
         <button type="button" onClick={() => setBrochureOpen(true)} className="mt-4 text-[14px] font-medium text-[#6B7280] underline underline-offset-4 transition hover:text-[#1F2937]">
           서비스 소개서 받아보기
@@ -343,7 +346,7 @@ function MobileStickyCta() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#EFE6DA] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          무료로 인재 추천받기
+          무료로 후보 받아보기
         </CtaLink>
       </div>
     </div>
