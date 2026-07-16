@@ -127,7 +127,8 @@ function HeroBackdrop({ talents }: { talents: ShowcaseTalent[] }) {
   });
   return (
     <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-      <div className="grid h-full grid-cols-3 gap-2 md:grid-cols-5 md:gap-3">
+      {/* blur+채도/명도 다운 — 배경 디테일이 텍스트와 선명도 경쟁을 못 하게 (쨍함은 글자만) */}
+      <div className="grid h-full scale-[1.03] grid-cols-3 gap-2 blur-[2.5px] brightness-[0.8] saturate-[0.75] md:grid-cols-5 md:gap-3">
         {columns.map((col, i) => (
           <div key={i} className={`overflow-hidden ${i >= 3 ? "hidden md:block" : ""}`}>
             <div
@@ -141,8 +142,8 @@ function HeroBackdrop({ talents }: { talents: ShowcaseTalent[] }) {
           </div>
         ))}
       </div>
-      <div className="absolute inset-0 bg-[#070C18]/72" />
-      <div className="absolute inset-0 bg-[radial-gradient(85%_70%_at_50%_50%,rgba(7,12,24,0.55),rgba(7,12,24,0.9))]" />
+      <div className="absolute inset-0 bg-[#070C18]/78" />
+      <div className="absolute inset-0 bg-[radial-gradient(85%_70%_at_50%_50%,rgba(7,12,24,0.6),rgba(7,12,24,0.92))]" />
     </div>
   );
 }
@@ -160,17 +161,17 @@ function Hero({
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-60px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <OriginBand />
-        <h1 className="mt-6 break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
+        <h1 className="mt-8 break-keep text-[30px] font-extrabold leading-[1.3] tracking-[-0.01em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.6)] sm:text-[46px] md:mt-10 md:text-[58px]">
           우리가 보유한 20,000명의
           <RollingRole />
           2주일 무료로 써보세요
         </h1>
-        <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
-          최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
-        </p>
-        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-12 items-center justify-center rounded-lg bg-[#3182F6] px-8 text-[16px] font-semibold text-white transition hover:bg-[#1B64DA] sm:h-[52px] sm:px-10 sm:text-[17px]">
+        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-10 inline-flex h-12 items-center justify-center rounded-lg bg-[#3182F6] px-8 text-[16px] font-semibold text-white transition hover:bg-[#1B64DA] sm:h-[52px] sm:px-10 sm:text-[17px] md:mt-12">
           무료 트라이얼 시작하기
         </CtaLink>
+        <p className="mt-7 break-keep text-[14px] leading-[1.7] text-[#C4CEDD] [text-shadow:0_1px_16px_rgba(0,0,0,0.5)] md:mt-8 md:text-[16px]">
+          최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
+        </p>
       </div>
     </section>
   );
