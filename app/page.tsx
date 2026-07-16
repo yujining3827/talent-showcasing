@@ -51,19 +51,6 @@ function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?
   );
 }
 
-// 출신사 로고 풀 — 히어로 하단 마퀴에 사용 (전부 인재 풀에 실존하는 출신 기업)
-const TRUST_LOGOS: { name: string; src: string }[] = [
-  { name: "Samsung", src: "/samsung.svg" },
-  { name: "FPT Software", src: "/FPT%20Software.webp" },
-  { name: "Grab", src: "/Grab.png" },
-  { name: "Google", src: "/google.png" },
-  { name: "VNG", src: "/VNG.webp" },
-  { name: "KPMG", src: "/KPMG.webp" },
-  { name: "Prudential", src: "/Prudential.webp" },
-  { name: "Mondelez", src: "/Mondelez.png" },
-  { name: "NAB", src: "/NAB.svg" },
-];
-
 // 배경 월 타일 — 사진만. 카드 UI 없이 미디어 레이어로만 기능한다
 function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
   return (
@@ -79,7 +66,7 @@ function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
 // 배경 없이 화이트 단색으로 다크 위에 직접. 슬롯 크기 고정이라 교체 시 들썩이지 않는다
 // h: 워드마크마다 시각적 무게가 달라 개별 보정
 const ROTATING_LOGOS: { name: string; src: string; h: string }[] = [
-  { name: "삼성", src: "/samsung.svg", h: "h-[0.52em]" },
+  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-[0.42em]" },
   { name: "구글", src: "/google.png", h: "h-[0.62em]" },
   { name: "Grab", src: "/Grab.png", h: "h-[0.55em]" },
   { name: "FPT Software", src: "/FPT%20Software.webp", h: "h-[0.75em]" },
@@ -154,35 +141,18 @@ function Hero({
     <section className="relative isolate overflow-hidden bg-[#070C18] text-white">
       <HeroBackdrop talents={heroTalents} />
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
-      <div className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
+      <div className="relative mx-auto flex min-h-[calc(100vh-60px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
           <RotatingLogo /> 출신 베트남 인재,
           <br />
-          1주일 공짜로 써보세요
+          2주일 공짜로 써보세요
         </h1>
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           마음에 들 때만 채용하세요. 인건비는 절반입니다.
         </p>
         <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white transition hover:bg-[#C74E0A] sm:w-auto">
-          무료 트라이얼 시작하기
+          2주 무료 트라이얼 시작하기
         </CtaLink>
-        {/* 출신사 로고 마퀴 — 히어로 첫 화면 안에서 신뢰 증거까지 끝낸다 (화이트 톤으로 채도 절제) */}
-        <div aria-hidden="true" className="pointer-events-none relative left-1/2 mt-14 w-screen -translate-x-1/2 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-          <div className="flex">
-            {[0, 1].map((dup) => (
-              <div key={dup} className="animate-marquee flex shrink-0 items-center">
-                {TRUST_LOGOS.map((logo) => (
-                  <img
-                    key={`${logo.name}-${dup}`}
-                    src={logo.src}
-                    alt={logo.name}
-                    className="mr-12 h-6 w-auto object-contain opacity-50 brightness-0 invert sm:mr-16 sm:h-8"
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </section>
   );
@@ -194,7 +164,7 @@ function MobileStickyCta() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#EFE6DA] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          무료 트라이얼 시작하기
+          2주 무료 트라이얼 시작하기
         </CtaLink>
       </div>
     </div>
