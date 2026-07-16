@@ -168,7 +168,7 @@ function Hero({
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
         </p>
-        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white transition hover:bg-[#C74E0A] sm:w-auto">
+        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#3182F6] px-12 text-[18px] font-bold text-white transition hover:bg-[#1B64DA] sm:w-auto">
           무료 트라이얼 시작하기
         </CtaLink>
       </div>
@@ -179,9 +179,9 @@ function Hero({
 // 모바일 하단 고정 CTA — 우측 72px은 채팅 FAB(bottom-4 right-4) 자리
 function MobileStickyCta() {
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#EFE6DA] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#E2E8F0] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
       <div className="mr-[72px]">
-        <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
+        <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#3182F6] text-[15px] font-semibold text-white">
           무료 트라이얼 시작하기
         </CtaLink>
       </div>
