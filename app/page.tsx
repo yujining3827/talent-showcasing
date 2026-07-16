@@ -111,6 +111,40 @@ function TalentWallColumn({
   );
 }
 
+// 히어로 타이핑 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
+const ROTATING_COMPANIES = ["삼성", "구글", "Grab", "VNG", "KPMG"];
+
+function TypingCompany() {
+  const [text, setText] = useState(ROTATING_COMPANIES[0]);
+  const [companyIndex, setCompanyIndex] = useState(0);
+  const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    const word = ROTATING_COMPANIES[companyIndex];
+    let delay = deleting ? 70 : 140;
+    if (!deleting && text === word) delay = 1800;
+    if (deleting && text === "") delay = 300;
+    const id = setTimeout(() => {
+      if (!deleting && text === word) {
+        setDeleting(true);
+      } else if (deleting && text === "") {
+        setDeleting(false);
+        setCompanyIndex((i) => (i + 1) % ROTATING_COMPANIES.length);
+      } else {
+        setText(word.slice(0, text.length + (deleting ? -1 : 1)));
+      }
+    }, delay);
+    return () => clearTimeout(id);
+  }, [text, deleting, companyIndex]);
+
+  return (
+    <span className="whitespace-nowrap text-[#FF7A2F]">
+      {text}
+      <span className="animate-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.08em] rounded-sm bg-[#FF7A2F]" aria-hidden="true" />
+    </span>
+  );
+}
+
 function Hero({
   talents,
 }: {
@@ -129,9 +163,9 @@ function Hero({
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
-          삼성 출신 베트남 인재,
+          <TypingCompany /> 출신 베트남 인재,
           <br />
-          <span className="text-[#FF7A2F]">1주일 공짜로 써보세요</span>
+          1주일 공짜로 써보세요
         </h1>
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           마음에 들 때만 채용하세요. 인건비는 절반입니다.

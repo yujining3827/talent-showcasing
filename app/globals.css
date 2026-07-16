@@ -294,6 +294,15 @@ body {
   .animate-hero-wall { animation: none; }
 }
 
+/* 히어로 타이핑 커서 */
+@keyframes caretBlink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+.animate-caret {
+  animation: caretBlink 1s step-end infinite;
+}
+
 /* Pricing 2-step 위저드 스텝 전환 */
 @keyframes stepIn {
   from { opacity: 0; transform: translateX(20px); }
