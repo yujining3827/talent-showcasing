@@ -62,43 +62,41 @@ function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
   );
 }
 
-// 히어로 타이핑 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
-// color: 각 사 브랜드 컬러 (다크 배경 가독성 위해 밝기만 보정)
-const ROTATING_COMPANIES: { name: string; color: string }[] = [
-  { name: "삼성", color: "#4D6BFF" },
-  { name: "구글", color: "#4285F4" },
-  { name: "Grab", color: "#00B14F" },
-  { name: "VNG", color: "#F26F21" },
-  { name: "KPMG", color: "#5A8DEE" },
+// 히어로 로고 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
+// 다크 배경 위 화이트 단색 처리(brightness-0 invert), 페이드+슬라이드 교체
+const ROTATING_LOGOS: { name: string; src: string; h: string }[] = [
+  { name: "삼성", src: "/samsung.svg", h: "h-[0.72em]" },
+  { name: "구글", src: "/google.png", h: "h-[0.82em]" },
+  { name: "Grab", src: "/Grab.png", h: "h-[0.74em]" },
+  { name: "VNG", src: "/VNG.webp", h: "h-[0.82em]" },
+  { name: "KPMG", src: "/KPMG.webp", h: "h-[0.72em]" },
 ];
 
-function TypingCompany() {
-  const [text, setText] = useState(ROTATING_COMPANIES[0].name);
-  const [companyIndex, setCompanyIndex] = useState(0);
-  const [deleting, setDeleting] = useState(false);
+function RotatingLogo() {
+  const [index, setIndex] = useState(0);
+  const [visible, setVisible] = useState(true);
 
   useEffect(() => {
-    const word = ROTATING_COMPANIES[companyIndex].name;
-    let delay = deleting ? 70 : 140;
-    if (!deleting && text === word) delay = 1800;
-    if (deleting && text === "") delay = 300;
-    const id = setTimeout(() => {
-      if (!deleting && text === word) {
-        setDeleting(true);
-      } else if (deleting && text === "") {
-        setDeleting(false);
-        setCompanyIndex((i) => (i + 1) % ROTATING_COMPANIES.length);
-      } else {
-        setText(word.slice(0, text.length + (deleting ? -1 : 1)));
-      }
-    }, delay);
-    return () => clearTimeout(id);
-  }, [text, deleting, companyIndex]);
+    const cycle = setInterval(() => {
+      setVisible(false);
+      setTimeout(() => {
+        setIndex((i) => (i + 1) % ROTATING_LOGOS.length);
+        setVisible(true);
+      }, 320);
+    }, 2400);
+    return () => clearInterval(cycle);
+  }, []);
 
+  const logo = ROTATING_LOGOS[index];
   return (
-    <span className="whitespace-nowrap" style={{ color: ROTATING_COMPANIES[companyIndex].color }}>
-      {text}
-      <span className="animate-caret ml-1 inline-block h-[0.85em] w-[3px] translate-y-[0.08em] rounded-sm bg-current" aria-hidden="true" />
+    <span className="inline-flex items-center align-[-0.1em]">
+      <img
+        src={logo.src}
+        alt={logo.name}
+        className={`${logo.h} w-auto brightness-0 invert transition-all duration-300 ease-out ${
+          visible ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+        }`}
+      />
     </span>
   );
 }
@@ -149,7 +147,7 @@ function Hero({
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-64px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
-          <TypingCompany /> 출신 베트남 인재,
+          <RotatingLogo /> 출신 베트남 인재,
           <br />
           1주일 공짜로 써보세요
         </h1>
