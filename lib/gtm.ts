@@ -7,11 +7,12 @@ declare global {
   interface Window {
     dataLayer?: Record<string, unknown>[];
     clarity?: (...args: unknown[]) => void;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
-// GTM 이벤트를 Clarity 커스텀 이벤트 이름으로 매핑 (전환을 구분해서 세션 필터링)
-function clarityEventName(event: GtmEvent, data: Record<string, unknown>): string {
+// GTM 이벤트를 Clarity/GA4 커스텀 이벤트 이름으로 매핑 (전환을 구분)
+function mappedEventName(event: GtmEvent, data: Record<string, unknown>): string {
   if (event === "lead_submit") {
     if (data.form === "brochure") return "brochure_download";   // 브로셔 다운로드
     if (data.is_talent_inquiry) return "talent_inquiry_submit"; // 인재 문의 완료
@@ -22,14 +23,21 @@ function clarityEventName(event: GtmEvent, data: Record<string, unknown>): strin
 
 export function gtmPush(event: GtmEvent, data: Record<string, unknown> = {}) {
   if (typeof window === "undefined") return;
+  const name = mappedEventName(event, data);
   // 1) GTM dataLayer
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({ event, ...data });
   // 2) Microsoft Clarity 커스텀 이벤트 (전환 세션 필터/퍼널용) — 미로드 시 무시
   try {
-    window.clarity?.("event", clarityEventName(event, data));
+    window.clarity?.("event", name);
   } catch {
     /* clarity 미로드 시 무시 */
+  }
+  // 3) GA4 이벤트 (gtag.js 직접 로드 시) — 미로드 시 무시
+  try {
+    window.gtag?.("event", name, data);
+  } catch {
+    /* gtag 미로드 시 무시 */
   }
 }
 
