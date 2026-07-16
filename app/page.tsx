@@ -146,7 +146,7 @@ function Hero({
       <div className="relative mx-auto flex min-h-[calc(100vh-60px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
         <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
           <RotatingLogo />
-          출신 베트남 인재,
+          출신 베트남 인재 <span className="text-[#FF7A2F]">20,000여 명</span>,
           <br />
           2주일 공짜로 써보세요
         </h1>
@@ -154,7 +154,7 @@ function Hero({
           최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
         </p>
         <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-9 inline-flex h-16 w-full items-center justify-center rounded-lg bg-[#E8590C] px-12 text-[18px] font-bold text-white transition hover:bg-[#C74E0A] sm:w-auto">
-          2주 무료 트라이얼 시작하기
+          무료 트라이얼 시작하기
         </CtaLink>
       </div>
     </section>
@@ -167,7 +167,7 @@ function MobileStickyCta() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#EFE6DA] bg-white/95 px-4 py-3 backdrop-blur md:hidden">
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          2주 무료 트라이얼 시작하기
+          무료 트라이얼 시작하기
         </CtaLink>
       </div>
     </div>
