@@ -65,36 +65,52 @@ function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
 // 히어로 로고 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
 // 배경 없이 화이트 단색으로 다크 위에 직접. 슬롯 크기 고정이라 교체 시 들썩이지 않는다
 // h: 워드마크마다 시각적 무게가 달라 개별 보정
-// h: 슬롯 높이 대비 % (워드마크마다 시각적 무게가 달라 개별 보정)
-const ROTATING_LOGOS: { name: string; src: string; h: string }[] = [
-  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-[58%]" },
-  { name: "구글", src: "/google.png", h: "h-[85%]" },
-  { name: "Grab", src: "/Grab.png", h: "h-[75%]" },
-  { name: "FPT Software", src: "/FPT%20Software.webp", h: "h-full" },
-  { name: "VNG", src: "/VNG.webp", h: "h-[85%]" },
-  { name: "KPMG", src: "/KPMG.webp", h: "h-[70%]" },
-  { name: "Prudential", src: "/Prudential.webp", h: "h-[85%]" },
-  { name: "Mondelez", src: "/Mondelez.png", h: "h-[95%]" },
+// 출신 밴드 — 글로벌 대기업만, 화이트 톤으로 상단에 작게 고정
+// h: 로고별 시각적 무게 보정
+const ORIGIN_LOGOS: { name: string; src: string; h: string }[] = [
+  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-3 sm:h-3.5" },
+  { name: "구글", src: "/google.png", h: "h-4 sm:h-5" },
+  { name: "Grab", src: "/Grab.png", h: "h-3.5 sm:h-4" },
+  { name: "KPMG", src: "/KPMG.webp", h: "h-3.5 sm:h-4" },
+  { name: "Mondelez", src: "/Mondelez.png", h: "h-4 sm:h-5" },
 ];
 
-// 문장 사이 한 줄을 통째로 차지하는 메인 로고 — 헤드라인보다 크다
-function RotatingLogo() {
+function OriginBand() {
+  return (
+    <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:gap-x-7">
+      {ORIGIN_LOGOS.map((logo) => (
+        <img key={logo.name} src={logo.src} alt={logo.name} className={`${logo.h} w-auto object-contain opacity-60 brightness-0 invert`} />
+      ))}
+      <span className="text-[13px] font-medium text-white/60 sm:text-[14px]">출신</span>
+    </div>
+  );
+}
+
+// 기업이 실제로 뽑는 포지션 — 인재 풀에 실존하는 직무만
+const ROLLING_ROLES = [
+  "프론트엔드 개발자",
+  "백엔드 개발자",
+  "QA 엔지니어",
+  "AI 엔지니어",
+  "UX/UI 디자이너",
+  "소셜 마케터",
+  "그로스 마케터",
+];
+
+// 드랍다운처럼 직무가 돌아가는 슬롯 — H1의 회전 축은 출신이 아니라 포지션
+function RollingRole() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const cycle = setInterval(() => setIndex((i) => (i + 1) % ROTATING_LOGOS.length), 2400);
+    const cycle = setInterval(() => setIndex((i) => (i + 1) % ROLLING_ROLES.length), 2000);
     return () => clearInterval(cycle);
   }, []);
 
-  const logo = ROTATING_LOGOS[index];
   return (
-    <span className="my-3 flex h-14 w-full items-center justify-center sm:h-20 md:my-4 md:h-24">
-      <img
-        key={logo.name}
-        src={logo.src}
-        alt={logo.name}
-        className={`${logo.h} animate-logo-in w-auto max-w-[80%] object-contain brightness-0 invert drop-shadow-[0_4px_30px_rgba(255,255,255,0.3)]`}
-      />
+    <span className="block h-[1.3em] overflow-hidden">
+      <span key={index} className="animate-logo-in block text-[#FF7A2F]">
+        {ROLLING_ROLES[index]}
+      </span>
     </span>
   );
 }
@@ -144,10 +160,11 @@ function Hero({
       <HeroBackdrop talents={heroTalents} />
       {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
       <div className="relative mx-auto flex min-h-[calc(100vh-60px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
-        <h1 className="break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
+        <OriginBand />
+        <h1 className="mt-6 break-keep text-[30px] font-extrabold leading-[1.25] tracking-[-0.01em] text-white sm:text-[46px] md:text-[58px]">
           우리가 보유한 20,000명의
-          <RotatingLogo />
-          출신 인재를 <span className="text-[#FF7A2F]">2주일 무료</span>로 써보세요
+          <RollingRole />
+          2주일 무료로 써보세요
         </h1>
         <p className="mt-5 break-keep text-[16px] leading-[1.7] text-[#B6C0D4] md:text-[19px]">
           최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
