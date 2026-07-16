@@ -81,7 +81,6 @@ function OriginBand() {
       {ORIGIN_LOGOS.map((logo) => (
         <img key={logo.name} src={logo.src} alt={logo.name} className={`${logo.h} w-auto object-contain opacity-60 brightness-0 invert`} />
       ))}
-      <span className="text-[13px] font-medium text-white/60 sm:text-[14px]">출신</span>
     </div>
   );
 }
@@ -108,7 +107,7 @@ function RollingRole() {
 
   return (
     <span className="block h-[1.3em] overflow-hidden">
-      <span key={index} className="animate-logo-in block text-[#FF7A2F]">
+      <span key={index} className="animate-logo-in block text-[#3182F6]">
         {ROLLING_ROLES[index]}
       </span>
     </span>
