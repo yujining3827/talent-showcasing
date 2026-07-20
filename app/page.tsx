@@ -395,6 +395,182 @@ function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
   );
 }
 
+/* ============================================================================
+ *  Mobile 전용 랜딩 (< md). 데스크톱/태블릿(md+)은 기존 레이아웃 그대로 유지.
+ *  섹션 순서: Hero → 출신 기업 로고 → 핵심 수치 → 대표 인재 카드(컴팩트) → Featured → 사례
+ *  기존 컴포넌트(TrustLogos·FeaturedTalentCarousel·CaseStudiesPreview·CtaLink·BrochureModal)
+ *  재사용 + 모바일 컴팩트 카드(MobileTalentCard)는 TalentPhoto·companyLogo 재활용.
+ * ========================================================================== */
+function MobileStat({ value, label, accent }: { value: string; label: string; accent?: boolean }) {
+  return (
+    <div className="rounded-2xl border border-[#EEE7DD] bg-white px-3 py-4 text-center">
+      <p className={`text-[21px] font-extrabold leading-none ${accent ? "text-[#E8590C]" : "text-[#111827]"}`}>{value}</p>
+      <p className="mt-2 text-[11.5px] font-medium leading-[1.35] text-[#6B7280]">{label}</p>
+    </div>
+  );
+}
+
+/* 모바일 컴팩트 인재 카드 — 사진 썸네일 + 핵심 정보 (큰 FeaturedCandidatePanel 대신) */
+function MobileTalentCard({ t }: { t: ShowcaseTalent }) {
+  const logo = companyLogo(t.company);
+  return (
+    <Link href={`/showcase/${t.id}`} className="flex gap-3.5 rounded-2xl border border-[#EBEEF3] bg-white p-3 transition active:scale-[0.99]">
+      <div className="relative h-[112px] w-[88px] shrink-0 overflow-hidden rounded-xl bg-[#EEF1F6]">
+        <TalentPhoto talent={t} />
+        <span className="absolute left-1.5 top-1.5 rounded-full bg-white/95 px-2 py-[3px] text-[9.5px] font-bold text-[#E8590C] shadow-sm">검증</span>
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col py-0.5">
+        <div className="flex items-center justify-between gap-2">
+          <p className="truncate text-[15px] font-bold text-[#171E2D]">{t.name}</p>
+          {logo && <img src={logo.src} alt={t.company ?? ""} className={`w-auto max-w-[62px] shrink-0 object-contain ${logo.className ?? "h-4"}`} />}
+        </div>
+        <p className="mt-0.5 truncate text-[12.5px] text-[#59657A]">
+          {t.role}
+          {t.yoeYears ? ` · ${t.yoeYears}년차` : ""}
+        </p>
+        <div className="mt-auto pt-2">
+          <p className="truncate text-[12.5px] font-bold text-[#E8590C]">{t.company || "경력 확인 중"}</p>
+          <p className="mt-0.5 truncate text-[11.5px] text-[#8A93A5]">{t.school || "학력 확인 중"}</p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* 모바일 Hero용 대표 인재 카드 — 가로형(사진 왼쪽 세로 썸네일) + 출신 기업(로고·"삼성 출신") 강조 */
+function MobileHeroTalentCard({ t }: { t: ShowcaseTalent }) {
+  const headline = t.headline || `검증된 ${t.role || "테크"} 전문가`;
+  return (
+    <Link
+      href={`/showcase/${t.id}`}
+      className="flex gap-4 rounded-2xl border border-[#EDEFF3] bg-white p-3.5 shadow-[0_22px_50px_-30px_rgba(10,18,32,0.5)] transition active:scale-[0.995]"
+    >
+      <div className="relative h-[152px] w-[112px] shrink-0 overflow-hidden rounded-xl bg-[#EEF1F6]">
+        <TalentPhoto talent={t} />
+        <span className="absolute left-2 top-2 flex items-center gap-0.5 rounded-full bg-white/95 px-1.5 py-[3px] text-[9.5px] font-bold text-[#E8590C] shadow-sm">
+          <VerifiedIcon color="#E8590C" />검증
+        </span>
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">이달의 검증 인재</p>
+        <p className="mt-2 text-[17px] font-extrabold leading-[1.35] text-[#171E2D]">
+          {headline.split("/n").map((line, i) => (
+            <span key={i} className="block">
+              {line.trim()}
+            </span>
+          ))}
+        </p>
+        <div className="mt-auto space-y-0.5 pt-2.5">
+          <p className="truncate text-[12.5px] font-semibold text-[#3A4356]">
+            {t.name}
+            {t.yoeYears ? ` · ${t.yoeYears}년차` : ""}
+          </p>
+          {t.language && <p className="truncate text-[12px] font-bold text-[#E8590C]">{t.language}</p>}
+          <p className="truncate text-[11.5px] text-[#8A93A5]">{t.school || "학력 확인 중"}</p>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+/* 모바일용 출신 기업 로고 — 웹처럼 슬라이딩(마퀴), 여백만 타이트하게 (데스크톱 TrustLogos는 그대로) */
+function MobileTrustLogos() {
+  const logos: { name: string; src: string }[] = [
+    { name: "Samsung", src: "/samsung.svg" },
+    { name: "FPT Software", src: "/FPT%20Software.webp" },
+    { name: "Grab", src: "/Grab.png" },
+    { name: "Google", src: "/google.png" },
+    { name: "VNG", src: "/VNG.webp" },
+    { name: "KPMG", src: "/KPMG.webp" },
+  ];
+  return (
+    <section className="bg-white pb-8 pt-2">
+      <p className="mb-5 px-5 text-center text-[12.5px] font-semibold text-[#8A93A5]">이런 기업 출신 인재를 제안합니다</p>
+      <div className="relative flex overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+        {[0, 1].map((dup) => (
+          <div key={dup} className="animate-marquee flex shrink-0 items-center" aria-hidden={dup === 1}>
+            {logos.map((logo) => (
+              <div key={logo.name} className="flex shrink-0 items-center pr-12">
+                <img src={logo.src} alt={logo.name} className="h-9 w-auto object-contain" />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function MobileLanding({ heroTalents }: { heroTalents: ShowcaseTalent[] }) {
+  const [brochureOpen, setBrochureOpen] = useState(false);
+  const top = heroTalents.slice(0, 10);
+  const primaryCta =
+    "flex h-[54px] items-center justify-center rounded-xl bg-[#E8590C] text-[16px] font-bold text-white shadow-[0_16px_36px_-18px_rgba(232,89,12,0.9)] transition active:scale-[0.99]";
+
+  return (
+    <div>
+      <BrochureModal open={brochureOpen} onClose={() => setBrochureOpen(false)} />
+
+      {/* 1. Hero — 높이 축소, CTA 우선 */}
+      <section className="bg-white px-5 pt-6 pb-9">
+        <h1 className="text-[29px] font-semibold leading-[1.35] tracking-[-0.01em] text-[#3A4356]">
+          인건비 최대 <span className="font-extrabold text-[#E8590C]">60% 절감</span>
+          <br />검증된 베트남 인재를
+          <br /><span className="font-extrabold text-[#111827]">빠르게 추천합니다.</span>
+        </h1>
+        {top[0] && (
+          <div className="mt-6">
+            <MobileHeroTalentCard t={top[0]} />
+          </div>
+        )}
+        <div className="mt-5 flex flex-col gap-2.5">
+          <CtaLink href="/pricing" location="mobile-hero" className={primaryCta}>인재 추천받기</CtaLink>
+          <button
+            type="button"
+            onClick={() => setBrochureOpen(true)}
+            className="flex h-[54px] items-center justify-center rounded-xl border border-[#CFC7BB] bg-white text-[15px] font-semibold text-[#1F2937] transition active:scale-[0.99]"
+          >
+            서비스 소개서 받아보기
+          </button>
+        </div>
+      </section>
+
+      {/* 2. 출신 기업 로고 — 컴팩트 밴드 (상단 신뢰 시그널) */}
+      <MobileTrustLogos />
+
+      {/* 3. 핵심 수치 */}
+      <section className="bg-[#FBFAF8] px-5 py-7">
+        <div className="grid grid-cols-2 gap-2.5">
+          <MobileStat value="20,000+" label="베트남 인재 네트워크" accent />
+          <MobileStat value="32%" label="최상위권 대학 출신" />
+          <MobileStat value="주 40시간" label="풀타임 단독 채용" />
+          <MobileStat value="3주" label="만에 채용까지" />
+        </div>
+      </section>
+
+      {/* 4. 더 많은 검증 인재 — 컴팩트 카드 세로 스택 (Hero 대표 인재 제외) */}
+      {top.length > 1 && (
+        <section className="bg-white px-5 pt-9 pb-5">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-[#E8590C]">엄선된 인재 쇼케이스</p>
+          <h2 className="mt-2 text-[22px] font-bold leading-[1.35] text-[#171E2D]">
+            출신·검증이 먼저 보이는<br />더 많은 인재
+          </h2>
+          <div className="mt-5 flex flex-col gap-3">
+            {top.slice(1, 4).map((t) => (
+              <MobileTalentCard key={t.id} t={t} />
+            ))}
+          </div>
+          <CtaLink href="/pricing" location="mobile-talent" className={`mt-6 ${primaryCta}`}>지금 인재 추천받기</CtaLink>
+        </section>
+      )}
+
+      {/* 5. Featured Talent · 6. 고객 사례 (기존 재사용) */}
+      <FeaturedTalentCarousel />
+      <CaseStudiesPreview />
+    </div>
+  );
+}
+
 export default function LandingPage() {
   const [talents, setTalents] = useState<ShowcaseTalent[]>([]);
 
@@ -428,11 +604,18 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       <SiteHeader />
-      <Hero talents={heroTalents} />
-      <TrustLogos />
-      <FeaturedTalentCarousel />
-      <TalentPreview talents={premiumTalents} />
-      <CaseStudiesPreview />
+      {/* 데스크톱/태블릿 (md+) — 기존 레이아웃 그대로 (절대 변경 없음) */}
+      <div className="hidden md:block">
+        <Hero talents={heroTalents} />
+        <TrustLogos />
+        <FeaturedTalentCarousel />
+        <TalentPreview talents={premiumTalents} />
+        <CaseStudiesPreview />
+      </div>
+      {/* 모바일 (< md) — 전용 랜딩 */}
+      <div className="md:hidden">
+        <MobileLanding heroTalents={heroTalents} />
+      </div>
       <SiteFooter />
     </main>
   );
