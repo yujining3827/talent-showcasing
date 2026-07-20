@@ -295,3 +295,11 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 .animate-testimonial { animation: testimonialFade 450ms ease-out; }
+
+/* 하단 고정 CTA 바 버튼 글로우 (주목도) */
+@keyframes ctaGlow {
+  0%, 100% { box-shadow: 0 6px 18px rgba(232, 89, 12, .32); }
+  50% { box-shadow: 0 10px 30px rgba(232, 89, 12, .62); }
+}
+.animate-cta-glow { animation: ctaGlow 1.8s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .animate-cta-glow { animation: none; } }

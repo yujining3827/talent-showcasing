@@ -116,8 +116,8 @@ export default function TalentDetailPage() {
           <p className="py-24 text-center text-[15px] text-[#697386]">인재를 찾을 수 없습니다.</p>
         ) : (
           <div className="grid grid-cols-1 gap-10 md:grid-cols-[320px_1fr]">
-            {/* 좌: 프로필 이미지 */}
-            <div>
+            {/* 좌: 프로필 이미지 + 채용카드 — 데스크톱 전용 (모바일은 우측 상단 히어로가 대체) */}
+            <div className="hidden md:block">
               <div className="relative aspect-[3/4] overflow-hidden rounded-2xl bg-[#EEF1F6]">
                 {talent.photo_url && !imgFailed ? (
                   <img
@@ -150,8 +150,69 @@ export default function TalentDetailPage() {
 
             {/* 우: 요약 + CTA + 이력 */}
             <div>
-              {/* 요약 */}
-              <div className="max-w-[600px]">
+              {/* 모바일 전용 상단 — 컴팩트 사진 + 핵심 정보 + 채용 카드/CTA (사진보다 정보가 먼저 읽히도록) */}
+              <div className="md:hidden">
+                <div className="flex gap-4">
+                  <div className="relative h-[132px] w-[104px] shrink-0 overflow-hidden rounded-2xl bg-[#EEF1F6]">
+                    {talent.photo_url && !imgFailed ? (
+                      <img
+                        src={talent.photo_url}
+                        alt={talent.name}
+                        onError={() => setImgFailed(true)}
+                        className="h-full w-full object-cover"
+                        style={{ objectPosition: "center 20%" }}
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-[#D8DEE8]">
+                        <img src="/default-profile.png" alt="" className="h-[70%] w-[70%] object-contain" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-[10.5px] font-semibold uppercase tracking-[0.1em] text-[#E8590C]">{talent.role || "테크 전문가"}</p>
+                    <h1 className="mt-1 text-[22px] font-bold leading-[1.2] text-[#171E2D]">{talent.name}</h1>
+                    <div className="mt-2.5 space-y-1.5 text-[13px]">
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="shrink-0 text-[#9AA3B2]">경력</span>
+                        <span className="text-right font-semibold text-[#E8590C]">{talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}</span>
+                      </div>
+                      {talent.company && (
+                        <div className="flex items-baseline justify-between gap-3">
+                          <span className="shrink-0 text-[#9AA3B2]">출신</span>
+                          <span className="text-right font-semibold text-[#3A4356]">{talent.company}</span>
+                        </div>
+                      )}
+                      {talent.language && (
+                        <div className="flex items-baseline justify-between gap-3">
+                          <span className="shrink-0 text-[#9AA3B2]">어학</span>
+                          <span className="text-right font-semibold text-[#3A4356]">{talent.language}</span>
+                        </div>
+                      )}
+                      <div className="flex items-baseline justify-between gap-3">
+                        <span className="shrink-0 text-[#9AA3B2]">학력</span>
+                        <span className="text-right text-[#59657A]">{talent.school || "확인 중"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-5 rounded-2xl border border-[#F1D9C6] bg-[#FFF7F1] p-4">
+                  <p className="flex items-center gap-1.5 text-[14px] font-bold text-[#E8590C]">
+                    <span className="inline-block h-[9px] w-[9px] rounded-full bg-[#E8590C]" />
+                    바로 채용 가능
+                  </p>
+                  <p className="mt-1.5 text-[13px] leading-[1.6] text-[#5B667A]">이 인재는 즉시 인터뷰 및 채용이 가능합니다.</p>
+                  <Link
+                    href={`/pricing?talentId=${encodeURIComponent(talent.id)}&talentName=${encodeURIComponent(talent.name)}&talentRole=${encodeURIComponent(talent.role || "")}`}
+                    className="mt-3.5 flex h-[52px] w-full items-center justify-center rounded-xl bg-[#E8590C] text-[16px] font-bold text-white shadow-[0_12px_28px_-10px_rgba(232,89,12,0.6)] transition active:scale-[0.98]"
+                  >
+                    이 인재 채용 문의하기
+                  </Link>
+                </div>
+              </div>
+
+              {/* 요약 — 데스크톱 전용 (모바일은 위 히어로가 대체) */}
+              <div className="hidden max-w-[600px] md:block">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">{talent.role || "테크 전문가"}</p>
                 <h1 className="mt-2 text-[32px] font-bold leading-[1.2] text-[#171E2D]">{talent.name}</h1>
                 <p className="mt-2 text-[16px] leading-[1.6] text-[#5B667A]">

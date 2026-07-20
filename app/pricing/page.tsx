@@ -28,11 +28,14 @@ export default function PricingPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   // 상세 페이지 "이 인재 채용 문의하기"로 진입 시 talent 정보(쿼리) → 맨 앞 면접일정 스텝 추가
   const [talent, setTalent] = useState<{ id: string; name: string; role: string } | null>(null);
+  // ?form=1 진입(메인 "무료로 인재 추천받기") 시 좌측 소개 숨기고 폼만 바로 노출
+  const [formFirst, setFormFirst] = useState(false);
 
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     const id = p.get("talentId");
     if (id) setTalent({ id, name: p.get("talentName") || "", role: p.get("talentRole") || "" });
+    if (p.get("form") === "1") setFormFirst(true);
   }, []);
 
   // 폼 첫 입력·선택 시 lead_form_open 1회 발화
@@ -210,8 +213,12 @@ export default function PricingPage() {
     <main className="min-h-screen bg-white text-[#171E2D]">
       <SiteHeader />
 
-      <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-12 px-5 py-16 md:grid-cols-[0.9fr_1.1fr] md:py-24">
-        {/* 좌: 소개 */}
+      <div
+        className={`mx-auto grid grid-cols-1 px-5 py-16 md:py-24 ${
+          formFirst ? "max-w-[600px] gap-6" : "max-w-[1100px] gap-12 md:grid-cols-[0.9fr_1.1fr]"
+        }`}
+      >
+        {/* 좌: 소개 — ?form=1(메인 CTA) 진입 시 헤딩만 남기고 설명·체크리스트 숨김 */}
         <div className="md:pt-6">
           <Link href="/" className="mb-4 inline-flex items-center text-[14px] font-medium text-[#59657A] transition hover:text-[#E8590C]">
             ← 홈으로
@@ -224,38 +231,42 @@ export default function PricingPage() {
             <br />
             검증된 인재를 만나보세요
           </h1>
-          {isTalentInquiry ? (
-            <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
-              관심 있는 인재를 선택 후
-              <br />
-              담당자 정보를 남겨주시면
-              <br />
-              인재 정보를 메일로 전달 드립니다.
-              <br />
-              <span className="text-[14px] font-semibold text-[#E8590C]">(채용비용, 면접 가능일, 출근 희망일)</span>
-            </p>
-          ) : (
-            <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
-              간단한 정보만 남겨주시면 담당자가 빠르게 연락드립니다. <br />
-              찾으시는 인재의 JD까지 남겨주시면,
-              <br /> 조건에 맞는
-              <span className="font-semibold text-[#E8590C]"> 맞춤 추천 인재</span>를 메일로 보내드려요.
-            </p>
+          {!formFirst && (
+            <>
+              {isTalentInquiry ? (
+                <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
+                  관심 있는 인재를 선택 후
+                  <br />
+                  담당자 정보를 남겨주시면
+                  <br />
+                  인재 정보를 메일로 전달 드립니다.
+                  <br />
+                  <span className="text-[14px] font-semibold text-[#E8590C]">(채용비용, 면접 가능일, 출근 희망일)</span>
+                </p>
+              ) : (
+                <p className="mt-5 text-[16px] leading-[1.7] text-[#5B667A]">
+                  간단한 정보만 남겨주시면 담당자가 빠르게 연락드립니다. <br />
+                  찾으시는 인재의 JD까지 남겨주시면,
+                  <br /> 조건에 맞는
+                  <span className="font-semibold text-[#E8590C]"> 맞춤 추천 인재</span>를 메일로 보내드려요.
+                </p>
+              )}
+              <ul className="mt-8 space-y-3">
+                {[
+                  "개발·마케팅·디자인·영업·CS 전 직군 채용",
+                  "채용 부담 없는 월 구독형 요금",
+                  "하루 8시간·주 40시간 풀타임 단독 채용",
+                  "고학력·유사 경력의 검증된 인재",
+                  "평균 3주 내 채용 완료",
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2.5 text-[15px] text-[#3A4356]">
+                    <span className="mt-[3px] flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E8590C] text-[10px] font-bold text-white">✓</span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
-          <ul className="mt-8 space-y-3">
-            {[
-              "개발·마케팅·디자인·영업·CS 전 직군 채용",
-              "채용 부담 없는 월 구독형 요금",
-              "하루 8시간·주 40시간 풀타임 단독 채용",
-              "고학력·유사 경력의 검증된 인재",
-              "평균 3주 내 채용 완료",
-            ].map((t) => (
-              <li key={t} className="flex items-start gap-2.5 text-[15px] text-[#3A4356]">
-                <span className="mt-[3px] flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#E8590C] text-[10px] font-bold text-white">✓</span>
-                {t}
-              </li>
-            ))}
-          </ul>
         </div>
 
         {/* 우: 스텝 폼 카드 */}

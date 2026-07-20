@@ -22,6 +22,13 @@ export default function FloatingChatbotButton() {
     if (sp.get("chat") === "1" || window.location.hash === "#chat") setChatOpen(true);
   }, []);
 
+  // 헤더(모바일) 채팅 버튼 등에서 open-chat 이벤트로 열기
+  useEffect(() => {
+    const open = () => setChatOpen(true);
+    window.addEventListener("open-chat", open);
+    return () => window.removeEventListener("open-chat", open);
+  }, []);
+
   useEffect(() => {
     // 페이지 로드 시 자동 노출 + 이후 9초마다 3초씩 살짝살짝 다시 노출
     setAutoShow(true);
@@ -64,7 +71,7 @@ export default function FloatingChatbotButton() {
         type="button"
         aria-label={chatOpen ? "채팅 닫기" : "1:1 상담 열기"}
         onClick={() => setChatOpen((v) => !v)}
-        className={`${chatOpen ? "hidden sm:flex" : "flex"} h-[64px] w-[64px] cursor-pointer items-center justify-center rounded-full bg-[#FF6B00] shadow-[0_12px_30px_rgba(255,107,0,0.25)] transition-all duration-200 ease-in-out hover:scale-[1.08] hover:shadow-[0_16px_42px_rgba(255,107,0,0.42)] active:scale-[0.96] sm:h-[76px] sm:w-[76px]`}
+        className={`hidden h-[64px] w-[64px] cursor-pointer items-center justify-center rounded-full bg-[#FF6B00] shadow-[0_12px_30px_rgba(255,107,0,0.25)] transition-all duration-200 ease-in-out hover:scale-[1.08] hover:shadow-[0_16px_42px_rgba(255,107,0,0.42)] active:scale-[0.96] md:flex md:h-[76px] md:w-[76px]`}
       >
         {/* 흰색 1:1 대화 아이콘 (말풍선 + 타이핑 점 3개 — 상담사 대화 느낌) */}
         <svg width="40" height="40" viewBox="0 0 48 48" fill="none" aria-hidden="true" className="h-9 w-9 sm:h-10 sm:w-10">

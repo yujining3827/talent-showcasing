@@ -25,7 +25,7 @@ export default function CaseStudiesPreview() {
 
   return (
     <section id="cases" className="bg-white scroll-mt-[84px]">
-      <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-24">
+      <div className="mx-auto hidden max-w-[1360px] px-5 py-24 md:block">
         {/* 헤더 + 전체 보기 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
           <div className="max-w-[680px]">
@@ -82,6 +82,45 @@ export default function CaseStudiesPreview() {
             </Link>
           ))}
         </div>
+      </div>
+
+      {/* 모바일 — 컴팩트 가로 카드 */}
+      <div className="px-5 py-11 md:hidden">
+        <p className="text-center text-[12px] font-semibold uppercase tracking-[0.14em] text-[#E8590C]">고객 사례</p>
+        <h2 className="mt-2 text-center text-[22px] font-bold leading-[1.4] text-[#171E2D]">
+          공고마감으로 완성한
+          <br />
+          실제 프로젝트
+        </h2>
+        <div className="mt-6 flex flex-col gap-3">
+          {cases.map((c) => (
+            <Link
+              key={c.slug}
+              href={`/cases/${c.slug}`}
+              className="flex gap-3.5 overflow-hidden rounded-2xl border border-[#EDEFF3] bg-white p-3 transition active:scale-[0.995]"
+            >
+              <div className="relative h-[76px] w-[104px] shrink-0 overflow-hidden rounded-xl bg-[#F1F3F7]">
+                {c.thumbnail ? (
+                  <img src={c.thumbnail} alt={c.company} className="h-full w-full object-cover" />
+                ) : (
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#F1F3F7] to-[#DDE3EC]">
+                    <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-[#AEB6C4]">준비중</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex min-w-0 flex-1 flex-col justify-center">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="rounded-full bg-[#FFF1E8] px-2 py-0.5 text-[10.5px] font-semibold text-[#E8590C]">{c.company}</span>
+                  <span className="truncate text-[11px] text-[#8A93A5]">{c.industry}</span>
+                </div>
+                <p className="mt-1.5 line-clamp-2 text-[14px] font-bold leading-[1.4] text-[#171E2D]">{c.title}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+        <Link href="/cases" className="mt-6 flex items-center justify-center gap-1 text-[14px] font-semibold text-[#E8590C]">
+          전체 사례 보기 <span aria-hidden>→</span>
+        </Link>
       </div>
     </section>
   );
