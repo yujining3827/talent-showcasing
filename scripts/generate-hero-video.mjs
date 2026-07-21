@@ -8,6 +8,9 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import dotenv from "dotenv";
+
+dotenv.config({ path: path.join(process.cwd(), ".env.local") });
 
 const API = "https://api.openai.com/v1";
 const KEY = process.env.OPENAI_API_KEY;
