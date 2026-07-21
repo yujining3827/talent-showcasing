@@ -86,11 +86,13 @@ function Hero() {
         <video autoPlay muted loop playsInline poster="/stock/team-main.jpg" className="h-full w-full object-cover">
           <source src="/hero.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5" />
-        <div className="absolute inset-x-0 bottom-0">
-          <div className="mx-auto max-w-[1200px] px-5 pb-12 md:pb-16">
+        {/* 인물이 우측에 몰린 푸티지 — 좌측을 어둡게 깔아 텍스트 존/영상 존을 분리 */}
+        <div className="absolute inset-0 bg-black/50 md:bg-[linear-gradient(90deg,rgba(0,0,0,0.8)_0%,rgba(0,0,0,0.5)_36%,rgba(0,0,0,0.06)_68%)]" />
+        {/* 카피는 좌측 세로 중앙에 확정 앵커 */}
+        <div className="absolute inset-0 flex items-center">
+          <div className="mx-auto w-full max-w-[1200px] px-5">
             <OriginBand />
-            <h1 className="mt-6 max-w-[720px] break-keep text-[30px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
+            <h1 className="mt-6 max-w-[640px] break-keep text-[30px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
               우리가 보유한 20,000명의
               <RollingRole />
               2주일 무료로 써보세요
