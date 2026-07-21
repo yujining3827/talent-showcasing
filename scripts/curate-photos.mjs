@@ -5,7 +5,8 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from "fs";
 const env = {};
 for (const l of readFileSync(".env.local","utf8").split("\n")) { if(!l||l.trim().startsWith("#")||!l.includes("="))continue; const i=l.indexOf("="); let v=l.slice(i+1).trim(); if(v[0]==='"'&&v.at(-1)==='"')v=v.slice(1,-1); env[l.slice(0,i).trim()]=v; }
 const OPENAI = env.OPENAI_API_KEY;
-const M = env.MVP_SUPABASE_URL, MK = env.MVP_SUPABASE_ANON_KEY;
+// anon은 RLS로 0행 — 서비스 키 우선 (서버 로컬 실행 전용 스크립트)
+const M = env.MVP_SUPABASE_URL, MK = env.MVP_SUPABASE_SERVICE_KEY || env.MVP_SUPABASE_ANON_KEY;
 
 // 전체 풀: 사진 있는 user_profiles 전부 (헤드헌팅 동의 인재 전원)
 const rows = await (await fetch(`${M}/rest/v1/user_profiles?select=id,full_name,photo_url&photo_url=not.is.null&limit=2000`,{headers:{apikey:MK,Authorization:`Bearer ${MK}`}})).json();

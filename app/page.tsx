@@ -491,7 +491,7 @@ export default function LandingPage() {
         const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
         return bScore - aScore;
       })
-      .slice(0, 30);
+      .slice(0, 40);
   }, [dbTalents]);
 
   return (
