@@ -44,20 +44,6 @@ export default function CaseStudiesPreview() {
           </Link>
         </div>
 
-        {/* 스탯 밴드 — 레퍼런스의 58/60/61% 트리트먼트 */}
-        <div className="mt-10 grid grid-cols-1 gap-6 border-t border-[#E3D9C9] pt-8 sm:grid-cols-3 md:mt-14 md:pt-10">
-          {[
-            { value: "60%", caption: "최대 인건비 절감" },
-            { value: "20,000명", caption: "검증 베트남 인재 풀" },
-            { value: "2주", caption: "무료 트라이얼" },
-          ].map((stat) => (
-            <div key={stat.caption}>
-              <p className="text-[36px] font-extrabold leading-none tracking-[-0.01em] text-[#191714] sm:text-[44px]">{stat.value}</p>
-              <p className="mt-2 text-[13px] text-[#6F675C] sm:text-[14px]">{stat.caption}</p>
-            </div>
-          ))}
-        </div>
-
         {/* 사례 카드 (상위 3개) */}
         <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 md:mt-12 lg:grid-cols-3">
           {cases.map((c) => (

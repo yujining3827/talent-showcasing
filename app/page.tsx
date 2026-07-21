@@ -377,8 +377,8 @@ export default function LandingPage() {
       <Hero />
       {/* 히어로 바로 아래: 직군 탭으로 인재 브라우징 (패러데이의 차량 브라우저 자리) */}
       <TalentBrowser talents={browserTalents} />
-      <FeaturedTalentCarousel />
       <CaseStudiesPreview />
+      <FeaturedTalentCarousel />
       <FinalCta />
       <SiteFooter />
       <MobileStickyCta />
