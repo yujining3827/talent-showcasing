@@ -27,21 +27,21 @@ type ShowcaseTalent = {
   language?: string | null;
 };
 
-// 출신 밴드 — 글로벌 대기업만, 크림 배경 위 원색 로고
+// 출신 밴드 — 글로벌 대기업만, 사진 위 화이트 단색으로 작게
 // h: 로고별 시각적 무게 보정
 const ORIGIN_LOGOS: { name: string; src: string; h: string }[] = [
-  { name: "삼성", src: "/samsung.svg", h: "h-5 sm:h-6" },
-  { name: "구글", src: "/google.png", h: "h-5 sm:h-6" },
-  { name: "Grab", src: "/Grab.png", h: "h-4 sm:h-5" },
-  { name: "KPMG", src: "/KPMG.webp", h: "h-4 sm:h-5" },
-  { name: "Mondelez", src: "/Mondelez.png", h: "h-5 sm:h-6" },
+  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-3 sm:h-3.5" },
+  { name: "구글", src: "/google.png", h: "h-4 sm:h-5" },
+  { name: "Grab", src: "/Grab.png", h: "h-3.5 sm:h-4" },
+  { name: "KPMG", src: "/KPMG.webp", h: "h-3.5 sm:h-4" },
+  { name: "Mondelez", src: "/Mondelez.png", h: "h-4 sm:h-5" },
 ];
 
 function OriginBand() {
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 opacity-80 sm:gap-x-8">
+    <div className="flex flex-wrap items-center gap-x-5 gap-y-2 sm:gap-x-7">
       {ORIGIN_LOGOS.map((logo) => (
-        <img key={logo.name} src={logo.src} alt={logo.name} className={`${logo.h} w-auto object-contain`} />
+        <img key={logo.name} src={logo.src} alt={logo.name} className={`${logo.h} w-auto object-contain opacity-70 brightness-0 invert`} />
       ))}
     </div>
   );
@@ -69,42 +69,35 @@ function RollingRole() {
 
   return (
     <span className="block h-[1.3em] overflow-hidden">
-      <span key={index} className="animate-logo-in block text-[#E8590C]">
+      <span key={index} className="animate-logo-in block text-[#FF7A2F]">
         {ROLLING_ROLES[index]}
       </span>
     </span>
   );
 }
 
-// 에디토리얼 히어로 — 크림 배경, 좌 텍스트 / 우 포토 콜라주 (레퍼런스: 리멤버 푸조 광고, 웜톤 에디토리얼)
+// 시네마틱 풀블리드 히어로 — 사진이 곧 히어로 (레퍼런스: 리멤버 푸조 광고)
+// 레이어: 풀사이즈 사진 → 하단 그라데이션 → 좌하단 카피 + CTA
 function Hero() {
   return (
-    <section className="bg-[#F6F1E9] text-[#191714]">
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-5 py-14 md:grid-cols-[1.05fr_0.95fr] md:gap-14 md:py-24">
-        <div>
-          <OriginBand />
-          <h1 className="mt-8 break-keep text-[30px] font-extrabold leading-[1.3] tracking-[-0.01em] sm:text-[42px] md:text-[50px]">
-            우리가 보유한 20,000명의
-            <RollingRole />
-            2주일 무료로 써보세요
-          </h1>
-          <CtaLink href="/pricing" location="hero" className="mt-9 inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_18px_40px_-20px_rgba(232,89,12,0.8)] transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
-            무료 트라이얼 시작하기
-          </CtaLink>
-          <p className="mt-6 break-keep text-[14px] leading-[1.7] text-[#6F675C] md:text-[15px]">
-            최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
-          </p>
-        </div>
-        {/* 포토 콜라주: 큰 씬 + 작은 씬 + 오퍼 타일 (캡쳐 레퍼런스의 그리드 리듬) */}
-        <div className="grid grid-cols-2 gap-3 md:gap-4">
-          <img src="/stock/team-main.jpg" alt="" className="col-span-2 h-[220px] w-full rounded-3xl object-cover sm:h-[280px]" />
-          <img src="/stock/dev-focus.jpg" alt="" className="h-[150px] w-full rounded-3xl object-cover sm:h-[190px]" />
-          <div className="flex h-[150px] w-full items-center justify-center rounded-3xl bg-[radial-gradient(120%_120%_at_20%_0%,#FF9D5C,#E8590C_70%)] sm:h-[190px]">
-            <p className="text-center text-[26px] font-extrabold leading-[1.2] text-white sm:text-[32px]">
-              2주
-              <br />
-              무료
-            </p>
+    <section className="relative">
+      <div className="relative h-[76vh] min-h-[540px] w-full overflow-hidden md:h-[84vh]">
+        <img src="/stock/team-main.jpg" alt="" className="h-full w-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5" />
+        <div className="absolute inset-x-0 bottom-0">
+          <div className="mx-auto max-w-[1200px] px-5 pb-12 md:pb-16">
+            <OriginBand />
+            <h1 className="mt-6 max-w-[720px] break-keep text-[30px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
+              우리가 보유한 20,000명의
+              <RollingRole />
+              2주일 무료로 써보세요
+            </h1>
+            <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
+              <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
+                무료 트라이얼 시작하기
+              </CtaLink>
+              <p className="text-[13px] text-white/70 sm:text-[14px]">평균 인건비, 국내 대비 50% 절감</p>
+            </div>
           </div>
         </div>
       </div>
@@ -226,8 +219,9 @@ export default function LandingPage() {
       <SiteHeader />
       <Hero />
       <SubscriptionStrip />
-      <FeaturedTalentCarousel />
+      {/* 순서: 인재 먼저 보여주고 → 개발/디자인/마케팅 영역 탭 */}
       <TalentPreview talents={premiumTalents} />
+      <FeaturedTalentCarousel />
       <CaseStudiesPreview />
       <FinalCta />
       <SiteFooter />
