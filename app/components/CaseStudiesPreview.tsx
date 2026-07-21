@@ -68,19 +68,29 @@ export default function CaseStudiesPreview() {
                   <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${c.type === "talent" ? "bg-[#E6F7EE] text-[#12A150]" : "bg-[#FFF1E8] text-[#E8590C]"}`}>{c.company}</span>
                   <span className="text-[12px] text-[#8A93A5]">{c.industry}</span>
                 </div>
-                {/* 클릭 전에 판단 재료 먼저 — 영역/인원 2열 + 결과 풀폭, 라벨 위·값 아래로 즉독 */}
-                <div className="mt-4 grid grid-cols-[1fr_auto] gap-x-8 gap-y-3.5 border-t border-[#EEF1F5] pt-4">
-                  <div>
-                    <p className="text-[11px] font-semibold text-[#9AA3B2]">활용 영역</p>
-                    <p className="mt-1 text-[14px] font-bold text-[#171E2D]">{c.talentRole}</p>
+                {/* 클릭 전에 판단 재료 먼저: 활용 영역 → 투입 인재 → 진행 범위 → 실질 결과 */}
+                <div className="mt-3.5 flex flex-col gap-2">
+                  <div className="flex items-baseline gap-3">
+                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">활용 영역</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(c.talentRole || "").split("·").map((r) => r.trim()).filter(Boolean).map((r) => (
+                        <span key={r} className="rounded-full bg-[#F1F3F7] px-2 py-0.5 text-[11px] font-medium text-[#5B667A]">{r}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-[11px] font-semibold text-[#9AA3B2]">투입 인재</p>
-                    <p className="mt-1 text-[14px] font-bold text-[#171E2D]">{c.teamSize || "—"}</p>
+                  {c.teamSize && (
+                    <div className="flex items-baseline gap-3">
+                      <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">투입 인재</span>
+                      <span className="text-[13px] font-medium text-[#3A4356]">{c.teamSize}</span>
+                    </div>
+                  )}
+                  <div className="flex items-baseline gap-3">
+                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">진행 범위</span>
+                    <span className="text-[13px] font-medium text-[#3A4356]">{c.scope}</span>
                   </div>
-                  <div className="col-span-2">
-                    <p className="text-[11px] font-semibold text-[#9AA3B2]">결과</p>
-                    <p className="mt-1 break-keep text-[15px] font-bold leading-[1.5] text-[#E8590C]">{c.result || c.summary}</p>
+                  <div className="flex items-baseline gap-3">
+                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">결과</span>
+                    <span className="text-[13px] font-bold text-[#E8590C]">{c.result || c.summary}</span>
                   </div>
                 </div>
                 <span className="mt-auto inline-flex items-center gap-1 pt-4 text-[13px] font-semibold text-[#E8590C]">

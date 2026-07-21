@@ -105,7 +105,7 @@ function Hero() {
             </h1>
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
-                70만원 지원받고 시작하기
+                70만원 아끼고 시작하기
               </CtaLink>
               {/* 줄바꿈은 직군 단위로만 — 금액이 중간에 꺾이지 않게 세그먼트별 nowrap */}
               <p className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
@@ -179,10 +179,10 @@ function LeadForm() {
             First 2 Weeks on Us
           </p>
           <h2 className="relative z-20 max-w-[460px] break-keep text-[28px] font-extrabold leading-[1.24] text-white sm:text-[36px] md:text-[42px]">
-            지금 신청하면
-            <br />첫 2주 인건비 70만원을
+            지금 시작하면
+            <br />첫 2주 인건비 70만원이
             <br />
-            지원합니다
+            무료입니다
           </h2>
           <p className="relative z-20 mt-4 text-[14px] font-medium leading-[1.7] text-white/80 md:text-[15px]">
             남겨주시면 담당자가 바로 연락드립니다.
@@ -247,7 +247,7 @@ function LeadForm() {
               disabled={!canSubmit || submitting}
               className="mt-1 h-[52px] rounded-lg bg-[#E8590C] text-[16px] font-bold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {submitting ? "접수 중..." : "70만원 지원받고 시작하기"}
+              {submitting ? "접수 중..." : "70만원 아끼고 시작하기"}
             </button>
           </form>
         )}
@@ -276,7 +276,7 @@ function MobileStickyCta() {
     >
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          70만원 지원받고 시작하기
+          70만원 아끼고 시작하기
         </CtaLink>
       </div>
     </div>
