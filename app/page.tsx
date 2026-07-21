@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
@@ -279,52 +281,47 @@ function categoryOf(role: string): string {
   return "개발";
 }
 
-// 연속 마퀴 — 항상 흐르되, 호버하면 부드럽게 감속 (기본 38px/s → 호버 10px/s)
-function TalentMarquee({ talents }: { talents: ShowcaseTalent[] }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const hoveredRef = useRef(false);
-  const dups = talents.length >= 4 ? 2 : 4;
+function ChevronIcon({ direction }: { direction: "left" | "right" }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+      <path d={direction === "left" ? "M15 18l-6-6 6-6" : "M9 18l6-6-6-6"} />
+    </svg>
+  );
+}
 
-  useEffect(() => {
-    const el = trackRef.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let x = 0;
-    let speed = 38;
-    let last = performance.now();
-    let raf = 0;
-    const step = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.05);
-      last = now;
-      const target = hoveredRef.current ? 10 : 38;
-      speed += (target - speed) * Math.min(1, dt * 3);
-      x -= speed * dt;
-      const half = el.scrollWidth / 2;
-      if (half > 0 && -x >= half) x += half;
-      el.style.transform = `translateX(${x}px)`;
-      raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [talents, dups]);
+// 자동 롤링 캐러셀 — 3초마다 한 장씩, 화살표로 즉시 넘기기 가능 (호버해도 계속 돈다)
+function TalentCarousel({ talents }: { talents: ShowcaseTalent[] }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
+    Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: false }),
+  ]);
 
   return (
-    <div
-      className="mt-8 overflow-hidden md:mt-10 [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
-      onMouseEnter={() => (hoveredRef.current = true)}
-      onMouseLeave={() => (hoveredRef.current = false)}
-    >
-      <div ref={trackRef} className="flex w-max will-change-transform">
-        {Array.from({ length: dups }, (_, dup) => (
-          <div key={dup} className="flex" aria-hidden={dup > 0}>
-            {talents.map((talent) => (
-              <div key={`${talent.id}-${dup}`} className="w-[86vw] shrink-0 pr-4 sm:w-[540px] sm:pr-5">
-                <CandidateCard talent={talent} />
-              </div>
-            ))}
-          </div>
-        ))}
+    <div className="relative mt-8 md:mt-10">
+      <div className="overflow-hidden" ref={emblaRef}>
+        <div className="flex">
+          {talents.map((talent) => (
+            <div key={talent.id} className="min-w-0 shrink-0 basis-[92%] pr-4 sm:basis-[540px] sm:pr-5">
+              <CandidateCard talent={talent} />
+            </div>
+          ))}
+        </div>
       </div>
+      <button
+        type="button"
+        aria-label="이전 인재 보기"
+        onClick={() => emblaApi?.scrollPrev()}
+        className="absolute left-0 top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white p-2.5 text-[#3A4356] shadow-[0_8px_20px_-8px_rgba(10,18,32,0.4)] transition hover:text-[#E8590C] md:flex"
+      >
+        <ChevronIcon direction="left" />
+      </button>
+      <button
+        type="button"
+        aria-label="다음 인재 보기"
+        onClick={() => emblaApi?.scrollNext()}
+        className="absolute right-0 top-1/2 z-20 hidden -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white p-2.5 text-[#3A4356] shadow-[0_8px_20px_-8px_rgba(10,18,32,0.4)] transition hover:text-[#E8590C] md:flex"
+      >
+        <ChevronIcon direction="right" />
+      </button>
     </div>
   );
 }
@@ -356,7 +353,7 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
           ))}
         </div>
         {filtered.length > 0 ? (
-          <TalentMarquee key={category} talents={filtered} />
+          <TalentCarousel key={category} talents={filtered} />
         ) : (
           <p className="mt-10 text-[15px] text-[#8A93A5]">해당 직군 인재는 상담으로 바로 소개해드립니다.</p>
         )}
