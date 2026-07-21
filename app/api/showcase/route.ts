@@ -81,15 +81,17 @@ export interface ShowcaseTalent {
 }
 
 // 소스: FYI(MVP) user_profiles 중 이력서 공개(is_resume_public) 동의한 인재만
+// 서비스 키 사용 시 RLS를 우회하므로 동의 필터를 쿼리에 반드시 명시한다
 export async function GET() {
   const url = process.env.MVP_SUPABASE_URL;
-  const key = process.env.MVP_SUPABASE_ANON_KEY;
+  const key = process.env.MVP_SUPABASE_SERVICE_KEY || process.env.MVP_SUPABASE_ANON_KEY;
   if (!url || !key) return NextResponse.json({ error: "MVP env missing", total: 0, talents: [] });
 
   const sb = createClient(url, key);
   const { data, error } = await sb
     .from("user_profiles")
     .select("id,full_name,headline,position,photo_url,university,verified_school_name,verified_school_tier,representative_tier,current_company,verified_company_name,verified_company_domain,experiences,yoe_months,location,skills")
+    .eq("is_resume_public", true)
     .not("photo_url", "is", null)
     .limit(2000);
 

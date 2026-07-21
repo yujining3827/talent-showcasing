@@ -6,6 +6,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
+import { gtmPush, getStoredUtm } from "@/lib/gtm";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
@@ -116,18 +117,121 @@ function Hero() {
   );
 }
 
-// 마지막 전환 밴드 — 오렌지 그라데이션 에디토리얼 블록
-function FinalCta() {
+// 마지막 섹션 — 페이지 안에서 바로 리드 접수 (푸조 광고의 임베디드 시승 신청 폼 구조)
+const LEAD_ROLES = ["개발", "디자인", "마케팅", "CS"];
+
+function LeadForm() {
+  const [form, setForm] = useState({ company: "", name: "", contact: "", role: "", consent: false });
+  const [submitting, setSubmitting] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const canSubmit = !!(form.company.trim() && form.name.trim() && form.contact.trim() && form.consent);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!canSubmit || submitting) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/pricing-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          company: form.company,
+          contact: form.contact,
+          consent: form.consent,
+          roles: form.role ? [form.role] : [],
+          ...getStoredUtm(),
+        }),
+      });
+      if (!res.ok) throw new Error((await res.json().catch(() => ({})))?.error || "제출에 실패했습니다.");
+      gtmPush("lead_submit", { source: "landing-inline" });
+      setDone(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "제출 중 문제가 발생했어요. 잠시 후 다시 시도해주세요.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
-    <section className="bg-[#F6F1E9] px-5 py-14 md:py-20">
-      <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-8 rounded-[32px] bg-[radial-gradient(140%_140%_at_15%_0%,#FF9D5C,#E8590C_65%)] px-6 py-14 text-center md:py-20">
-        <h2 className="break-keep text-[26px] font-extrabold leading-[1.3] text-white sm:text-[36px] md:text-[44px]">
-          지금 신청하면
-          <br />첫 2주 인건비 70만원을 지원합니다
-        </h2>
-        <CtaLink href="/pricing" location="final-band" className="inline-flex h-12 items-center justify-center rounded-lg bg-white px-8 text-[16px] font-bold text-[#E8590C] transition hover:bg-[#FFF3EA] sm:h-[52px] sm:px-10 sm:text-[17px]">
-          70만원 지원받고 시작하기
-        </CtaLink>
+    <section id="lead" className="bg-[#F6F1E9] px-5 py-14 md:py-20">
+      <div className="mx-auto grid max-w-[1200px] overflow-hidden rounded-[32px] bg-[radial-gradient(140%_140%_at_15%_0%,#FF9D5C,#E8590C_65%)] md:grid-cols-2">
+        <div className="flex flex-col justify-center px-7 py-10 md:px-12 md:py-16">
+          <h2 className="break-keep text-[26px] font-extrabold leading-[1.3] text-white sm:text-[34px] md:text-[40px]">
+            지금 신청하면
+            <br />첫 2주 인건비 70만원을
+            <br />
+            지원합니다
+          </h2>
+          <p className="mt-4 text-[14px] leading-[1.7] text-white/85 md:text-[15px]">
+            남겨주시면 담당자가 바로 연락드립니다.
+          </p>
+        </div>
+        {done ? (
+          <div className="flex flex-col items-center justify-center gap-3 bg-white/95 px-7 py-16 text-center md:px-12">
+            <p className="text-[22px] font-extrabold text-[#171E2D]">신청 완료!</p>
+            <p className="text-[14px] leading-[1.7] text-[#5B667A]">담당자가 영업일 기준 하루 안에 연락드립니다.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 bg-white/95 px-7 py-10 md:px-12 md:py-14">
+            <input
+              type="text"
+              placeholder="회사명"
+              value={form.company}
+              onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
+              className="h-12 rounded-lg border border-[#E2E8F0] bg-white px-4 text-[15px] text-[#171E2D] outline-none transition focus:border-[#E8590C]"
+            />
+            <input
+              type="text"
+              placeholder="담당자 이름"
+              value={form.name}
+              onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+              className="h-12 rounded-lg border border-[#E2E8F0] bg-white px-4 text-[15px] text-[#171E2D] outline-none transition focus:border-[#E8590C]"
+            />
+            <input
+              type="text"
+              inputMode="tel"
+              placeholder="연락처 (휴대폰 또는 이메일)"
+              value={form.contact}
+              onChange={(e) => setForm((f) => ({ ...f, contact: e.target.value }))}
+              className="h-12 rounded-lg border border-[#E2E8F0] bg-white px-4 text-[15px] text-[#171E2D] outline-none transition focus:border-[#E8590C]"
+            />
+            {/* 직군은 선택사항 — 필수 3개(회사/이름/연락처)만 채우면 제출 가능 */}
+            <div className="flex flex-wrap gap-2">
+              {LEAD_ROLES.map((r) => (
+                <button
+                  key={r}
+                  type="button"
+                  onClick={() => setForm((f) => ({ ...f, role: f.role === r ? "" : r }))}
+                  className={`rounded-full px-4 py-2 text-[13px] font-semibold transition ${
+                    form.role === r ? "bg-[#191714] text-white" : "bg-[#F3F4F6] text-[#6B7280] hover:text-[#191714]"
+                  }`}
+                >
+                  {r}
+                </button>
+              ))}
+            </div>
+            <label className="flex cursor-pointer items-center gap-2 text-[13px] text-[#5B667A]">
+              <input
+                type="checkbox"
+                checked={form.consent}
+                onChange={(e) => setForm((f) => ({ ...f, consent: e.target.checked }))}
+                className="h-4 w-4 accent-[#E8590C]"
+              />
+              개인정보 수집·이용에 동의합니다
+            </label>
+            {error && <p className="text-[13px] font-medium text-[#D93025]">{error}</p>}
+            <button
+              type="submit"
+              disabled={!canSubmit || submitting}
+              className="mt-1 h-[52px] rounded-lg bg-[#E8590C] text-[16px] font-bold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {submitting ? "접수 중..." : "70만원 지원받고 시작하기"}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   );
@@ -362,14 +466,33 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
 }
 
 export default function LandingPage() {
-  // 브라우저는 큐레이션된 히어로 인재(경력·어학 데이터 완비)만 사용 — 출신·연차 점수순
-  const browserTalents = useMemo(() => {
-    return [...HERO_TALENTS].sort((a, b) => {
-      const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
-      const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
-      return bScore - aScore;
-    });
+  const [dbTalents, setDbTalents] = useState<ShowcaseTalent[]>([]);
+
+  // FYI DB의 공개 동의 인재를 합류시켜 풀을 풍성하게 (사진 검수 통과분만 반환됨)
+  useEffect(() => {
+    fetch("/api/showcase")
+      .then((r) => r.json())
+      .then((d) => {
+        if (Array.isArray(d.talents)) setDbTalents(d.talents);
+      })
+      .catch(() => {});
   }, []);
+
+  // 큐레이션 인재(경력·어학 완비) 우선 + DB 인재 병합(이름 중복 제거) — 출신·연차 점수순
+  const browserTalents = useMemo(() => {
+    const seen = new Set(HERO_TALENTS.map((t) => (t.name || "").trim().toLowerCase()));
+    const merged = [
+      ...HERO_TALENTS,
+      ...dbTalents.filter((t) => !seen.has((t.name || "").trim().toLowerCase())),
+    ];
+    return merged
+      .sort((a, b) => {
+        const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
+        const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
+        return bScore - aScore;
+      })
+      .slice(0, 30);
+  }, [dbTalents]);
 
   return (
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
@@ -379,7 +502,7 @@ export default function LandingPage() {
       <TalentBrowser talents={browserTalents} />
       <CaseStudiesPreview />
       <FeaturedTalentCarousel />
-      <FinalCta />
+      <LeadForm />
       <SiteFooter />
       <MobileStickyCta />
     </main>
