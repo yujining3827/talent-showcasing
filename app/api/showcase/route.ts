@@ -105,13 +105,9 @@ export async function GET() {
     const cco = p.current_company && !isSchoolLike(p.current_company) ? p.current_company : null;
     const company = vco || pickBestCompany(companies) || cco || null;
     const school = p.verified_school_name || p.university || null;
-    // 직군별 차등 사진 기준 — 개발은 풀이 넉넉해 프로 헤드샷(품질 4+)만, 얇은 직군은 완화(품질 2+)
+    // 사람 헤드샷이면 노출 (산/단체/빈사진만 제거, 자연스러운 것도 포함)
     const v = verdicts[String(p.id)];
-    const role = (p.position || "").toLowerCase();
-    const isThinCategory = /design|market|growth|social|content|seo|brand|customer|support|cx|service/.test(role);
-    const goodPhoto =
-      v?.headshot === true &&
-      (isThinCategory ? (v?.quality ?? 0) >= 2 : v?.professional === true && (v?.quality ?? 0) >= 4);
+    const goodPhoto = v?.headshot === true && (v?.quality ?? 0) >= 3;
     return {
       id: String(p.id),
       name: p.full_name || "익명",

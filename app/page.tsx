@@ -317,20 +317,9 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   );
 }
 
-// 대표 프로필 — 얇은 직군(디자인/마케팅/CS) 보강. 사진은 초상권 협의 완료된 비공개 풀의 고퀄 헤드샷(품질 5점, 랜딩 미노출 인물만)
-// ⚠️ 이력 구성은 대표 예시 — 해당 직군 실인재 데이터가 채워지면 교체할 것
-const SAMPLE_TALENTS: ShowcaseTalent[] = [
-  { id: "sample-design-1", name: "T. Nguyen", role: "Senior Product Designer", headline: "커머스 앱 리디자인 경험 /n 시니어 프로덕트 디자이너", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/e062a0f6-f1eb-4794-a512-b1a3d6701b4a/photo_ecaf24f4.jpg", school: "RMIT University Vietnam", schoolElite: true, schoolTier: "top", company: "Shopee", companyElite: true, companyDomain: null, yoeYears: 6, location: "베트남 호치민", skills: ["Figma", "Design System", "Prototyping"], language: "영어 업무 가능" },
-  { id: "sample-design-2", name: "H. Pham", role: "UX/UI Designer", headline: "핀테크 앱 UX 설계 /n UX/UI 디자이너", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/d1645e99-564a-4228-ba4d-77f6129ad61e.jpg?v=1783873212576", school: "University of Architecture HCMC", schoolElite: false, schoolTier: null, company: "MoMo", companyElite: false, companyDomain: null, yoeYears: 4, location: "베트남 호치민", skills: ["Figma", "User Research", "Wireframing"], language: "영어 업무 가능" },
-  { id: "sample-marketing-1", name: "L. Tran", role: "Performance Marketer", headline: "이커머스 ROAS 최적화 /n 퍼포먼스 마케터", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/460dad91-68d9-4752-8a25-545ba0bd8686/photo_7acfd035.jpg", school: "Foreign Trade University", schoolElite: true, schoolTier: "top", company: "Lazada", companyElite: true, companyDomain: null, yoeYears: 5, location: "베트남 하노이", skills: ["Meta Ads", "GA4", "ROAS"], language: "영어 업무 가능" },
-  { id: "sample-cs-1", name: "M. Le", role: "CS Specialist", headline: "한국어 응대 가능 /n CS 스페셜리스트", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/9503d6ff-40bd-45d8-9ce3-47ad7700c006/photo_dc91ecdc.jpg", school: "VNU University of Languages", schoolElite: false, schoolTier: null, company: "Grab", companyElite: true, companyDomain: null, yoeYears: 3, location: "베트남 호치민", skills: ["Zendesk", "CS 운영", "VOC"], language: "TOPIK 5급 · 영어 업무 가능" },
-  { id: "sample-cs-2", name: "P. Vo", role: "Customer Support Lead", headline: "이커머스 CS 팀 리드 /n CX 리드", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/84fa6a09-5460-4817-97d5-5a382c125122.jpg?v=1784540224687", school: "Ho Chi Minh City Open University", schoolElite: false, schoolTier: null, company: "Tiki", companyElite: false, companyDomain: null, yoeYears: 5, location: "베트남 호치민", skills: ["CS 운영", "SLA 관리", "교육"], language: "영어 업무 가능" },
-];
-
 // 콤팩트 인재 카드 — 캐러셀 슬라이드용 (사진 좌 + 핵심 정보 우, 높이 ~200px)
 function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
   const logo = companyLogo(talent.company);
-  const isSample = talent.id.startsWith("sample-");
   const inner = (
     <>
       <div className="relative w-[140px] shrink-0 sm:w-[180px]">
@@ -380,13 +369,11 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
     </>
   );
 
-  const cardClass =
-    "flex h-full overflow-hidden rounded-xl bg-white shadow-[0_16px_44px_-30px_rgba(10,18,32,0.45)] ring-1 ring-[#ECEFF3] transition-shadow duration-300 hover:shadow-[0_24px_60px_-30px_rgba(232,89,12,0.45)]";
-
-  // 샘플은 상세 페이지가 없으므로 링크 없이 렌더
-  if (isSample) return <div className={cardClass}>{inner}</div>;
   return (
-    <Link href={`/showcase/${talent.id}`} className={cardClass}>
+    <Link
+      href={`/showcase/${talent.id}`}
+      className="flex h-full overflow-hidden rounded-xl bg-white shadow-[0_16px_44px_-30px_rgba(10,18,32,0.45)] ring-1 ring-[#ECEFF3] transition-shadow duration-300 hover:shadow-[0_24px_60px_-30px_rgba(232,89,12,0.45)]"
+    >
       {inner}
     </Link>
   );
@@ -485,35 +472,14 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
 }
 
 export default function LandingPage() {
-  const [dbTalents, setDbTalents] = useState<ShowcaseTalent[]>([]);
-
-  // FYI DB의 공개 동의 인재를 합류시켜 풀을 풍성하게 (사진 검수 통과분만 반환됨)
-  useEffect(() => {
-    fetch("/api/showcase")
-      .then((r) => r.json())
-      .then((d) => {
-        if (Array.isArray(d.talents)) setDbTalents(d.talents);
-      })
-      .catch(() => {});
-  }, []);
-
-  // 큐레이션 인재(경력·어학 완비) 우선 + DB 인재 병합(이름 중복 제거) — 출신·연차 점수순
+  // 브라우저는 큐레이션된 히어로 인재(경력·어학 데이터 완비)만 사용 — 출신·연차 점수순
   const browserTalents = useMemo(() => {
-    const seen = new Set(HERO_TALENTS.map((t) => (t.name || "").trim().toLowerCase()));
-    const merged = [
-      ...HERO_TALENTS,
-      ...dbTalents.filter((t) => !seen.has((t.name || "").trim().toLowerCase())),
-    ];
-    return merged
-      .sort((a, b) => {
-        const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
-        const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
-        return bScore - aScore;
-      })
-      .slice(0, 40)
-      // 얇은 직군(디자인/마케팅/CS) 보강용 예시 프로필 — 실인재 뒤에 배치
-      .concat(SAMPLE_TALENTS);
-  }, [dbTalents]);
+    return [...HERO_TALENTS].sort((a, b) => {
+      const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
+      const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
+      return bScore - aScore;
+    });
+  }, []);
 
   return (
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
