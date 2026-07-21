@@ -98,7 +98,7 @@ function Hero() {
           <div className="mx-auto w-full max-w-[1200px] px-5">
             <OriginBand />
             {/* 패러데이 문법: 장벽 제거(채용X·선불X) → 원하는 것(직무) → 즉시 행동 */}
-            <h1 className="mt-6 max-w-[640px] break-keep text-[30px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
+            <h1 className="mt-6 max-w-[640px] break-keep text-[27px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
               채용 없이, 선불 0원으로
               <RollingRole />
               지금 바로 써보세요
@@ -107,8 +107,12 @@ function Hero() {
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
                 70만원 지원받고 시작하기
               </CtaLink>
-              <p className="break-keep text-[13px] text-white/70 sm:text-[14px]">
-                즉시 투입 가능 · 평균 3년차 — 풀스택 개발자 월 <span className="font-semibold text-white">159만원</span> · 디자이너 월 <span className="font-semibold text-white">99만원</span> · 마케터 월 <span className="font-semibold text-white">149만원</span>
+              {/* 줄바꿈은 직군 단위로만 — 금액이 중간에 꺾이지 않게 세그먼트별 nowrap */}
+              <p className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
+                <span className="whitespace-nowrap">즉시 투입 가능 · 평균 3년차</span>{" — "}
+                <span className="whitespace-nowrap">풀스택 개발자 월 <span className="font-semibold text-white">159만원</span></span>{" · "}
+                <span className="whitespace-nowrap">디자이너 월 <span className="font-semibold text-white">99만원</span></span>{" · "}
+                <span className="whitespace-nowrap">마케터 월 <span className="font-semibold text-white">149만원</span></span>
               </p>
             </div>
           </div>
@@ -424,17 +428,18 @@ function TalentCarousel({ talents }: { talents: ShowcaseTalent[] }) {
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {talents.map((talent) => (
-            <div key={talent.id} className="min-w-0 shrink-0 basis-[92%] pr-4 sm:basis-[540px] sm:pr-5">
+            <div key={talent.id} className="min-w-0 shrink-0 basis-full pr-3 sm:basis-[540px] sm:pr-5">
               <CandidateCard talent={talent} />
             </div>
           ))}
         </div>
       </div>
+      {/* 화살표: 모바일은 안쪽에 작게, 데스크톱은 바깥 반걸침 */}
       <button
         type="button"
         aria-label="이전 인재 보기"
         onClick={() => emblaApi?.scrollPrev()}
-        className="absolute left-0 top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white p-2.5 text-[#3A4356] shadow-[0_8px_20px_-8px_rgba(10,18,32,0.4)] transition hover:text-[#E8590C] md:flex"
+        className="absolute left-2 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/95 p-2 text-[#3A4356] shadow-[0_8px_20px_-8px_rgba(10,18,32,0.4)] transition hover:text-[#E8590C] md:left-0 md:-translate-x-1/2 md:p-2.5"
       >
         <ChevronIcon direction="left" />
       </button>
@@ -442,7 +447,7 @@ function TalentCarousel({ talents }: { talents: ShowcaseTalent[] }) {
         type="button"
         aria-label="다음 인재 보기"
         onClick={() => emblaApi?.scrollNext()}
-        className="absolute right-0 top-1/2 z-20 hidden -translate-y-1/2 translate-x-1/2 items-center justify-center rounded-full bg-white p-2.5 text-[#3A4356] shadow-[0_8px_20px_-8px_rgba(10,18,32,0.4)] transition hover:text-[#E8590C] md:flex"
+        className="absolute right-2 top-1/2 z-20 flex -translate-y-1/2 items-center justify-center rounded-full bg-white/95 p-2 text-[#3A4356] shadow-[0_8px_20px_-8px_rgba(10,18,32,0.4)] transition hover:text-[#E8590C] md:right-0 md:translate-x-1/2 md:p-2.5"
       >
         <ChevronIcon direction="right" />
       </button>
