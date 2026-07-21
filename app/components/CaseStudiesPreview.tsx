@@ -29,9 +29,8 @@ export default function CaseStudiesPreview() {
         {/* 에디토리얼 챕터 헤더 — 빅 스테이트먼트 + 스탯 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
           <h2 className="max-w-[720px] break-keep text-[30px] font-extrabold leading-[1.22] tracking-[-0.01em] text-[#191714] sm:text-[40px] md:text-[52px]">
-            개발 · 디자인 · 마케팅,
-            <br />
-            이렇게 같이 일하고 있습니다
+            망설이는 동안,
+            <br />이 회사들은 <span className="text-[#E8590C]">이미 시작했습니다</span>
           </h2>
           <Link
             href="/cases"
