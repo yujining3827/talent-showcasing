@@ -105,7 +105,7 @@ function Hero() {
             </h1>
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
-                70만원 아끼고 시작하기
+                인재 추천받기
               </CtaLink>
               {/* 줄바꿈은 직군 단위로만 — 금액이 중간에 꺾이지 않게 세그먼트별 nowrap */}
               <p className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
@@ -176,13 +176,12 @@ function LeadForm() {
           <div className="absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(13,9,7,0.88)_0%,rgba(13,9,7,0.62)_62%,rgba(13,9,7,0.28)_100%)]" />
           <div className="absolute inset-0 z-10 bg-[linear-gradient(0deg,rgba(13,9,7,0.82)_0%,transparent_62%)]" />
           <p className="relative z-20 mb-auto text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">
-            First 2 Weeks on Us
+            베트남 인재 매칭
           </p>
           <h2 className="relative z-20 max-w-[460px] break-keep text-[28px] font-extrabold leading-[1.24] text-white sm:text-[36px] md:text-[42px]">
-            지금 시작하면
-            <br />첫 2주 인건비 70만원이
+            어떤 인재가
             <br />
-            무료입니다
+            필요하세요?
           </h2>
           <p className="relative z-20 mt-4 text-[14px] font-medium leading-[1.7] text-white/80 md:text-[15px]">
             남겨주시면 담당자가 바로 연락드립니다.
@@ -247,7 +246,7 @@ function LeadForm() {
               disabled={!canSubmit || submitting}
               className="mt-1 h-[52px] rounded-lg bg-[#E8590C] text-[16px] font-bold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {submitting ? "접수 중..." : "70만원 아끼고 시작하기"}
+              {submitting ? "접수 중..." : "인재 추천받기"}
             </button>
           </form>
         )}
@@ -276,7 +275,7 @@ function MobileStickyCta() {
     >
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          70만원 아끼고 시작하기
+          인재 추천받기
         </CtaLink>
       </div>
     </div>
