@@ -25,13 +25,13 @@ export default function CaseStudiesPreview() {
 
   return (
     <section id="cases" className="bg-[#F6F1E9] scroll-mt-[84px]">
-      <div className="mx-auto max-w-[1360px] px-5 py-16 md:py-28">
+      <div className="mx-auto max-w-[1360px] px-5 py-12 md:py-16">
         {/* 에디토리얼 챕터 헤더 — 빅 스테이트먼트 + 스탯 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
           <h2 className="max-w-[720px] break-keep text-[30px] font-extrabold leading-[1.22] tracking-[-0.01em] text-[#191714] sm:text-[40px] md:text-[52px]">
-            베트남 인재,
+            개발 · 디자인 · 마케팅,
             <br />
-            이렇게 쓰고 있습니다
+            이렇게 같이 일하고 있습니다
           </h2>
           <Link
             href="/cases"

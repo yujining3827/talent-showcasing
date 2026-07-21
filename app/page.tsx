@@ -161,7 +161,7 @@ function LeadForm() {
   }
 
   return (
-    <section id="lead" className="bg-[#F6F1E9] px-5 py-14 md:py-20">
+    <section id="lead" className="bg-[#F6F1E9] px-5 py-10 md:py-14">
       <div className="mx-auto grid max-w-[1200px] overflow-hidden rounded-[32px] bg-[#17120F] shadow-[0_28px_80px_-42px_rgba(29,20,13,0.65)] md:grid-cols-2">
         <div className="relative flex aspect-square flex-col justify-end overflow-hidden bg-black px-7 py-9 md:px-12 md:py-12">
           <Image
@@ -465,7 +465,7 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
   if (talents.length === 0) return null;
   return (
     <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
-      <div className="mx-auto max-w-[1200px] px-5 py-14 md:py-20">
+      <div className="mx-auto max-w-[1200px] px-5 py-10 md:py-14">
         {/* 탭은 좌상단 고정 */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {TALENT_CATEGORIES.map((c) => (
