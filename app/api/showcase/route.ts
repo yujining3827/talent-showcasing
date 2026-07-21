@@ -106,8 +106,10 @@ export async function GET() {
     const company = vco || pickBestCompany(companies) || cco || null;
     const school = p.verified_school_name || p.university || null;
     // 사람 헤드샷이면 노출 (산/단체/빈사진만 제거, 자연스러운 것도 포함)
+    // 마케팅/CS는 풀이 얇아 완화 기준(품질 2+) — 그 외 직군은 3+
     const v = verdicts[String(p.id)];
-    const goodPhoto = v?.headshot === true && (v?.quality ?? 0) >= 3;
+    const isMktCs = /market|growth|social|content|seo|brand|customer|support|cx|service/.test((p.position || "").toLowerCase());
+    const goodPhoto = v?.headshot === true && (v?.quality ?? 0) >= (isMktCs ? 2 : 3);
     return {
       id: String(p.id),
       name: p.full_name || "익명",

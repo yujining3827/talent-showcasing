@@ -487,14 +487,30 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
 }
 
 export default function LandingPage() {
-  // 브라우저는 큐레이션된 히어로 인재(경력·어학 데이터 완비)만 사용 — 출신·연차 점수순
+  const [dbTalents, setDbTalents] = useState<ShowcaseTalent[]>([]);
+
+  // DB 인재는 마케팅/CS만 합류 (사진 퀄리티 확인된 직군) — 개발/디자인은 큐레이션 유지
+  useEffect(() => {
+    fetch("/api/showcase")
+      .then((r) => r.json())
+      .then((d) => {
+        if (Array.isArray(d.talents)) {
+          setDbTalents(d.talents.filter((t: ShowcaseTalent) => ["마케팅", "CS"].includes(categoryOf(t.role))));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  // 큐레이션 인재(경력·어학 완비) 점수순 + 마케팅/CS DB 인재 뒤에 합류 (이름 중복 제거)
   const browserTalents = useMemo(() => {
-    return [...HERO_TALENTS].sort((a, b) => {
+    const sorted = [...HERO_TALENTS].sort((a, b) => {
       const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
       const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
       return bScore - aScore;
     });
-  }, []);
+    const seen = new Set(sorted.map((t) => (t.name || "").trim().toLowerCase()));
+    return sorted.concat(dbTalents.filter((t) => !seen.has((t.name || "").trim().toLowerCase())));
+  }, [dbTalents]);
 
   return (
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
