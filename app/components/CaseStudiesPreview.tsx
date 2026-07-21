@@ -24,25 +24,38 @@ export default function CaseStudiesPreview() {
   if (cases.length === 0) return null;
 
   return (
-    <section id="cases" className="bg-white scroll-mt-[84px]">
-      <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-24">
-        {/* 헤더 + 전체 보기 */}
+    <section id="cases" className="bg-[#F6F1E9] scroll-mt-[84px]">
+      <div className="mx-auto max-w-[1360px] px-5 py-16 md:py-28">
+        {/* 에디토리얼 챕터 헤더 — 빅 스테이트먼트 + 스탯 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
-          <div className="max-w-[680px]">
-            <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">파트너 사례</p>
-            <h2 className="mt-3 break-keep text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">
-              파트너들은 이미
-              <br />
-              인건비를 최대 60%까지 줄이고 있습니다
-            </h2>
-          </div>
+          <h2 className="max-w-[720px] break-keep text-[30px] font-extrabold leading-[1.22] tracking-[-0.01em] text-[#191714] sm:text-[40px] md:text-[52px]">
+            파트너들은 이미
+            <br />
+            인건비를 <span className="text-[#E8590C]">최대 60%</span>까지
+            <br />
+            줄이고 있습니다
+          </h2>
           <Link
             href="/cases"
-            className="inline-flex shrink-0 items-center gap-1 text-[14px] font-semibold text-[#E8590C] transition hover:text-[#C74E0A]"
+            className="inline-flex shrink-0 items-center gap-1 pb-1 text-[14px] font-semibold text-[#E8590C] transition hover:text-[#C74E0A]"
           >
             전체 사례 보기
             <span aria-hidden>→</span>
           </Link>
+        </div>
+
+        {/* 스탯 밴드 — 레퍼런스의 58/60/61% 트리트먼트 */}
+        <div className="mt-10 grid grid-cols-1 gap-6 border-t border-[#E3D9C9] pt-8 sm:grid-cols-3 md:mt-14 md:pt-10">
+          {[
+            { value: "60%", caption: "최대 인건비 절감" },
+            { value: "20,000명", caption: "검증 베트남 인재 풀" },
+            { value: "2주", caption: "무료 트라이얼" },
+          ].map((stat) => (
+            <div key={stat.caption}>
+              <p className="text-[36px] font-extrabold leading-none tracking-[-0.01em] text-[#191714] sm:text-[44px]">{stat.value}</p>
+              <p className="mt-2 text-[13px] text-[#6F675C] sm:text-[14px]">{stat.caption}</p>
+            </div>
+          ))}
         </div>
 
         {/* 사례 카드 (상위 3개) */}
