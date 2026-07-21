@@ -105,7 +105,7 @@ function Hero() {
             </h1>
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
-                70만원 아끼고 시작하기
+                70만원 지원받고 인재 보기
               </CtaLink>
               {/* 줄바꿈은 직군 단위로만 — 금액이 중간에 꺾이지 않게 세그먼트별 nowrap */}
               <p className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
