@@ -29,13 +29,12 @@ export default function CaseStudiesPreview() {
         {/* 헤더 + 전체 보기 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
           <div className="max-w-[680px]">
-            <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">고객 사례</p>
-            <h2 className="mt-3 text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">
-              공고마감으로 완성한 실제 프로젝트
+            <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">파트너 사례</p>
+            <h2 className="mt-3 break-keep text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">
+              파트너들은 이미
+              <br />
+              인건비를 최대 60%까지 줄이고 있습니다
             </h2>
-            <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">
-              검증된 베트남 인재가 실제 고객사와 함께 만든 결과물을 확인해보세요.
-            </p>
           </div>
           <Link
             href="/cases"

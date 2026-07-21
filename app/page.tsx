@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import useEmblaCarousel from "embla-carousel-react";
-import Autoplay from "embla-carousel-autoplay";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
@@ -106,7 +104,7 @@ function Hero() {
                 2주 무료로 시작하기
               </CtaLink>
               <p className="text-[13px] text-white/70 sm:text-[14px]">
-                평균 인건비 절감 — 개발 <span className="font-semibold text-white">45%</span> · 디자인 <span className="font-semibold text-white">60%</span> · 마케팅 <span className="font-semibold text-white">55%</span>
+                베트남 인재 평균 인건비 절감 — 개발 <span className="font-semibold text-white">45%</span> · 디자인 <span className="font-semibold text-white">60%</span> · 마케팅 <span className="font-semibold text-white">55%</span>
               </p>
             </div>
           </div>
@@ -249,12 +247,12 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
               {talent.company ? ` · ${talent.company}` : ""}
             </span>
           </div>
-          <div className="flex items-baseline justify-between gap-3">
-            <span className="shrink-0 text-[11px] font-semibold text-[#9AA3B2]">어학</span>
-            <span className="truncate text-right text-[13px] font-bold text-[#E8590C]">
-              {talent.language ? talent.language : <span className="font-medium italic text-[#9AA3B2]">조사 중</span>}
-            </span>
-          </div>
+          {talent.language && (
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="shrink-0 text-[11px] font-semibold text-[#9AA3B2]">어학</span>
+              <span className="truncate text-right text-[13px] font-bold text-[#E8590C]">{talent.language}</span>
+            </div>
+          )}
           {talent.skills?.length > 0 && (
             <div className="flex flex-wrap gap-1.5 pt-1">
               {talent.skills.slice(0, 3).map((skill) => (
@@ -270,32 +268,23 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
   );
 }
 
-// 패러데이식 인재 브라우저 — 좌상단 직군 탭 → 아래에 상세형 인재 카드
-const TALENT_CATEGORIES = ["전체", "개발", "디자인", "마케팅"];
+// 패러데이식 인재 브라우저 — 좌상단 직군 탭 → 아래에 인재 카드 연속 롤링
+const TALENT_CATEGORIES = ["전체", "개발", "디자인", "마케팅", "CS"];
 
 function categoryOf(role: string): string {
   const r = (role || "").toLowerCase();
   if (/design/.test(r)) return "디자인";
   if (/market|growth|social|content|seo|brand/.test(r)) return "마케팅";
+  if (/\bcs\b|customer|support|cx|service/.test(r)) return "CS";
   return "개발";
 }
 
 function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
   const [category, setCategory] = useState("전체");
-  // 자동 롤링 캐러셀 (기존 배포본의 히어로 스트립 감각) — 호버 시 정지, 탭 전환 시 처음부터
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
-    Autoplay({ delay: 2600, stopOnInteraction: false, stopOnMouseEnter: true }),
-  ]);
   const filtered = useMemo(
     () => (category === "전체" ? talents : talents.filter((t) => categoryOf(t.role) === category)),
     [category, talents]
   );
-
-  useEffect(() => {
-    if (!emblaApi) return;
-    emblaApi.reInit();
-    emblaApi.scrollTo(0, true);
-  }, [filtered, emblaApi]);
 
   if (talents.length === 0) return null;
   return (
@@ -317,11 +306,20 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
           ))}
         </div>
         {filtered.length > 0 ? (
-          <div className="mt-8 overflow-hidden md:mt-10" ref={emblaRef}>
-            <div className="flex">
-              {filtered.map((talent) => (
-                <div key={talent.id} className="min-w-0 shrink-0 basis-[92%] pr-4 sm:basis-[560px] sm:pr-5">
-                  <CandidateCard talent={talent} />
+          // 연속 마퀴 — 항상 흐른다 (호버 정지 없음). 트랙 2배 복제로 무한 루프
+          <div className="mt-8 overflow-hidden md:mt-10 [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]">
+            <div
+              key={category}
+              className="flex w-max"
+              style={{ animation: `marqueeRight ${Math.max(filtered.length * 8, 16)}s linear infinite` }}
+            >
+              {(filtered.length >= 4 ? [0, 1] : [0, 1, 2, 3]).map((dup) => (
+                <div key={dup} className="flex" aria-hidden={dup === 1}>
+                  {filtered.map((talent) => (
+                    <div key={`${talent.id}-${dup}`} className="w-[86vw] shrink-0 pr-4 sm:w-[540px] sm:pr-5">
+                      <CandidateCard talent={talent} />
+                    </div>
+                  ))}
                 </div>
               ))}
             </div>
