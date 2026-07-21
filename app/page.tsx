@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
@@ -212,76 +214,56 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   );
 }
 
-// 상세형 인재 카드 — 사진 + 검증 배지 + 경력/어학/기술/학력 + 출신 로고
-function FeaturedCandidatePanel({ talent }: { talent: ShowcaseTalent }) {
+// 콤팩트 인재 카드 — 캐러셀 슬라이드용 (사진 좌 + 핵심 정보 우, 높이 ~200px)
+function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
+  const logo = companyLogo(talent.company);
   return (
     <Link
       href={`/showcase/${talent.id}`}
-      className="z-10 flex flex-col overflow-hidden rounded-xl bg-white shadow-[0_24px_70px_-38px_rgba(10,18,32,0.5)] ring-1 ring-[#EDE6DA] transition-shadow duration-300 hover:shadow-[0_30px_80px_-38px_rgba(232,89,12,0.4)] sm:flex-row"
+      className="flex h-full overflow-hidden rounded-xl bg-white shadow-[0_16px_44px_-30px_rgba(10,18,32,0.45)] ring-1 ring-[#ECEFF3] transition-shadow duration-300 hover:shadow-[0_24px_60px_-30px_rgba(232,89,12,0.45)]"
     >
-      <div className="relative h-[300px] w-full sm:h-auto sm:w-[42%]">
-        <TalentPhoto talent={talent} large />
-        <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-[#E8590C]">
+      <div className="relative w-[140px] shrink-0 sm:w-[180px]">
+        <TalentPhoto talent={talent} />
+        <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-[#E8590C]">
           <VerifiedIcon color="#E8590C" />
           검증됨
         </div>
-        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-10">
-          <p className="text-[17px] font-semibold text-white">{talent.name}</p>
-          <p className="mt-0.5 text-[12px] text-white/85">
-            {talent.role}
-            {talent.yoeYears ? ` · ${talent.yoeYears}년차` : ""}
-          </p>
+        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5 pt-8">
+          <p className="truncate text-[13px] font-semibold text-white">{talent.name}</p>
+          <p className="mt-0.5 truncate text-[11px] text-white/85">{talent.role}</p>
         </div>
       </div>
-      <div className="relative flex-1 p-6">
-        {(() => {
-          const logo = companyLogo(talent.company);
-          if (!logo) return null;
-          return (
-            <div className="absolute right-10 top-[46px] flex h-14 items-center">
-              <img src={logo.src} alt={talent.company ?? ""} className={`w-auto max-w-[150px] object-contain ${logo.className ?? "h-9"}`} />
-            </div>
-          );
-        })()}
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 트라이얼 가능</p>
-        <p className="mt-2 pr-[156px] text-[19px] font-semibold leading-[1.4] text-[#171E2D]">
-          {(talent.headline || `검증된 ${talent.role || "테크"} 전문가`).split("/n").map((line, i) => (
-            <span key={i} className="block">
-              {line.trim()}
-            </span>
-          ))}
+      <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 트라이얼 가능</p>
+          {logo && <img src={logo.src} alt={talent.company ?? ""} className="h-5 w-auto max-w-[90px] shrink-0 object-contain sm:h-6" />}
+        </div>
+        <p className="mt-1.5 break-keep text-[15px] font-semibold leading-[1.35] text-[#171E2D] sm:text-[16px]">
+          {(talent.headline || `검증된 ${talent.role || "테크"} 전문가`).replace("/n", " ")}
         </p>
-        <p className="mt-1 text-[13px] text-[#59657A]">경력·어학·포트폴리오 검증을 마친 후보입니다.</p>
-        <div className="mt-8 flex flex-col gap-6">
-          <div className="flex items-start justify-between gap-4 px-4">
-            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">경력</span>
-            <span className="text-right text-[15px] font-bold leading-[1.4] text-[#E8590C]">
+        <div className="mt-auto flex flex-col gap-2 pt-3">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="shrink-0 text-[11px] font-semibold text-[#9AA3B2]">경력</span>
+            <span className="truncate text-right text-[13px] font-bold text-[#E8590C]">
               {talent.yoeYears ? `${talent.yoeYears}년차` : "신입"}
               {talent.company ? ` · ${talent.company}` : ""}
             </span>
           </div>
-          <div className="flex items-start justify-between gap-4 px-4">
-            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">어학 · 소통</span>
-            <span className="text-right text-[15px] font-bold leading-[1.4] text-[#E8590C]">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="shrink-0 text-[11px] font-semibold text-[#9AA3B2]">어학</span>
+            <span className="truncate text-right text-[13px] font-bold text-[#E8590C]">
               {talent.language ? talent.language : <span className="font-medium italic text-[#9AA3B2]">조사 중</span>}
             </span>
           </div>
           {talent.skills?.length > 0 && (
-            <div className="flex items-start justify-between gap-4 px-4">
-              <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">기술</span>
-              <div className="flex flex-wrap justify-end gap-1.5">
-                {talent.skills.slice(0, 4).map((skill) => (
-                  <span key={skill} className="rounded-full bg-[#F1F3F7] px-2.5 py-0.5 text-[12px] font-medium text-[#5B667A]">
-                    {skill}
-                  </span>
-                ))}
-              </div>
+            <div className="flex flex-wrap gap-1.5 pt-1">
+              {talent.skills.slice(0, 3).map((skill) => (
+                <span key={skill} className="rounded-full bg-[#F1F3F7] px-2 py-0.5 text-[11px] font-medium text-[#5B667A]">
+                  {skill}
+                </span>
+              ))}
             </div>
           )}
-          <div className="flex items-start justify-between gap-4 px-4">
-            <span className="shrink-0 pt-0.5 text-[12px] font-semibold text-[#9AA3B2]">학력</span>
-            <span className="text-right text-[13px] leading-[1.5] text-[#5B667A]">{talent.school || "확인 중"}</span>
-          </div>
         </div>
       </div>
     </Link>
@@ -300,11 +282,25 @@ function categoryOf(role: string): string {
 
 function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
   const [category, setCategory] = useState("전체");
+  // 자동 롤링 캐러셀 (기존 배포본의 히어로 스트립 감각) — 호버 시 정지, 탭 전환 시 처음부터
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
+    Autoplay({ delay: 2600, stopOnInteraction: false, stopOnMouseEnter: true }),
+  ]);
+  const filtered = useMemo(
+    () => (category === "전체" ? talents : talents.filter((t) => categoryOf(t.role) === category)),
+    [category, talents]
+  );
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.reInit();
+    emblaApi.scrollTo(0, true);
+  }, [filtered, emblaApi]);
+
   if (talents.length === 0) return null;
-  const filtered = category === "전체" ? talents : talents.filter((t) => categoryOf(t.role) === category);
   return (
     <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
-      <div className="mx-auto max-w-[1000px] px-5 py-14 md:py-20">
+      <div className="mx-auto max-w-[1200px] px-5 py-14 md:py-20">
         {/* 탭은 좌상단 고정 */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {TALENT_CATEGORIES.map((c) => (
@@ -320,12 +316,17 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
             </button>
           ))}
         </div>
-        <div className="mt-8 flex flex-col gap-5 md:mt-10 md:gap-6">
-          {filtered.slice(0, 4).map((talent) => (
-            <FeaturedCandidatePanel key={talent.id} talent={talent} />
-          ))}
-        </div>
-        {filtered.length === 0 && (
+        {filtered.length > 0 ? (
+          <div className="mt-8 overflow-hidden md:mt-10" ref={emblaRef}>
+            <div className="flex">
+              {filtered.map((talent) => (
+                <div key={talent.id} className="min-w-0 shrink-0 basis-[92%] pr-4 sm:basis-[560px] sm:pr-5">
+                  <CandidateCard talent={talent} />
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
           <p className="mt-10 text-[15px] text-[#8A93A5]">해당 직군 인재는 상담으로 바로 소개해드립니다.</p>
         )}
       </div>
