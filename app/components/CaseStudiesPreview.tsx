@@ -29,8 +29,9 @@ export default function CaseStudiesPreview() {
         {/* 에디토리얼 챕터 헤더 — 빅 스테이트먼트 + 스탯 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
           <h2 className="max-w-[720px] break-keep text-[30px] font-extrabold leading-[1.22] tracking-[-0.01em] text-[#191714] sm:text-[40px] md:text-[52px]">
-            망설이는 동안,
-            <br />이 회사들은 <span className="text-[#E8590C]">이미 시작했습니다</span>
+            베트남 인재가 처음이라면,
+            <br />
+            <span className="text-[#E8590C]">먼저 시작한 회사들</span>을 보세요
           </h2>
           <Link
             href="/cases"
@@ -67,23 +68,19 @@ export default function CaseStudiesPreview() {
                   <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${c.type === "talent" ? "bg-[#E6F7EE] text-[#12A150]" : "bg-[#FFF1E8] text-[#E8590C]"}`}>{c.company}</span>
                   <span className="text-[12px] text-[#8A93A5]">{c.industry}</span>
                 </div>
-                {/* 클릭 전에 판단 재료 먼저: 활용 영역 → 실질 결과 → 인터뷰 유무 */}
-                <div className="mt-3.5 flex flex-col gap-2">
-                  <div className="flex items-baseline gap-3">
-                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">활용 영역</span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {(c.talentRole || "").split("·").map((r) => r.trim()).filter(Boolean).map((r) => (
-                        <span key={r} className="rounded-full bg-[#F1F3F7] px-2 py-0.5 text-[11px] font-medium text-[#5B667A]">{r}</span>
-                      ))}
-                    </div>
+                {/* 클릭 전에 판단 재료 먼저 — 영역/인원 2열 + 결과 풀폭, 라벨 위·값 아래로 즉독 */}
+                <div className="mt-4 grid grid-cols-[1fr_auto] gap-x-8 gap-y-3.5 border-t border-[#EEF1F5] pt-4">
+                  <div>
+                    <p className="text-[11px] font-semibold text-[#9AA3B2]">활용 영역</p>
+                    <p className="mt-1 text-[14px] font-bold text-[#171E2D]">{c.talentRole}</p>
                   </div>
-                  <div className="flex items-baseline gap-3">
-                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">진행 범위</span>
-                    <span className="text-[13px] font-medium text-[#3A4356]">{c.scope}</span>
+                  <div>
+                    <p className="text-[11px] font-semibold text-[#9AA3B2]">투입 인재</p>
+                    <p className="mt-1 text-[14px] font-bold text-[#171E2D]">{c.teamSize || "—"}</p>
                   </div>
-                  <div className="flex items-baseline gap-3">
-                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">결과</span>
-                    <span className="text-[13px] font-bold text-[#E8590C]">{c.result || c.summary}</span>
+                  <div className="col-span-2">
+                    <p className="text-[11px] font-semibold text-[#9AA3B2]">결과</p>
+                    <p className="mt-1 break-keep text-[15px] font-bold leading-[1.5] text-[#E8590C]">{c.result || c.summary}</p>
                   </div>
                 </div>
                 <span className="mt-auto inline-flex items-center gap-1 pt-4 text-[13px] font-semibold text-[#E8590C]">
