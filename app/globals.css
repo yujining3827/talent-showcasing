@@ -282,18 +282,6 @@ body {
   .animate-marquee { animation: none; }
 }
 
-/* 히어로 인재 월 (수직 무한 스크롤 — 트랙 2배 복제 전제, -50%가 한 사이클) */
-@keyframes heroWallScroll {
-  from { transform: translateY(0); }
-  to { transform: translateY(-50%); }
-}
-.animate-hero-wall {
-  animation: heroWallScroll 56s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .animate-hero-wall { animation: none; }
-}
-
 /* 히어로 로고 교체 페이드인 */
 @keyframes logoIn {
   from { opacity: 0; transform: translateY(22%); }
@@ -303,17 +291,6 @@ body {
   animation: logoIn 0.35s ease-out;
 }
 
-/* 히어로 CTA 펄스 (글로우가 숨쉬듯 커졌다 작아짐) */
-@keyframes ctaPulse {
-  0%, 100% { box-shadow: 0 22px 60px -18px rgba(232, 89, 12, 0.8); transform: scale(1); }
-  50% { box-shadow: 0 22px 85px -12px rgba(232, 89, 12, 1); transform: scale(1.03); }
-}
-.animate-cta-pulse {
-  animation: ctaPulse 2.4s ease-in-out infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .animate-cta-pulse { animation: none; }
-}
 
 /* Pricing 2-step 위저드 스텝 전환 */
 @keyframes stepIn {

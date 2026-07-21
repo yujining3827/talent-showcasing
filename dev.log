@@ -1,0 +1,30 @@
+
+> talent-showcasing@0.1.0 dev
+> next dev
+
+  ▲ Next.js 14.2.35
+  - Local:        http://localhost:3000
+  - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 5.7s
+ ○ Compiling /showcase/[id] ...
+ ✓ Compiled /showcase/[id] in 11.5s (549 modules)
+ ✓ Compiled in 818ms (267 modules)
+ GET /showcase/hero-9 200 in 14552ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 6.9s (761 modules)
+ GET /favicon.ico 500 in 7881ms
+ ✓ Compiled /icon.png in 434ms (354 modules)
+ GET /icon.png?3fe7591e32b1f8da 200 in 617ms
+ GET /favicon.ico 500 in 70ms
+ ○ Compiling / ...
+ ✓ Compiled / in 7.9s (797 modules)
+ ✓ Compiled in 3.8s (463 modules)
+ ✓ Compiled in 2.4s (463 modules)
+ GET /showcase/hero-9 200 in 4491ms
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 577ms (785 modules)
+ GET /favicon.ico 500 in 732ms
+ ✓ Compiled /icon.png in 203ms (367 modules)
+ GET /icon.png?3fe7591e32b1f8da 200 in 440ms

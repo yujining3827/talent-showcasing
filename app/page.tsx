@@ -7,7 +7,6 @@ import CtaLink from "@/app/components/CtaLink";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
 import SiteHeader from "@/app/components/SiteHeader";
 import SiteFooter from "@/app/components/SiteFooter";
-import { HERO_TALENTS } from "@/lib/heroTalents";
 
 type ShowcaseTalent = {
   id: string;
@@ -28,58 +27,21 @@ type ShowcaseTalent = {
   language?: string | null;
 };
 
-function TalentPhoto({ talent, large = false }: { talent: ShowcaseTalent; large?: boolean }) {
-  const [failed, setFailed] = useState(false);
-  const src = talent.photo_url || null;
-
-  if (!src || failed) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-[#D8DEE8]">
-        <img src="/default-profile.png" alt="" className="h-[82%] w-[82%] object-contain" />
-      </div>
-    );
-  }
-
-  return (
-    <img
-      src={src}
-      alt=""
-      onError={() => setFailed(true)}
-      className="h-full w-full object-cover"
-      style={{ objectPosition: large ? "center 18%" : "center 22%" }}
-    />
-  );
-}
-
-// 배경 월 타일 — 사진만. 카드 UI 없이 미디어 레이어로만 기능한다
-function PhotoTile({ talent }: { talent: ShowcaseTalent }) {
-  return (
-    <div className="w-full shrink-0 overflow-hidden rounded-lg">
-      <div className="aspect-[3/4]">
-        <TalentPhoto talent={talent} />
-      </div>
-    </div>
-  );
-}
-
-// 히어로 로고 로테이션 — 실제 인재 풀에 있는 출신 회사만 (아래 로고 마퀴와 동일 풀)
-// 배경 없이 화이트 단색으로 다크 위에 직접. 슬롯 크기 고정이라 교체 시 들썩이지 않는다
-// h: 워드마크마다 시각적 무게가 달라 개별 보정
-// 출신 밴드 — 글로벌 대기업만, 화이트 톤으로 상단에 작게 고정
+// 출신 밴드 — 글로벌 대기업만, 크림 배경 위 원색 로고
 // h: 로고별 시각적 무게 보정
 const ORIGIN_LOGOS: { name: string; src: string; h: string }[] = [
-  { name: "삼성", src: "/samsung-wordmark.svg", h: "h-3 sm:h-3.5" },
-  { name: "구글", src: "/google.png", h: "h-4 sm:h-5" },
-  { name: "Grab", src: "/Grab.png", h: "h-3.5 sm:h-4" },
-  { name: "KPMG", src: "/KPMG.webp", h: "h-3.5 sm:h-4" },
-  { name: "Mondelez", src: "/Mondelez.png", h: "h-4 sm:h-5" },
+  { name: "삼성", src: "/samsung.svg", h: "h-5 sm:h-6" },
+  { name: "구글", src: "/google.png", h: "h-5 sm:h-6" },
+  { name: "Grab", src: "/Grab.png", h: "h-4 sm:h-5" },
+  { name: "KPMG", src: "/KPMG.webp", h: "h-4 sm:h-5" },
+  { name: "Mondelez", src: "/Mondelez.png", h: "h-5 sm:h-6" },
 ];
 
 function OriginBand() {
   return (
-    <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:gap-x-7">
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 opacity-80 sm:gap-x-8">
       {ORIGIN_LOGOS.map((logo) => (
-        <img key={logo.name} src={logo.src} alt={logo.name} className={`${logo.h} w-auto object-contain opacity-60 brightness-0 invert`} />
+        <img key={logo.name} src={logo.src} alt={logo.name} className={`${logo.h} w-auto object-contain`} />
       ))}
     </div>
   );
@@ -107,71 +69,83 @@ function RollingRole() {
 
   return (
     <span className="block h-[1.3em] overflow-hidden">
-      <span key={index} className="animate-logo-in block text-[#FF7A2F]">
+      <span key={index} className="animate-logo-in block text-[#E8590C]">
         {ROLLING_ROLES[index]}
       </span>
     </span>
   );
 }
 
-// 풀블리드 배경 월 — 인재 사진이 영상처럼 화면 전체에서 흐르고, 딤 위에 메시지가 뜬다
-// (레이어: 사진 월 → 플랫 딤 → 비네트 → 텍스트)
-function HeroBackdrop({ talents }: { talents: ShowcaseTalent[] }) {
-  const withPhoto = talents.filter((t) => t.photo_url);
-  const pool = withPhoto.length > 0 ? withPhoto : talents;
-  const columnCount = 5; // md 미만은 CSS로 3열만 노출
-  const durations = ["44s", "58s", "50s", "66s", "47s"];
-  const columns = Array.from({ length: columnCount }, (_, i) => {
-    const rotated = [...pool.slice(i * 2 % pool.length), ...pool.slice(0, i * 2 % pool.length)];
-    return rotated;
-  });
+// 에디토리얼 히어로 — 크림 배경, 좌 텍스트 / 우 포토 콜라주 (레퍼런스: 리멤버 푸조 광고, 웜톤 에디토리얼)
+function Hero() {
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
-      {/* blur+채도/명도 다운 — 배경 디테일이 텍스트와 선명도 경쟁을 못 하게 (쨍함은 글자만) */}
-      <div className="grid h-full scale-[1.03] grid-cols-3 gap-2 blur-[2.5px] brightness-[0.8] saturate-[0.75] md:grid-cols-5 md:gap-3">
-        {columns.map((col, i) => (
-          <div key={i} className={`overflow-hidden ${i >= 3 ? "hidden md:block" : ""}`}>
-            <div
-              className="animate-hero-wall flex flex-col gap-2 md:gap-3"
-              style={{ animationDuration: durations[i], animationDirection: i % 2 ? "reverse" : "normal" }}
-            >
-              {[...col, ...col].map((talent, j) => (
-                <PhotoTile key={`${talent.id}-${j}`} talent={talent} />
-              ))}
-            </div>
+    <section className="bg-[#F6F1E9] text-[#191714]">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-5 py-14 md:grid-cols-[1.05fr_0.95fr] md:gap-14 md:py-24">
+        <div>
+          <OriginBand />
+          <h1 className="mt-8 break-keep text-[30px] font-extrabold leading-[1.3] tracking-[-0.01em] sm:text-[42px] md:text-[50px]">
+            우리가 보유한 20,000명의
+            <RollingRole />
+            2주일 무료로 써보세요
+          </h1>
+          <CtaLink href="/pricing" location="hero" className="mt-9 inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white shadow-[0_18px_40px_-20px_rgba(232,89,12,0.8)] transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
+            무료 트라이얼 시작하기
+          </CtaLink>
+          <p className="mt-6 break-keep text-[14px] leading-[1.7] text-[#6F675C] md:text-[15px]">
+            최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
+          </p>
+        </div>
+        {/* 포토 콜라주: 큰 씬 + 작은 씬 + 오퍼 타일 (캡쳐 레퍼런스의 그리드 리듬) */}
+        <div className="grid grid-cols-2 gap-3 md:gap-4">
+          <img src="/stock/team-main.jpg" alt="" className="col-span-2 h-[220px] w-full rounded-3xl object-cover sm:h-[280px]" />
+          <img src="/stock/dev-focus.jpg" alt="" className="h-[150px] w-full rounded-3xl object-cover sm:h-[190px]" />
+          <div className="flex h-[150px] w-full items-center justify-center rounded-3xl bg-[radial-gradient(120%_120%_at_20%_0%,#FF9D5C,#E8590C_70%)] sm:h-[190px]">
+            <p className="text-center text-[26px] font-extrabold leading-[1.2] text-white sm:text-[32px]">
+              2주
+              <br />
+              무료
+            </p>
           </div>
-        ))}
+        </div>
       </div>
-      <div className="absolute inset-0 bg-[#070C18]/78" />
-      <div className="absolute inset-0 bg-[radial-gradient(85%_70%_at_50%_50%,rgba(7,12,24,0.6),rgba(7,12,24,0.92))]" />
-    </div>
+    </section>
   );
 }
 
-function Hero({
-  talents,
-}: {
-  talents: ShowcaseTalent[];
-}) {
-  const heroTalents = talents.slice(0, 10);
-
+// 구독 조건 스트립 — 패러데이식: 조건 세 개, 군더더기 없이
+function SubscriptionStrip() {
+  const items = [
+    { title: "2주 무료", desc: "트라이얼로 먼저 써보고" },
+    { title: "월 구독", desc: "채용 부담 없이 인건비만" },
+    { title: "언제든 중단", desc: "위약금 없음" },
+  ];
   return (
-    <section className="relative isolate overflow-hidden bg-[#070C18] text-white">
-      <HeroBackdrop talents={heroTalents} />
-      {/* 첫 화면 안에서 전부 끝나는 센터 스테이지 — H1 + 서브 한 줄 + CTA */}
-      <div className="relative mx-auto flex min-h-[calc(100vh-60px)] max-w-[720px] flex-col items-center justify-center px-5 py-12 text-center">
-        <OriginBand />
-        <h1 className="mt-8 break-keep text-[30px] font-extrabold leading-[1.3] tracking-[-0.01em] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.6)] sm:text-[46px] md:mt-10 md:text-[58px]">
-          우리가 보유한 20,000명의
-          <RollingRole />
-          2주일 무료로 써보세요
-        </h1>
-        <CtaLink href="/pricing" location="hero" className="animate-cta-pulse mt-10 inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px] md:mt-12">
+    <section className="border-y border-[#EDE6DA] bg-white">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 divide-y divide-[#EDE6DA] px-5 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        {items.map((item) => (
+          <div key={item.title} className="flex items-baseline gap-3 py-6 sm:flex-col sm:gap-1.5 sm:px-8 sm:py-9 sm:first:pl-0">
+            <p className="text-[22px] font-extrabold text-[#191714] sm:text-[26px]">{item.title}</p>
+            <p className="text-[14px] text-[#6F675C] sm:text-[15px]">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+// 마지막 전환 밴드 — 오렌지 그라데이션 에디토리얼 블록
+function FinalCta() {
+  return (
+    <section className="bg-[#F6F1E9] px-5 py-14 md:py-20">
+      <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-8 rounded-[32px] bg-[radial-gradient(140%_140%_at_15%_0%,#FF9D5C,#E8590C_65%)] px-6 py-14 text-center md:py-20">
+        <h2 className="break-keep text-[26px] font-extrabold leading-[1.3] text-white sm:text-[36px] md:text-[44px]">
+          지금 신청하면
+          <br />
+          2주는 무료입니다
+        </h2>
+        <CtaLink href="/pricing" location="final-band" className="inline-flex h-12 items-center justify-center rounded-lg bg-white px-8 text-[16px] font-bold text-[#E8590C] transition hover:bg-[#FFF3EA] sm:h-[52px] sm:px-10 sm:text-[17px]">
           무료 트라이얼 시작하기
         </CtaLink>
-        <p className="mt-7 break-keep text-[14px] leading-[1.7] text-[#C4CEDD] [text-shadow:0_1px_16px_rgba(0,0,0,0.5)] md:mt-8 md:text-[16px]">
-          최상위 베트남 인재의 평균 인건비는 국내 대비 50% 더 저렴합니다.
-        </p>
       </div>
     </section>
   );
@@ -247,21 +221,15 @@ export default function LandingPage() {
     });
   }, [talents]);
 
-  const heroTalents = useMemo(() => {
-    return [...HERO_TALENTS].sort((a, b) => {
-      const aScore = Number(a.schoolElite) * 3 + Number(a.companyElite) * 3 + (a.yoeYears || 0) / 10;
-      const bScore = Number(b.schoolElite) * 3 + Number(b.companyElite) * 3 + (b.yoeYears || 0) / 10;
-      return bScore - aScore;
-    });
-  }, []);
-
   return (
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
       <SiteHeader />
-      <Hero talents={heroTalents} />
+      <Hero />
+      <SubscriptionStrip />
       <FeaturedTalentCarousel />
       <TalentPreview talents={premiumTalents} />
       <CaseStudiesPreview />
+      <FinalCta />
       <SiteFooter />
       <MobileStickyCta />
     </main>
