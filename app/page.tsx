@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
@@ -157,15 +158,29 @@ function LeadForm() {
 
   return (
     <section id="lead" className="bg-[#F6F1E9] px-5 py-14 md:py-20">
-      <div className="mx-auto grid max-w-[1200px] overflow-hidden rounded-[32px] bg-[radial-gradient(140%_140%_at_15%_0%,#FF9D5C,#E8590C_65%)] md:grid-cols-2">
-        <div className="flex flex-col justify-center px-7 py-10 md:px-12 md:py-16">
-          <h2 className="break-keep text-[26px] font-extrabold leading-[1.3] text-white sm:text-[34px] md:text-[40px]">
+      <div className="mx-auto grid max-w-[1200px] overflow-hidden rounded-[32px] bg-[#17120F] shadow-[0_28px_80px_-42px_rgba(29,20,13,0.65)] md:grid-cols-2">
+        <div className="relative flex aspect-square flex-col justify-end overflow-hidden bg-black px-7 py-9 md:px-12 md:py-12">
+          <Image
+            src="/cta-promo-original.png"
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="(min-width: 768px) 600px, 100vw"
+            quality={85}
+            className="z-0 object-contain"
+          />
+          <div className="absolute inset-0 z-10 bg-[linear-gradient(90deg,rgba(13,9,7,0.88)_0%,rgba(13,9,7,0.62)_62%,rgba(13,9,7,0.28)_100%)]" />
+          <div className="absolute inset-0 z-10 bg-[linear-gradient(0deg,rgba(13,9,7,0.82)_0%,transparent_62%)]" />
+          <p className="relative z-20 mb-auto text-[11px] font-bold uppercase tracking-[0.18em] text-white/70">
+            First 2 Weeks on Us
+          </p>
+          <h2 className="relative z-20 max-w-[460px] break-keep text-[28px] font-extrabold leading-[1.24] text-white sm:text-[36px] md:text-[42px]">
             지금 신청하면
             <br />첫 2주 인건비 70만원을
             <br />
             지원합니다
           </h2>
-          <p className="mt-4 text-[14px] leading-[1.7] text-white/85 md:text-[15px]">
+          <p className="relative z-20 mt-4 text-[14px] font-medium leading-[1.7] text-white/80 md:text-[15px]">
             남겨주시면 담당자가 바로 연락드립니다.
           </p>
         </div>
