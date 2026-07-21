@@ -103,8 +103,8 @@ function Hero() {
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
                 2주 무료로 시작하기
               </CtaLink>
-              <p className="text-[13px] text-white/70 sm:text-[14px]">
-                베트남 인재 평균 인건비 절감 — 개발 <span className="font-semibold text-white">45%</span> · 디자인 <span className="font-semibold text-white">60%</span> · 마케팅 <span className="font-semibold text-white">55%</span>
+              <p className="break-keep text-[13px] text-white/70 sm:text-[14px]">
+                즉시 투입 가능 · 평균 3년차 — 풀스택 개발자 월 <span className="font-semibold text-white">159만원</span> · 디자이너 월 <span className="font-semibold text-white">99만원</span> · 마케터 월 <span className="font-semibold text-white">149만원</span>
               </p>
             </div>
           </div>
