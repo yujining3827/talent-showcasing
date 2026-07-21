@@ -107,7 +107,7 @@ export async function GET() {
     const school = p.verified_school_name || p.university || null;
     // 사람 헤드샷이면 노출 (산/단체/빈사진만 제거, 자연스러운 것도 포함)
     const v = verdicts[String(p.id)];
-    const goodPhoto = v?.headshot === true && (v?.quality ?? 0) >= 3;
+    const goodPhoto = v?.headshot === true && (v?.quality ?? 0) >= 2;
     return {
       id: String(p.id),
       name: p.full_name || "익명",
