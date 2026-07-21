@@ -1,5 +1,4 @@
 import Link from "next/link";
-import CtaLink from "./CtaLink";
 
 /* 공용 푸터 — 서비스 정보·링크·개인정보처리방침. B2B 신뢰용 최소 구성.
  * ⚠️ 사업자등록번호 등 법정 표기는 실값 확정 후 추가한다(임의 기재 금지). */
@@ -17,12 +16,6 @@ export default function SiteFooter() {
             </p>
           </div>
           <nav className="flex flex-col gap-2.5 text-[14px] text-[#5B667A]">
-            <Link href="/cases" className="transition hover:text-[#E8590C]">
-              고객 사례
-            </Link>
-            <CtaLink href="/pricing" location="footer" className="transition hover:text-[#E8590C]">
-              인재 추천받기
-            </CtaLink>
             <Link href="/privacy" className="transition hover:text-[#E8590C]">
               개인정보처리방침
             </Link>
