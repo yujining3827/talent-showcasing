@@ -123,11 +123,10 @@ function FinalCta() {
       <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-8 rounded-[32px] bg-[radial-gradient(140%_140%_at_15%_0%,#FF9D5C,#E8590C_65%)] px-6 py-14 text-center md:py-20">
         <h2 className="break-keep text-[26px] font-extrabold leading-[1.3] text-white sm:text-[36px] md:text-[44px]">
           지금 신청하면
-          <br />
-          2주는 무료입니다
+          <br />첫 2주 인건비 70만원을 지원합니다
         </h2>
         <CtaLink href="/pricing" location="final-band" className="inline-flex h-12 items-center justify-center rounded-lg bg-white px-8 text-[16px] font-bold text-[#E8590C] transition hover:bg-[#FFF3EA] sm:h-[52px] sm:px-10 sm:text-[17px]">
-          2주 무료로 시작하기
+          70만원 지원받고 시작하기
         </CtaLink>
       </div>
     </section>
@@ -154,7 +153,7 @@ function MobileStickyCta() {
     >
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          2주 무료로 시작하기
+          70만원 지원받고 시작하기
         </CtaLink>
       </div>
     </div>
