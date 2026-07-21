@@ -104,8 +104,8 @@ function Hero() {
               지금 바로 써보세요
             </h1>
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
-              <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
-                인재 추천받기
+              <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-6 text-[15px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
+                베트남 항공권 지원받고 인재 추천받기
               </CtaLink>
               {/* 줄바꿈은 직군 단위로만 — 금액이 중간에 꺾이지 않게 세그먼트별 nowrap */}
               <p className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
@@ -246,7 +246,7 @@ function LeadForm() {
               disabled={!canSubmit || submitting}
               className="mt-1 h-[52px] rounded-lg bg-[#E8590C] text-[16px] font-bold text-white transition hover:bg-[#C74E0A] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {submitting ? "접수 중..." : "인재 추천받기"}
+              {submitting ? "접수 중..." : "3일 안에 인재 추천받기"}
             </button>
           </form>
         )}
@@ -275,7 +275,7 @@ function MobileStickyCta() {
     >
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          인재 추천받기
+          3일 안에 인재 추천받기
         </CtaLink>
       </div>
     </div>
