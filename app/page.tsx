@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
@@ -279,6 +279,56 @@ function categoryOf(role: string): string {
   return "개발";
 }
 
+// 연속 마퀴 — 항상 흐르되, 호버하면 부드럽게 감속 (기본 38px/s → 호버 10px/s)
+function TalentMarquee({ talents }: { talents: ShowcaseTalent[] }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const hoveredRef = useRef(false);
+  const dups = talents.length >= 4 ? 2 : 4;
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let x = 0;
+    let speed = 38;
+    let last = performance.now();
+    let raf = 0;
+    const step = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      const target = hoveredRef.current ? 10 : 38;
+      speed += (target - speed) * Math.min(1, dt * 3);
+      x -= speed * dt;
+      const half = el.scrollWidth / 2;
+      if (half > 0 && -x >= half) x += half;
+      el.style.transform = `translateX(${x}px)`;
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [talents, dups]);
+
+  return (
+    <div
+      className="mt-8 overflow-hidden md:mt-10 [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
+      onMouseEnter={() => (hoveredRef.current = true)}
+      onMouseLeave={() => (hoveredRef.current = false)}
+    >
+      <div ref={trackRef} className="flex w-max will-change-transform">
+        {Array.from({ length: dups }, (_, dup) => (
+          <div key={dup} className="flex" aria-hidden={dup > 0}>
+            {talents.map((talent) => (
+              <div key={`${talent.id}-${dup}`} className="w-[86vw] shrink-0 pr-4 sm:w-[540px] sm:pr-5">
+                <CandidateCard talent={talent} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
   const [category, setCategory] = useState("전체");
   const filtered = useMemo(
@@ -306,24 +356,7 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
           ))}
         </div>
         {filtered.length > 0 ? (
-          // 연속 마퀴 — 항상 흐른다 (호버 정지 없음). 트랙 2배 복제로 무한 루프
-          <div className="mt-8 overflow-hidden md:mt-10 [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]">
-            <div
-              key={category}
-              className="flex w-max"
-              style={{ animation: `marqueeRight ${Math.max(filtered.length * 8, 16)}s linear infinite` }}
-            >
-              {(filtered.length >= 4 ? [0, 1] : [0, 1, 2, 3]).map((dup) => (
-                <div key={dup} className="flex" aria-hidden={dup === 1}>
-                  {filtered.map((talent) => (
-                    <div key={`${talent.id}-${dup}`} className="w-[86vw] shrink-0 pr-4 sm:w-[540px] sm:pr-5">
-                      <CandidateCard talent={talent} />
-                    </div>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
+          <TalentMarquee key={category} talents={filtered} />
         ) : (
           <p className="mt-10 text-[15px] text-[#8A93A5]">해당 직군 인재는 상담으로 바로 소개해드립니다.</p>
         )}
