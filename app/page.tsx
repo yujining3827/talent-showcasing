@@ -92,16 +92,17 @@ function Hero() {
         <div className="absolute inset-0 flex items-center">
           <div className="mx-auto w-full max-w-[1200px] px-5">
             <OriginBand />
+            {/* 패러데이 문법: 장벽 제거(채용X·선불X) → 원하는 것(직무) → 즉시 행동 */}
             <h1 className="mt-6 max-w-[640px] break-keep text-[30px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
-              우리가 보유한 20,000명의
+              채용 없이, 선불 0원으로
               <RollingRole />
-              2주일 무료로 써보세요
+              지금 바로 써보세요
             </h1>
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
-                무료 트라이얼 시작하기
+                2주 무료로 시작하기
               </CtaLink>
-              <p className="text-[13px] text-white/70 sm:text-[14px]">평균 인건비, 국내 대비 50% 절감</p>
+              <p className="text-[13px] text-white/70 sm:text-[14px]">검증된 베트남 인재 20,000명 · 인건비 국내 대비 50% 절감</p>
             </div>
           </div>
         </div>
@@ -121,7 +122,7 @@ function FinalCta() {
           2주는 무료입니다
         </h2>
         <CtaLink href="/pricing" location="final-band" className="inline-flex h-12 items-center justify-center rounded-lg bg-white px-8 text-[16px] font-bold text-[#E8590C] transition hover:bg-[#FFF3EA] sm:h-[52px] sm:px-10 sm:text-[17px]">
-          무료 트라이얼 시작하기
+          2주 무료로 시작하기
         </CtaLink>
       </div>
     </section>
@@ -148,7 +149,7 @@ function MobileStickyCta() {
     >
       <div className="mr-[72px]">
         <CtaLink href="/pricing" location="sticky-bottom" className="flex h-12 w-full items-center justify-center rounded-md bg-[#E8590C] text-[15px] font-semibold text-white">
-          무료 트라이얼 시작하기
+          2주 무료로 시작하기
         </CtaLink>
       </div>
     </div>
