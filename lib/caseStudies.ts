@@ -32,6 +32,7 @@ export type CaseStudy = {
   metrics: CaseMetric[]; // 핵심 지표 (0~3개, 실측만)
   story: CaseSection[]; // 본문(레거시) — 프로젝트 서술. blocks 없을 때 사용
   blocks?: ContentBlock[]; // 본문(신규) — 텍스트/이미지 순서 배치. 있으면 이걸 우선 렌더
+  result?: string; // 카드에 먼저 보여줄 실질 결과 한 줄 (예: "자사몰 오픈 · 실제 운영 중")
   quote?: string; // 대표 인용구 — 실제 고객 코멘트 확보 시에만
   quoteBy?: string;
   interview?: CaseQA[]; // 실제 인터뷰 확보 시에만
@@ -68,6 +69,7 @@ export const CASE_STUDIES: CaseStudy[] = [
         body: "자사몰(doruri.com)이 오픈해 실제로 운영되고 있습니다. 국내 채용 대비 절반 수준의 인건비로 구축부터 운영까지 끊김 없이 진행한 사례입니다.",
       },
     ],
+    result: "자사몰(doruri.com) 오픈 · 실제 운영 중",
     quote:
       "해외 인재와 일하는 게 처음이라 소통이 제일 걱정이었는데, 막상 해보니 어려움이 크지 않았어요. 인스타그램 콘텐츠 작업이랑 자사몰 구축까지 같이 진행했는데, 결과물도 만족스러웠습니다.",
     quoteBy: "양다희 · 도르리 대표",

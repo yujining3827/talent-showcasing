@@ -29,11 +29,9 @@ export default function CaseStudiesPreview() {
         {/* 에디토리얼 챕터 헤더 — 빅 스테이트먼트 + 스탯 */}
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
           <h2 className="max-w-[720px] break-keep text-[30px] font-extrabold leading-[1.22] tracking-[-0.01em] text-[#191714] sm:text-[40px] md:text-[52px]">
-            파트너들은 이미
+            베트남 인재,
             <br />
-            인건비를 <span className="text-[#E8590C]">최대 60%</span>까지
-            <br />
-            줄이고 있습니다
+            이렇게 쓰고 있습니다
           </h2>
           <Link
             href="/cases"
@@ -70,10 +68,27 @@ export default function CaseStudiesPreview() {
                   <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${c.type === "talent" ? "bg-[#E6F7EE] text-[#12A150]" : "bg-[#FFF1E8] text-[#E8590C]"}`}>{c.company}</span>
                   <span className="text-[12px] text-[#8A93A5]">{c.industry}</span>
                 </div>
-                <p className="mt-2.5 text-[17px] font-semibold leading-[1.45] text-[#171E2D]">{c.title}</p>
-                <p className="mt-2 text-[13px] leading-[1.6] text-[#5B667A]">{c.summary}</p>
+                {/* 클릭 전에 판단 재료 먼저: 활용 영역 → 실질 결과 → 인터뷰 유무 */}
+                <div className="mt-3.5 flex flex-col gap-2">
+                  <div className="flex items-baseline gap-3">
+                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">활용 영역</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(c.talentRole || "").split("·").map((r) => r.trim()).filter(Boolean).map((r) => (
+                        <span key={r} className="rounded-full bg-[#F1F3F7] px-2 py-0.5 text-[11px] font-medium text-[#5B667A]">{r}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="flex items-baseline gap-3">
+                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">진행 범위</span>
+                    <span className="text-[13px] font-medium text-[#3A4356]">{c.scope}</span>
+                  </div>
+                  <div className="flex items-baseline gap-3">
+                    <span className="w-[58px] shrink-0 text-[11px] font-semibold text-[#9AA3B2]">결과</span>
+                    <span className="text-[13px] font-bold text-[#E8590C]">{c.result || c.summary}</span>
+                  </div>
+                </div>
                 <span className="mt-auto inline-flex items-center gap-1 pt-4 text-[13px] font-semibold text-[#E8590C]">
-                  사례 자세히 보기
+                  {c.quoteBy ? `${c.quoteBy.split("·")[1]?.trim() || c.company} 인터뷰 보기` : "사례 자세히 보기"}
                   <span aria-hidden>→</span>
                 </span>
               </div>
