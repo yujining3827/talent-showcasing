@@ -335,9 +335,57 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   );
 }
 
+// 직무 표기 한국어 통일 — 사전 매핑 + 일반 규칙 폴백
+const ROLE_KO: Record<string, string> = {
+  "senior qa engineer": "시니어 QA 엔지니어",
+  "qa engineer": "QA 엔지니어",
+  "ai/ml engineer": "AI/ML 엔지니어",
+  "full-stack developer": "풀스택 개발자",
+  "front end developer": "프론트엔드 개발자",
+  "frontend developer": "프론트엔드 개발자",
+  "senior backend developer": "시니어 백엔드 개발자",
+  "backend software engineer": "백엔드 엔지니어",
+  "backend developer": "백엔드 개발자",
+  "senior ux/ui designer": "시니어 UX/UI 디자이너",
+  "ux/ui designer": "UX/UI 디자이너",
+  "product designer": "프로덕트 디자이너",
+  "growth marketing": "그로스 마케터",
+  "growth marketer": "그로스 마케터",
+  "marketing": "마케터",
+  "it support": "IT 서포트",
+};
+
+function roleKo(role: string): string {
+  const key = (role || "").trim().toLowerCase();
+  if (ROLE_KO[key]) return ROLE_KO[key];
+  // 일반 규칙: 흔한 영어 직함 단어만 치환
+  let r = role || "기타";
+  r = r.replace(/senior/i, "시니어").replace(/full[- ]?stack/i, "풀스택").replace(/front[- ]?end/i, "프론트엔드").replace(/back[- ]?end/i, "백엔드");
+  r = r.replace(/developer/i, "개발자").replace(/engineer/i, "엔지니어").replace(/designer/i, "디자이너").replace(/marketer|marketing/i, "마케터").replace(/support/i, "서포트");
+  return r.replace(/\s+/g, " ").trim();
+}
+
+// 카테고리별 더미 기본값 — 데이터 없을 때 카드 양식 통일용 (실데이터 채워지면 자동 대체)
+const FALLBACK_LANGUAGE = "영어 업무 가능";
+const FALLBACK_SKILLS: Record<string, string[]> = {
+  개발: ["Git", "English Docs", "Agile"],
+  디자인: ["Figma", "Design System"],
+  마케팅: ["Meta Ads", "GA4"],
+  CS: ["CS 운영", "VOC 관리"],
+};
+
 // 콤팩트 인재 카드 — 캐러셀 슬라이드용 (사진 좌 + 핵심 정보 우, 높이 ~200px)
+// 양식 고정: 헤드라인(한국어) + 경력/어학/기술 3행 — 값 없으면 더미로 채워 구조 통일
 function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
   const logo = companyLogo(talent.company);
+  const role = roleKo(talent.role);
+  const category = categoryOf(talent.role);
+  const headline =
+    talent.headline && /[가-힣]/.test(talent.headline)
+      ? talent.headline.replace("/n", " ")
+      : `검증된 ${role}`;
+  const language = talent.language || FALLBACK_LANGUAGE;
+  const skills = talent.skills?.length ? talent.skills : FALLBACK_SKILLS[category] || [];
   const inner = (
     <>
       <div className="relative w-[140px] shrink-0 sm:w-[180px]">
@@ -348,7 +396,7 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
         </div>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5 pt-8">
           <p className="truncate text-[13px] font-semibold text-white">{talent.name}</p>
-          <p className="mt-0.5 truncate text-[11px] text-white/85">{talent.role}</p>
+          <p className="mt-0.5 truncate text-[11px] text-white/85">{role}</p>
         </div>
       </div>
       <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
@@ -356,9 +404,7 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
           <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 트라이얼 가능</p>
           {logo && <img src={logo.src} alt={talent.company ?? ""} className="h-5 w-auto max-w-[90px] shrink-0 object-contain sm:h-6" />}
         </div>
-        <p className="mt-1.5 break-keep text-[15px] font-semibold leading-[1.35] text-[#171E2D] sm:text-[16px]">
-          {(talent.headline || `검증된 ${talent.role || "테크"} 전문가`).replace("/n", " ")}
-        </p>
+        <p className="mt-1.5 break-keep text-[15px] font-semibold leading-[1.35] text-[#171E2D] sm:text-[16px]">{headline}</p>
         <div className="mt-auto flex flex-col gap-2 pt-3">
           <div className="flex items-baseline justify-between gap-3">
             <span className="shrink-0 text-[11px] font-semibold text-[#9AA3B2]">경력</span>
@@ -367,21 +413,17 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
               {talent.company ? ` · ${talent.company}` : ""}
             </span>
           </div>
-          {talent.language && (
-            <div className="flex items-baseline justify-between gap-3">
-              <span className="shrink-0 text-[11px] font-semibold text-[#9AA3B2]">어학</span>
-              <span className="truncate text-right text-[13px] font-bold text-[#E8590C]">{talent.language}</span>
-            </div>
-          )}
-          {talent.skills?.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 pt-1">
-              {talent.skills.slice(0, 3).map((skill) => (
-                <span key={skill} className="rounded-full bg-[#F1F3F7] px-2 py-0.5 text-[11px] font-medium text-[#5B667A]">
-                  {skill}
-                </span>
-              ))}
-            </div>
-          )}
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="shrink-0 text-[11px] font-semibold text-[#9AA3B2]">어학</span>
+            <span className="truncate text-right text-[13px] font-bold text-[#E8590C]">{language}</span>
+          </div>
+          <div className="flex flex-wrap gap-1.5 pt-1">
+            {skills.slice(0, 3).map((skill) => (
+              <span key={skill} className="rounded-full bg-[#F1F3F7] px-2 py-0.5 text-[11px] font-medium text-[#5B667A]">
+                {skill}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </>
@@ -465,15 +507,17 @@ function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
   return (
     <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
       <div className="mx-auto max-w-[1200px] px-5 py-10 md:py-14">
-        {/* 탭은 좌상단 고정 */}
-        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+        {/* 탭: 좌상단 세그먼트 컨트롤 — 한 덩어리로 묶어 존재감 있게 */}
+        <div className="inline-flex max-w-full items-center gap-1 overflow-x-auto rounded-full bg-white p-1.5 shadow-[0_10px_30px_-18px_rgba(10,18,32,0.35)] ring-1 ring-[#E5E8EE] scrollbar-hide">
           {TALENT_CATEGORIES.map((c) => (
             <button
               key={c}
               type="button"
               onClick={() => setCategory(c)}
-              className={`rounded-full px-5 py-2.5 text-[15px] font-semibold transition sm:px-6 sm:py-3 sm:text-[16px] ${
-                category === c ? "bg-[#191714] text-white" : "bg-white text-[#6B7280] ring-1 ring-[#E5E8EE] hover:text-[#191714]"
+              className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-[14px] font-semibold transition-all duration-200 sm:px-5 sm:py-2.5 sm:text-[15px] ${
+                category === c
+                  ? "bg-[#E8590C] text-white shadow-[0_8px_18px_-8px_rgba(232,89,12,0.7)]"
+                  : "text-[#6B7280] hover:text-[#191714]"
               }`}
             >
               {c}
