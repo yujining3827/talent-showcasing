@@ -105,27 +105,6 @@ function Hero() {
   );
 }
 
-// 구독 조건 스트립 — 패러데이식: 조건 세 개, 군더더기 없이
-function SubscriptionStrip() {
-  const items = [
-    { title: "2주 무료", desc: "트라이얼로 먼저 써보고" },
-    { title: "월 구독", desc: "채용 부담 없이 인건비만" },
-    { title: "언제든 중단", desc: "위약금 없음" },
-  ];
-  return (
-    <section className="border-y border-[#EDE6DA] bg-white">
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 divide-y divide-[#EDE6DA] px-5 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
-        {items.map((item) => (
-          <div key={item.title} className="flex items-baseline gap-3 py-6 sm:flex-col sm:gap-1.5 sm:px-8 sm:py-9 sm:first:pl-0">
-            <p className="text-[22px] font-extrabold text-[#191714] sm:text-[26px]">{item.title}</p>
-            <p className="text-[14px] text-[#6F675C] sm:text-[15px]">{item.desc}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 // 마지막 전환 밴드 — 오렌지 그라데이션 에디토리얼 블록
 function FinalCta() {
   return (
@@ -218,7 +197,6 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
       <SiteHeader />
       <Hero />
-      <SubscriptionStrip />
       {/* 순서: 인재 먼저 보여주고 → 개발/디자인/마케팅 영역 탭 */}
       <TalentPreview talents={premiumTalents} />
       <FeaturedTalentCarousel />
