@@ -156,22 +156,46 @@ function MobileStickyCta() {
   );
 }
 
-function TalentPreview({ talents }: { talents: ShowcaseTalent[] }) {
+// 패러데이식 인재 브라우저 — 브랜드 탭(테슬라/제네시스) 자리에 직군 탭(개발/디자인/마케팅)
+const TALENT_CATEGORIES = ["전체", "개발", "디자인", "마케팅"];
+
+function categoryOf(role: string): string {
+  const r = (role || "").toLowerCase();
+  if (/design/.test(r)) return "디자인";
+  if (/market|growth|social|content|seo|brand/.test(r)) return "마케팅";
+  return "개발";
+}
+
+function TalentBrowser({ talents }: { talents: ShowcaseTalent[] }) {
+  const [category, setCategory] = useState("전체");
   // 데이터가 없으면 섹션 자체를 감춘다 — "불러오는 중" 상태를 고객에게 노출하지 않음
   if (talents.length === 0) return null;
+  const filtered = category === "전체" ? talents : talents.filter((t) => categoryOf(t.role) === category);
   return (
-    <section id="talent-preview" className="bg-[#F7F8FA] scroll-mt-[64px]">
-      <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-24">
-        <div className="max-w-[720px]">
-          <p className="text-[13px] font-semibold uppercase tracking-[0.18em] text-[#E8590C]">엄선된 인재 쇼케이스</p>
-          <h2 className="mt-3 text-[26px] font-semibold tracking-normal text-[#171E2D] sm:text-[34px] md:text-[44px]">출신과 검증 정보가 먼저 보이는 인재 카드</h2>
-          <p className="mt-4 text-[15px] leading-[1.7] text-[#5B667A] md:text-[17px]">대학교, 이전 회사, 공개 동의, 사진 품질을 기준으로 신뢰할 수 있는 프로필을 우선 노출합니다.</p>
+    <section id="talent-preview" className="bg-white scroll-mt-[64px]">
+      <div className="mx-auto max-w-[1360px] px-5 py-14 md:py-20">
+        <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+          {TALENT_CATEGORIES.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setCategory(c)}
+              className={`rounded-full px-5 py-2.5 text-[15px] font-semibold transition sm:px-7 sm:py-3 sm:text-[17px] ${
+                category === c ? "bg-[#191714] text-white" : "bg-[#F3F4F6] text-[#6B7280] hover:text-[#191714]"
+              }`}
+            >
+              {c}
+            </button>
+          ))}
         </div>
         <div className="mt-8 grid grid-cols-1 gap-4 md:mt-12 md:gap-5 lg:grid-cols-2">
-          {talents.slice(0, 6).map((talent) => (
+          {filtered.slice(0, 6).map((talent) => (
             <ProfileCard key={talent.id} t={talent} />
           ))}
         </div>
+        {filtered.length === 0 && (
+          <p className="mt-10 text-center text-[15px] text-[#8A93A5]">해당 직군 인재는 상담으로 바로 소개해드립니다.</p>
+        )}
       </div>
     </section>
   );
@@ -203,8 +227,8 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white pb-[76px] md:pb-0">
       <SiteHeader />
       <Hero />
-      {/* 순서: 인재 먼저 보여주고 → 개발/디자인/마케팅 영역 탭 */}
-      <TalentPreview talents={premiumTalents} />
+      {/* 히어로 바로 아래: 직군 탭으로 인재 브라우징 (패러데이의 차량 브라우저 자리) */}
+      <TalentBrowser talents={premiumTalents} />
       <FeaturedTalentCarousel />
       <CaseStudiesPreview />
       <FinalCta />
