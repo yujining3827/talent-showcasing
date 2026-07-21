@@ -82,7 +82,10 @@ function Hero() {
   return (
     <section className="relative">
       <div className="relative h-[76vh] min-h-[540px] w-full overflow-hidden md:h-[84vh]">
-        <img src="/stock/team-main.jpg" alt="" className="h-full w-full object-cover" />
+        {/* public/hero.mp4가 있으면 재생, 없으면 poster(사진)가 그대로 보인다 — scripts/generate-hero-video.mjs로 생성 */}
+        <video autoPlay muted loop playsInline poster="/stock/team-main.jpg" className="h-full w-full object-cover">
+          <source src="/hero.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/5" />
         <div className="absolute inset-x-0 bottom-0">
           <div className="mx-auto max-w-[1200px] px-5 pb-12 md:pb-16">
