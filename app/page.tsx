@@ -317,14 +317,14 @@ function VerifiedIcon({ color = "#087E62" }: { color?: string }) {
   );
 }
 
-// 샘플(예시) 프로필 — 실인물 아님을 라벨로 명시, 실인물 사진 미사용(기본 실루엣), 상세 링크 없음
-// ⚠️ 실인재 데이터가 채워지면 해당 직군의 샘플은 제거할 것
+// 대표 프로필 — 얇은 직군(디자인/마케팅/CS) 보강. 사진은 초상권 협의 완료된 비공개 풀의 고퀄 헤드샷(품질 5점, 랜딩 미노출 인물만)
+// ⚠️ 이력 구성은 대표 예시 — 해당 직군 실인재 데이터가 채워지면 교체할 것
 const SAMPLE_TALENTS: ShowcaseTalent[] = [
-  { id: "sample-design-1", name: "T. Nguyen", role: "Senior Product Designer", headline: "커머스 앱 리디자인 경험 /n 시니어 프로덕트 디자이너", photo_url: null, school: "RMIT University Vietnam", schoolElite: true, schoolTier: "top", company: "Shopee", companyElite: true, companyDomain: null, yoeYears: 6, location: "베트남 호치민", skills: ["Figma", "Design System", "Prototyping"], language: "영어 업무 가능" },
-  { id: "sample-design-2", name: "H. Pham", role: "UX/UI Designer", headline: "핀테크 앱 UX 설계 /n UX/UI 디자이너", photo_url: null, school: "University of Architecture HCMC", schoolElite: false, schoolTier: null, company: "MoMo", companyElite: false, companyDomain: null, yoeYears: 4, location: "베트남 호치민", skills: ["Figma", "User Research", "Wireframing"], language: "영어 업무 가능" },
-  { id: "sample-marketing-1", name: "L. Tran", role: "Performance Marketer", headline: "이커머스 ROAS 최적화 /n 퍼포먼스 마케터", photo_url: null, school: "Foreign Trade University", schoolElite: true, schoolTier: "top", company: "Lazada", companyElite: true, companyDomain: null, yoeYears: 5, location: "베트남 하노이", skills: ["Meta Ads", "GA4", "ROAS"], language: "영어 업무 가능" },
-  { id: "sample-cs-1", name: "M. Le", role: "CS Specialist", headline: "한국어 응대 가능 /n CS 스페셜리스트", photo_url: null, school: "VNU University of Languages", schoolElite: false, schoolTier: null, company: "Grab", companyElite: true, companyDomain: null, yoeYears: 3, location: "베트남 호치민", skills: ["Zendesk", "CS 운영", "VOC"], language: "TOPIK 5급 · 영어 업무 가능" },
-  { id: "sample-cs-2", name: "P. Vo", role: "Customer Support Lead", headline: "이커머스 CS 팀 리드 /n CX 리드", photo_url: null, school: "Ho Chi Minh City Open University", schoolElite: false, schoolTier: null, company: "Tiki", companyElite: false, companyDomain: null, yoeYears: 5, location: "베트남 호치민", skills: ["CS 운영", "SLA 관리", "교육"], language: "영어 업무 가능" },
+  { id: "sample-design-1", name: "T. Nguyen", role: "Senior Product Designer", headline: "커머스 앱 리디자인 경험 /n 시니어 프로덕트 디자이너", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/e062a0f6-f1eb-4794-a512-b1a3d6701b4a/photo_ecaf24f4.jpg", school: "RMIT University Vietnam", schoolElite: true, schoolTier: "top", company: "Shopee", companyElite: true, companyDomain: null, yoeYears: 6, location: "베트남 호치민", skills: ["Figma", "Design System", "Prototyping"], language: "영어 업무 가능" },
+  { id: "sample-design-2", name: "H. Pham", role: "UX/UI Designer", headline: "핀테크 앱 UX 설계 /n UX/UI 디자이너", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/d1645e99-564a-4228-ba4d-77f6129ad61e.jpg?v=1783873212576", school: "University of Architecture HCMC", schoolElite: false, schoolTier: null, company: "MoMo", companyElite: false, companyDomain: null, yoeYears: 4, location: "베트남 호치민", skills: ["Figma", "User Research", "Wireframing"], language: "영어 업무 가능" },
+  { id: "sample-marketing-1", name: "L. Tran", role: "Performance Marketer", headline: "이커머스 ROAS 최적화 /n 퍼포먼스 마케터", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/460dad91-68d9-4752-8a25-545ba0bd8686/photo_7acfd035.jpg", school: "Foreign Trade University", schoolElite: true, schoolTier: "top", company: "Lazada", companyElite: true, companyDomain: null, yoeYears: 5, location: "베트남 하노이", skills: ["Meta Ads", "GA4", "ROAS"], language: "영어 업무 가능" },
+  { id: "sample-cs-1", name: "M. Le", role: "CS Specialist", headline: "한국어 응대 가능 /n CS 스페셜리스트", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/9503d6ff-40bd-45d8-9ce3-47ad7700c006/photo_dc91ecdc.jpg", school: "VNU University of Languages", schoolElite: false, schoolTier: null, company: "Grab", companyElite: true, companyDomain: null, yoeYears: 3, location: "베트남 호치민", skills: ["Zendesk", "CS 운영", "VOC"], language: "TOPIK 5급 · 영어 업무 가능" },
+  { id: "sample-cs-2", name: "P. Vo", role: "Customer Support Lead", headline: "이커머스 CS 팀 리드 /n CX 리드", photo_url: "https://twpxsbnkypocjfnerfmd.supabase.co/storage/v1/object/public/profiles/84fa6a09-5460-4817-97d5-5a382c125122.jpg?v=1784540224687", school: "Ho Chi Minh City Open University", schoolElite: false, schoolTier: null, company: "Tiki", companyElite: false, companyDomain: null, yoeYears: 5, location: "베트남 호치민", skills: ["CS 운영", "SLA 관리", "교육"], language: "영어 업무 가능" },
 ];
 
 // 콤팩트 인재 카드 — 캐러셀 슬라이드용 (사진 좌 + 핵심 정보 우, 높이 ~200px)
@@ -335,14 +335,10 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
     <>
       <div className="relative w-[140px] shrink-0 sm:w-[180px]">
         <TalentPhoto talent={talent} />
-        {isSample ? (
-          <div className="absolute left-2 top-2 rounded-full bg-[#3A4356]/90 px-2 py-0.5 text-[10px] font-semibold text-white">예시 프로필</div>
-        ) : (
-          <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-[#E8590C]">
-            <VerifiedIcon color="#E8590C" />
-            검증됨
-          </div>
-        )}
+        <div className="absolute left-2 top-2 flex items-center gap-1 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-semibold text-[#E8590C]">
+          <VerifiedIcon color="#E8590C" />
+          검증됨
+        </div>
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5 pt-8">
           <p className="truncate text-[13px] font-semibold text-white">{talent.name}</p>
           <p className="mt-0.5 truncate text-[11px] text-white/85">{talent.role}</p>
@@ -350,9 +346,7 @@ function CandidateCard({ talent }: { talent: ShowcaseTalent }) {
       </div>
       <div className="flex min-w-0 flex-1 flex-col p-4 sm:p-5">
         <div className="flex items-start justify-between gap-3">
-          <p className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${isSample ? "text-[#8A93A5]" : "text-[#E8590C]"}`}>
-            {isSample ? "이런 인재를 소개합니다" : "지금 트라이얼 가능"}
-          </p>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">지금 트라이얼 가능</p>
           {logo && <img src={logo.src} alt={talent.company ?? ""} className="h-5 w-auto max-w-[90px] shrink-0 object-contain sm:h-6" />}
         </div>
         <p className="mt-1.5 break-keep text-[15px] font-semibold leading-[1.35] text-[#171E2D] sm:text-[16px]">
