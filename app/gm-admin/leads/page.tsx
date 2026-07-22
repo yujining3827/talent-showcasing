@@ -72,7 +72,6 @@ function Breakdown({ title, rows }: { title: string; rows: [string, number][] })
 export default function LeadsDashboard() {
   const [leads, setLeads] = useState<Lead[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   useEffect(() => {
     fetch("/api/gm-admin/leads")
       .then((r) => r.json())
@@ -126,12 +125,12 @@ export default function LeadsDashboard() {
 
   return (
     <div className="mx-auto max-w-[1100px] px-6 py-8">
-      <div className="flex items-baseline justify-between">
+      <div className="flex items-baseline justify-between gap-4">
         <div>
           <h1 className="text-[24px] font-bold text-[#171E2D]">인재 상담 리드</h1>
           <p className="mt-1 text-[13px] text-[#8A93A5]">제출 전환 + UTM 유입 현황 · 접수 후 1시간 내 컨택용</p>
         </div>
-        <a href="/api/gm-admin/leads" target="_blank" rel="noopener noreferrer" className="text-[12px] font-medium text-[#8A93A5] hover:text-[#E8590C]">
+        <a href="/api/gm-admin/leads" target="_blank" rel="noopener noreferrer" className="shrink-0 text-[12px] font-medium text-[#8A93A5] hover:text-[#E8590C]">
           원본 JSON ↗
         </a>
       </div>

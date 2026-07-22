@@ -4,11 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { gtmPush, getStoredUtm } from "@/lib/gtm";
 
-/* 서비스 소개서 받아보기 — 기업명·담당자·연락처 받고 리드 저장 후 PDF 다운로드 */
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+/* 서비스 소개서 받아보기 — 기업명·담당자·이메일 받고, 입력한 이메일로 소개서 PDF 발송 */
 export default function BrochureModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [company, setCompany] = useState("");
   const [name, setName] = useState("");
-  const [contact, setContact] = useState("");
+  const [email, setEmail] = useState("");
   const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -16,7 +18,7 @@ export default function BrochureModal({ open, onClose }: { open: boolean; onClos
 
   if (!open) return null;
 
-  const canSubmit = !!(company.trim() && name.trim() && contact.trim() && consent);
+  const canSubmit = !!(company.trim() && name.trim() && EMAIL_RE.test(email.trim()) && consent);
   const inputCls =
     "w-full rounded-md border border-[#E1E5EC] bg-white px-3.5 py-3 text-[15px] text-[#1B2233] placeholder:text-[#AEB6C4] transition focus:border-[#E8590C] focus:outline-none focus:ring-2 focus:ring-[#E8590C]/15";
 
@@ -26,7 +28,7 @@ export default function BrochureModal({ open, onClose }: { open: boolean; onClos
     setTimeout(() => {
       setCompany("");
       setName("");
-      setContact("");
+      setEmail("");
       setConsent(false);
       setDone(false);
       setError(null);
@@ -42,13 +44,12 @@ export default function BrochureModal({ open, onClose }: { open: boolean; onClos
       const res = await fetch("/api/brochure-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ company, name, contact, consent, ...getStoredUtm() }),
+        body: JSON.stringify({ company, name, email, consent, ...getStoredUtm() }),
       });
       const d = await res.json().catch(() => ({}));
-      if (!res.ok || !d.pdfUrl) throw new Error(d.error || "요청에 실패했습니다.");
+      if (!res.ok || !d.ok) throw new Error(d.error || "요청에 실패했습니다.");
       gtmPush("lead_submit", { form: "brochure" });
       setDone(true);
-      window.location.href = d.pdfUrl; // 다운로드 시작 (Content-Disposition attachment)
     } catch (err) {
       setError(err instanceof Error ? err.message : "요청 중 문제가 발생했어요.");
     } finally {
@@ -67,27 +68,28 @@ export default function BrochureModal({ open, onClose }: { open: boolean; onClos
         {done ? (
           <div className="py-6 text-center">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF1E8] text-[30px] text-[#E8590C]">✓</div>
-            <h2 className="mt-5 text-[19px] font-bold text-[#171E2D]">소개서를 보내드렸어요</h2>
-            <p className="mt-2 text-[14px] leading-[1.6] text-[#5B667A]">다운로드가 자동으로 시작됩니다.<br />시작되지 않으면 아래 버튼을 눌러주세요.</p>
-            <a
-              href={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/brochure/gonggomagam-service-brochure.pdf`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <h2 className="mt-5 text-[19px] font-bold text-[#171E2D]">이메일로 소개서를 보내드렸어요</h2>
+            <p className="mt-2 text-[14px] leading-[1.6] text-[#5B667A]">
+              <span className="font-semibold text-[#3A4356]">{email.trim()}</span> 로 소개서 PDF를 보냈습니다.<br />
+              메일이 안 보이면 스팸함도 확인해주세요.
+            </p>
+            <button
+              onClick={close}
               className="mt-5 inline-flex h-11 items-center justify-center rounded-md bg-[#E8590C] px-6 text-[14px] font-semibold text-white transition hover:bg-[#C74E0A]"
             >
-              소개서 다시 받기
-            </a>
+              확인
+            </button>
           </div>
         ) : (
           <form onSubmit={submit}>
             <p className="text-[12px] font-semibold uppercase tracking-[0.12em] text-[#E8590C]">서비스 소개서</p>
             <h2 className="mt-1.5 text-[20px] font-bold text-[#171E2D]">공고마감 소개서 받아보기</h2>
-            <p className="mt-1.5 text-[13.5px] leading-[1.6] text-[#8A93A5]">간단한 정보만 남겨주시면 소개서를 바로 보내드려요.</p>
+            <p className="mt-1.5 text-[13.5px] leading-[1.6] text-[#8A93A5]">간단한 정보만 남겨주시면 입력하신 이메일로 소개서를 보내드려요.</p>
 
             <div className="mt-5 flex flex-col gap-3">
               <input className={inputCls} value={company} onChange={(e) => setCompany(e.target.value)} placeholder="기업명" autoFocus />
               <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder="담당자명" />
-              <input className={inputCls} value={contact} onChange={(e) => setContact(e.target.value)} placeholder="연락처 (전화번호 또는 이메일)" />
+              <input className={inputCls} type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="이메일" />
             </div>
 
             <label className="mt-4 flex cursor-pointer items-start gap-2.5">

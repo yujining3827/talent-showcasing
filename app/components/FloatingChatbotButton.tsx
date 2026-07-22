@@ -16,6 +16,12 @@ export default function FloatingChatbotButton() {
   const [autoShow, setAutoShow] = useState(false); // 첫 접속 자동 노출
   const [hovered, setHovered] = useState(false);
 
+  // ?chat=1 또는 #chat 로 들어오면 채팅 자동 오픈 (이메일 '상담하기' 버튼 등)
+  useEffect(() => {
+    const sp = new URLSearchParams(window.location.search);
+    if (sp.get("chat") === "1" || window.location.hash === "#chat") setChatOpen(true);
+  }, []);
+
   useEffect(() => {
     // 페이지 로드 시 자동 노출 + 이후 9초마다 3초씩 살짝살짝 다시 노출
     setAutoShow(true);
