@@ -84,7 +84,7 @@ export interface ShowcaseTalent {
 // 서비스 키 사용 시 RLS를 우회하므로 동의 필터를 쿼리에 반드시 명시한다
 export async function GET() {
   const url = process.env.MVP_SUPABASE_URL;
-  const key = process.env.MVP_SUPABASE_SERVICE_KEY || process.env.MVP_SUPABASE_ANON_KEY;
+  const key = process.env.MVP_SUPABASE_SERVICE_ROLE_KEY || process.env.MVP_SUPABASE_SERVICE_KEY || process.env.MVP_SUPABASE_ANON_KEY;
   if (!url || !key) return NextResponse.json({ error: "MVP env missing", total: 0, talents: [] });
 
   const sb = createClient(url, key);
