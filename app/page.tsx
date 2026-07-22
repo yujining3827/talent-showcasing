@@ -5,7 +5,6 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import Autoplay from "embla-carousel-autoplay";
-import FeaturedTalentCarousel from "@/app/components/showcase/FeaturedTalentCarousel";
 import CtaLink from "@/app/components/CtaLink";
 import { gtmPush, getStoredUtm } from "@/lib/gtm";
 import CaseStudiesPreview from "@/app/components/CaseStudiesPreview";
@@ -573,7 +572,6 @@ export default function LandingPage() {
       {/* 히어로 바로 아래: 직군 탭으로 인재 브라우징 (패러데이의 차량 브라우저 자리) */}
       <TalentBrowser talents={browserTalents} />
       <CaseStudiesPreview />
-      <FeaturedTalentCarousel />
       <LeadForm />
       <SiteFooter />
       <MobileStickyCta />

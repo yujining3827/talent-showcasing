@@ -10,11 +10,6 @@ export default function SiteHeader() {
           <img src="/logo-wordmark.png" alt="공고마감 by LIKELION" className="h-[22px] w-auto sm:h-7" />
         </Link>
         <div className="flex items-center gap-4 sm:gap-7">
-          <nav className="hidden items-center gap-7 md:flex">
-            <Link href="/#portfolio" className="text-[14px] font-medium text-[#3A4356] transition hover:text-[#E8590C]">
-              포트폴리오 미리보기
-            </Link>
-          </nav>
           <Link href="/cases" className="rounded-md border border-[#D8DEE8] bg-white px-3.5 py-2 text-[13px] font-semibold text-[#1F2937] transition hover:border-[#E8590C] hover:text-[#E8590C] sm:px-4 sm:text-[14px]">
             고객 사례 보기
           </Link>
