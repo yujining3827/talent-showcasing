@@ -62,7 +62,7 @@ export default function CaseStudiesPreview() {
   return (
     <section id="cases" className="bg-[#F6F1E9] scroll-mt-[84px]">
       <div className="mx-auto max-w-[1360px] px-5 py-12 md:py-16">
-        <div className="overflow-hidden border border-[#282622] bg-[#282622]">
+        <div className="overflow-hidden rounded-[20px] bg-[#1A1512] md:rounded-[28px]">
           <div className="relative aspect-[4/3] overflow-hidden bg-[#2A2119] sm:aspect-[16/8] md:aspect-[16/7]">
             <Image
               src="/eor-staffing-operations-v1.png"
@@ -83,12 +83,13 @@ export default function CaseStudiesPreview() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 bg-[#F15A24] text-[#191714]">
+          {/* 스탯 스트립 — 배너와 같은 딥 다크 톤, 흰 숫자 + 은은한 헤어라인 (튀는 색 블록 대신) */}
+          <div className="grid grid-cols-3 bg-[#1A1512] text-white">
             {PROOF_STATS.map((stat, index) => (
-              <div key={stat.label} className={`min-w-0 px-3 py-4 sm:px-6 sm:py-6 md:px-8 md:py-7 ${index > 0 ? "border-l border-black/30" : ""}`}>
-                <p className="text-[29px] font-extrabold leading-none sm:text-[44px] md:text-[58px]">{stat.value}</p>
-                <p className="mt-2 break-keep text-[10px] font-extrabold leading-[1.25] sm:text-[13px] md:text-[14px]">{stat.label}</p>
-                <p className="mt-1 hidden text-[11px] font-semibold text-black/62 sm:block md:text-[12px]">{stat.meaning}</p>
+              <div key={stat.label} className={`min-w-0 px-4 py-5 sm:px-7 sm:py-7 md:px-9 ${index > 0 ? "border-l border-white/10" : ""}`}>
+                <p className="text-[24px] font-extrabold leading-none tracking-[-0.01em] sm:text-[36px] md:text-[44px]">{stat.value}</p>
+                <p className="mt-2 break-keep text-[10px] font-semibold leading-[1.3] text-white/60 sm:text-[12.5px] md:text-[13px]">{stat.label}</p>
+                <p className="mt-0.5 hidden text-[11px] text-white/35 sm:block md:text-[12px]">{stat.meaning}</p>
               </div>
             ))}
           </div>
