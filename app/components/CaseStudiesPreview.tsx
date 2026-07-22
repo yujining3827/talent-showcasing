@@ -9,31 +9,6 @@ import { CASE_STUDIES, type CaseStudy } from "@/lib/caseStudies";
 // 랜딩 미리보기는 '기업 후기'만 (인재 후기는 노출 안 함)
 const companyOnly = (list: CaseStudy[]) => list.filter((c) => (c.type || "company") === "company").slice(0, 6);
 
-// 만족 증거 3단 — FYI 덱 PROOF 섹션 이식 (수치·인용은 덱 기준, 광고 전 실측 확정 필요)
-const PROOFS = [
-  {
-    value: "9개월+",
-    label: "평균 근속 기간",
-    note: "단기 용역이 아닌 장기 협업 중심",
-    company: "Lomen · 2025·2026년 연속 채용",
-    quote: "성과는 그대로인데 비용이 줄었어요",
-  },
-  {
-    value: "83%",
-    label: "재채용률",
-    note: "계약 만료 후 연장 또는 추가 채용",
-    company: "Nexacode · 2025·2026년 연속 채용",
-    quote: "인재 역량이 기대 이상이었습니다",
-  },
-  {
-    value: "4.5+",
-    label: "기업 만족도",
-    note: "도입 기업 설문 기준",
-    company: "MnF Solution · 2025·2026년 연속 채용",
-    quote: "경험해보고 신뢰가 생겨 올해도 재진행합니다",
-  },
-];
-
 function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
@@ -68,32 +43,12 @@ export default function CaseStudiesPreview() {
   return (
     <section id="cases" className="bg-[#F6F1E9] scroll-mt-[84px]">
       <div className="mx-auto max-w-[1360px] px-5 py-12 md:py-16">
-        {/* 만족 증거 배너 — 오렌지 그라데이션 위 빅 스테이트먼트 */}
-        <div className="rounded-[28px] bg-[radial-gradient(140%_140%_at_15%_0%,#FF9D5C,#E8590C_70%)] px-6 py-12 text-center md:py-16">
-          <h2 className="mx-auto max-w-[820px] break-keep text-[26px] font-extrabold leading-[1.3] text-white sm:text-[36px] md:text-[44px]">
-            다시 채용했다는 것,
-            <br />
-            가장 확실한 만족의 증거입니다
-          </h2>
-        </div>
-
-        {/* PROOF 3단 — 수치 + 근거 + 실기업 인용 */}
-        <div className="mt-10 grid grid-cols-1 gap-9 sm:grid-cols-3 sm:gap-8 md:mt-14">
-          {PROOFS.map((proof, i) => (
-            <div key={proof.label}>
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-[36px] font-extrabold leading-none tracking-[-0.01em] text-[#191714] sm:text-[42px]">{proof.value}</p>
-                <span className="rounded-full bg-[#191714] px-2.5 py-1 text-[10px] font-bold tracking-[0.08em] text-white">PROOF {i + 1}</span>
-              </div>
-              <p className="mt-2 text-[14px] font-semibold text-[#3A4356]">{proof.label}</p>
-              <p className="mt-1 text-[13px] font-medium text-[#E8590C]">{proof.note}</p>
-              <div className="mt-4 border-t border-[#E3D9C9] pt-3.5">
-                <p className="text-[13px] font-bold text-[#191714]">{proof.company}</p>
-                <p className="mt-1 text-[13px] leading-[1.6] text-[#6F675C]">“{proof.quote}”</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        {/* 만족 증거 — 디자인 원본 이미지 그대로 삽입 (public/proof-section.png, 3552×1446) */}
+        <img
+          src="/proof-section.png"
+          alt="다시 채용했다는 것, 가장 확실한 만족의 증거입니다 — 평균 근속 9개월+, 재채용률 83%, 기업 만족도 4.5+"
+          className="w-full overflow-hidden rounded-[20px] md:rounded-[28px]"
+        />
 
         {/* 사례 캐러셀 */}
         <div className="mt-12 flex items-center justify-between md:mt-16">
