@@ -75,15 +75,11 @@ export default function CaseStudiesPreview() {
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,14,10,0.78)_0%,rgba(20,14,10,0.42)_38%,rgba(20,14,10,0.04)_72%)]" />
             <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(20,14,10,0.5)_0%,transparent_48%)]" />
             <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-8 md:p-10">
-              <p className="text-[10px] font-bold text-[#FF8A54] sm:text-[11px]">EOR · GLOBAL STAFFING</p>
-              <h2 className="mt-2 max-w-[650px] break-keep text-[27px] font-extrabold leading-[1.16] sm:text-[38px] md:text-[48px]">
-                다시 채용했다는 것,
+              <h2 className="max-w-[650px] break-keep text-[27px] font-extrabold leading-[1.2] sm:text-[38px] md:text-[48px]">
+                함께한 기업 10곳 중 8곳은
                 <br />
-                가장 확실한 만족의 증거입니다
+                다시 채용합니다
               </h2>
-              <p className="mt-3 max-w-[520px] break-keep text-[12px] font-medium leading-[1.55] text-white/78 sm:text-[14px]">
-                계약이 끝난 뒤에도 연장과 재채용으로 이어지고 있습니다.
-              </p>
             </div>
           </div>
 
