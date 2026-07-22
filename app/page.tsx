@@ -187,7 +187,7 @@ function LeadForm() {
             <br />
             채용이 고민이시라면,
             <br />
-            무료로 <span className="text-[#FF9D5C]">검증된 인재</span>부터 받아보세요
+            무료로 <span className="text-[#FF9D5C]">검증된 이력서</span>부터 받아보세요
           </h2>
           <p className="relative z-20 mt-4 text-[14px] font-medium leading-[1.7] text-white/80 md:text-[15px]">
             담당자가 1시간 내 연락드리겠습니다.

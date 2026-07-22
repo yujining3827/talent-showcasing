@@ -43,15 +43,8 @@ export default function CaseStudiesPreview() {
   return (
     <section id="cases" className="bg-[#F6F1E9] scroll-mt-[84px]">
       <div className="mx-auto max-w-[1360px] px-5 py-12 md:py-16">
-        {/* 만족 증거 — 디자인 원본 이미지 그대로 삽입 (public/proof-section.png, 3552×1446) */}
-        <img
-          src="/proof-section.png"
-          alt="다시 채용했다는 것, 가장 확실한 만족의 증거입니다 — 평균 근속 9개월+, 재채용률 83%, 기업 만족도 4.5+"
-          className="w-full overflow-hidden rounded-[20px] md:rounded-[28px]"
-        />
-
         {/* 사례 캐러셀 */}
-        <div className="mt-12 flex items-center justify-between md:mt-16">
+        <div className="flex items-center justify-between">
           <p className="text-[15px] font-bold text-[#191714] sm:text-[17px]">실제 프로젝트 사례</p>
           <Link href="/cases" className="inline-flex items-center gap-1 text-[14px] font-semibold text-[#E8590C] transition hover:text-[#C74E0A]">
             전체 사례 보기
