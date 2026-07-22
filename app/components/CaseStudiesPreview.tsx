@@ -12,7 +12,7 @@ const companyOnly = (list: CaseStudy[]) => list.filter((c) => (c.type || "compan
 
 const PROOF_STATS = [
   {
-    label: "평균 협업 기간",
+    label: "평균 근속 기간",
     value: "9개월+",
     meaning: "장기 협업",
   },
