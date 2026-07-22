@@ -183,14 +183,14 @@ function LeadForm() {
             베트남 인재 매칭
           </p>
           <h2 className="relative z-20 max-w-[460px] break-keep text-[28px] font-extrabold leading-[1.24] text-white sm:text-[36px] md:text-[42px]">
-            채용이 고민이라면,
+            개발자·마케터·디자이너
             <br />
-            인재 몇 명 먼저
+            채용이 고민이시라면,
             <br />
-            보는 것도 방법입니다
+            무료로 <span className="text-[#FF9D5C]">검증된 인재</span>부터 받아보세요
           </h2>
           <p className="relative z-20 mt-4 text-[14px] font-medium leading-[1.7] text-white/80 md:text-[15px]">
-            확인은 무료입니다. 남겨주시면 담당자가 바로 연락드립니다.
+            담당자가 1시간 내 연락드리겠습니다.
           </p>
         </div>
         {done ? (
