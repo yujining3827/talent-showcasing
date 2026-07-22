@@ -75,11 +75,15 @@ export default function CaseStudiesPreview() {
             <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,14,10,0.78)_0%,rgba(20,14,10,0.42)_38%,rgba(20,14,10,0.04)_72%)]" />
             <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(20,14,10,0.5)_0%,transparent_48%)]" />
             <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-8 md:p-10">
-              <h2 className="max-w-[650px] break-keep text-[27px] font-extrabold leading-[1.2] sm:text-[38px] md:text-[48px]">
-                함께한 기업 10곳 중 8곳은
+              <p className="text-[10px] font-bold tracking-[0.2em] text-[#FF8A54] sm:text-[11px]">PROOF OF SATISFACTION</p>
+              <h2 className="mt-2 max-w-[650px] break-keep text-[27px] font-extrabold leading-[1.2] sm:text-[38px] md:text-[48px]">
+                함께한 기업들은
                 <br />
-                다시 채용합니다
+                <span className="text-[#FF9D5C]">다시 채용</span>하고 있습니다
               </h2>
+              <p className="mt-3 max-w-[520px] break-keep text-[12px] font-medium leading-[1.6] text-white/75 sm:text-[14px]">
+                재채용은 만족을 증명하는 가장 강력한 신호입니다.
+              </p>
             </div>
           </div>
 
@@ -87,7 +91,8 @@ export default function CaseStudiesPreview() {
           <div className="grid grid-cols-3 bg-[#1A1512] text-white">
             {PROOF_STATS.map((stat, index) => (
               <div key={stat.label} className={`min-w-0 px-4 py-5 sm:px-7 sm:py-7 md:px-9 ${index > 0 ? "border-l border-white/10" : ""}`}>
-                <p className="text-[24px] font-extrabold leading-none tracking-[-0.01em] sm:text-[36px] md:text-[44px]">{stat.value}</p>
+                <p className="text-[9px] font-bold tracking-[0.16em] text-[#FF8A54] sm:text-[10px]">PROOF 0{index + 1}</p>
+                <p className="mt-2 text-[24px] font-extrabold leading-none tracking-[-0.01em] sm:text-[36px] md:text-[44px]">{stat.value}</p>
                 <p className="mt-2 break-keep text-[10px] font-semibold leading-[1.3] text-white/60 sm:text-[12.5px] md:text-[13px]">{stat.label}</p>
                 <p className="mt-0.5 hidden text-[11px] text-white/35 sm:block md:text-[12px]">{stat.meaning}</p>
               </div>
