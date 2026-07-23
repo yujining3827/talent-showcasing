@@ -96,20 +96,20 @@ function Hero() {
         <div className="absolute inset-0 flex items-center">
           <div className="mx-auto w-full max-w-[1200px] px-5">
             <OriginBand />
-            {/* 패러데이 문법: 장벽 제거(채용X·선불X) → 원하는 것(직무) → 즉시 행동 */}
+            {/* 지역·티어(누구를) → 직무 롤링 → 장벽 제거+행동(채용 없이 경험) */}
             <h1 className="mt-6 max-w-[640px] break-keep text-[27px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
-              채용 없이, 선불 0원으로
+              베트남·인도 탑티어
               <RollingRole />
-              지금 바로 써보세요
+              채용 없이 경험해보세요
             </h1>
             <div className="mt-8 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
                 70만원 지원받고 인재 보기
               </CtaLink>
-              {/* 가격 3종은 같은 위계 — 모바일 직군당 1행, 데스크톱 한 줄 */}
+              {/* 가격 3종 — 모바일 직군당 1행, 데스크톱 한 줄 */}
               <div className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
-                <p className="whitespace-nowrap">즉시 투입 가능 · 평균 3년차</p>
                 <p className="mt-0.5 flex flex-col sm:mt-0 sm:block">
+                  <span className="whitespace-nowrap">즉시 투입 · 평균 3년차 — </span>
                   <span className="whitespace-nowrap">풀스택 개발자 월 <span className="font-semibold text-white">159만원</span></span>
                   <span className="hidden sm:inline"> · </span>
                   <span className="whitespace-nowrap">디자이너 월 <span className="font-semibold text-white">99만원</span></span>
