@@ -74,7 +74,7 @@ function RollingRole() {
   return (
     <span className="block h-[1.3em] overflow-hidden">
       <span key={index} className="animate-logo-in block text-[#FF7A2F]">
-        베트남 {ROLLING_ROLES[index]}
+        {ROLLING_ROLES[index]}
       </span>
     </span>
   );
@@ -109,7 +109,7 @@ function Hero() {
               {/* 당위 한 줄(왜 글로벌인가) + 가격 3종 — 모바일 직군당 1행, 데스크톱 한 줄 */}
               <div className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
                 <p className="break-keep font-medium text-white/85">
-                  채용, 어려우시죠? 글로벌로 넓히면 <span className="font-semibold text-white">같은 실력이 절반 가격</span>입니다
+                  채용, 어려우시죠? 같은 실력의 베트남 인재는 <span className="font-semibold text-white">절반 가격</span>입니다
                 </p>
                 <p className="mt-0.5 flex flex-col sm:mt-0 sm:block">
                   <span className="whitespace-nowrap">즉시 투입 · 평균 3년차 — </span>
