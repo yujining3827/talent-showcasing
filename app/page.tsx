@@ -98,7 +98,7 @@ function Hero() {
             <OriginBand />
             {/* 지역·티어(누구를) → 직무 롤링 → 장벽 제거+행동(채용 없이 경험) */}
             <h1 className="mt-6 max-w-[640px] break-keep text-[27px] font-extrabold leading-[1.28] tracking-[-0.01em] text-white [text-shadow:0_2px_20px_rgba(0,0,0,0.4)] sm:text-[42px] md:text-[52px]">
-              베트남·인도 탑티어
+              인도·베트남 탑티어
               <RollingRole />
               채용 없이 경험해보세요
             </h1>
