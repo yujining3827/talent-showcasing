@@ -74,7 +74,7 @@ function RollingRole() {
   return (
     <span className="block h-[1.3em] overflow-hidden">
       <span key={index} className="animate-logo-in block text-[#FF7A2F]">
-        {ROLLING_ROLES[index]}
+        베트남 {ROLLING_ROLES[index]}
       </span>
     </span>
   );
@@ -106,10 +106,13 @@ function Hero() {
               <CtaLink href="/pricing" location="hero" className="inline-flex h-12 items-center justify-center rounded-lg bg-[#E8590C] px-8 text-[16px] font-semibold text-white transition hover:bg-[#C74E0A] sm:h-[52px] sm:px-10 sm:text-[17px]">
                 70만원 지원받고 인재 보기
               </CtaLink>
-              {/* 가격 3종은 같은 위계 — 모바일 직군당 1행, 데스크톱 한 줄 */}
+              {/* 당위 한 줄(왜 글로벌인가) + 가격 3종 — 모바일 직군당 1행, 데스크톱 한 줄 */}
               <div className="text-[13px] leading-[1.8] text-white/70 sm:text-[14px]">
-                <p className="whitespace-nowrap">즉시 투입 가능 · 평균 3년차</p>
+                <p className="break-keep font-medium text-white/85">
+                  채용, 어려우시죠? 글로벌로 넓히면 <span className="font-semibold text-white">같은 실력이 절반 가격</span>입니다
+                </p>
                 <p className="mt-0.5 flex flex-col sm:mt-0 sm:block">
+                  <span className="whitespace-nowrap">즉시 투입 · 평균 3년차 — </span>
                   <span className="whitespace-nowrap">풀스택 개발자 월 <span className="font-semibold text-white">159만원</span></span>
                   <span className="hidden sm:inline"> · </span>
                   <span className="whitespace-nowrap">디자이너 월 <span className="font-semibold text-white">99만원</span></span>
